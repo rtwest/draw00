@@ -1,0 +1,93 @@
+﻿<!-- Canvas -->
+
+    <!--Bootstrap3+Material class-->
+    <div class="navbar navbar-default" style="padding-top:20px; z-index:10;background-color:transparent;overflow-x:auto;box-shadow:none;-webkit-box-shadow:none;">
+        <!--overflow and margin used to enable up coverup/hide scrollbar-->
+
+        <!--<div class="navbar-brand">
+            <span class="glyphicon glyphicon-star" aria-hidden="true"></span>{{ message }}
+        </div>-->
+
+        <!--Comman Toolbar-->
+        <div class="palette-case" style="width:320px">
+            <button type="button" class="btn btn-default" style="box-shadow:none;" ng-click="newCanvas()">
+                <div class="svgicon new"></div>
+            </button>
+            <button type="button" class="btn btn-default" style="box-shadow:none;" ng-click="saveImage()">
+                <div class="svgicon save"></div>
+            </button>
+            <button type="button" class="btn btn-default" style="box-shadow:none;" ng-click="goToGallery()">
+                <div class="svgicon gallery"></div>
+            </button>
+        </div>
+
+        <!--Drawing Toolbar--> 
+        <div class="palette-case" style="width:360px">
+
+            <button  type="button" class="btn btn-default" style="box-shadow:none;padding:0px 0px 0px 16px" ng-click="choosePen1()">
+                <div id="penicon1" class="svgicon pen1"></div>
+            </button>
+            <button  type="button" class="btn btn-default" style="box-shadow:none;padding:0px" ng-click="choosePen2()">
+                <div id="penicon2" class="svgicon pen2"></div>
+            </button>
+            <button  type="button" class="btn btn-default" style="box-shadow:none;padding:0px" ng-click="choosePen3()">
+                <div id="penicon3" class="svgicon pen3"></div>
+            </button>
+            
+            <button  type="button" class="btn btn-default" style="box-shadow:none;padding:0px 10px" ng-click="chooseEraser()">
+                <div id="erasericon" class="svgicon eraser"></div>
+            </button>
+
+            <button  type="button" class="btn btn-default" style="box-shadow:none;padding:0px" ng-click="chooseBrush1()">
+                <div id="brushicon1" class="svgicon brush1"></div>
+            </button>
+            <button  type="button" class="btn btn-default" style="box-shadow:none;padding:0px" ng-click="chooseBrush2()">
+                <div id="brushicon2" class="svgicon brush2"></div>
+            </button>
+            <button  type="button" class="btn btn-default" style="box-shadow:none;padding:0px" ng-click="chooseBrush3()">
+                <div id="brushicon3" class="svgicon brush3"></div>
+            </button>
+            <!--<button type="button" class="btn btn-default" style="box-shadow:none;" ng-click="saveImage()">
+            <div class="svgicon checkmark"></div>
+        </button>
+        <button type="button" class="btn btn-secondary" style="box-shadow:none;" ng-click="getPicture()">
+            <div class="svgicon camera"></div>
+        </button>
+        <button type="button" class="btn btn-default" style="box-shadow:none" ng-click="uploadImage()">
+            <div class="svgicon share"></div>
+        </button>-->
+        </div>
+     </div>   
+
+    <!--HTML Canvas get inserted in here-->
+    <div id="content"></div>
+
+    <div class="navbar navbar-fixed-bottom" style="background-color:transparent; overflow-x:auto"> 
+        <!--overflow and margin used to enable up coverup/hide scrollbar-->
+
+    <!--Pick colors-->
+    <div class="palette-case" style="width:775px">
+        <div class="palette black" ng-click="selectColor($event)"></div>
+        <div class="palette grey" ng-click="selectColor($event)"></div>
+        <div class="palette yellow" ng-click="selectColor($event)"></div>
+        <div class="palette orange" ng-click="selectColor($event)"></div>
+        <div class="palette red" ng-click="selectColor($event)"></div>
+        <div class="palette pink" ng-click="selectColor($event)"></div>
+        <div class="palette purple" ng-click="selectColor($event)"></div>
+        <div class="palette blue" ng-click="selectColor($event)"></div>
+        <div class="palette ltblue" ng-click="selectColor($event)"></div>
+        <div class="palette ltgreen" ng-click="selectColor($event)"></div>
+        <div class="palette green" ng-click="selectColor($event)"></div>
+        <div class="palette beige" ng-click="selectColor($event)"></div>
+        <div class="palette brown" ng-click="selectColor($event)"></div>
+        <div class="palette drkbrown" ng-click="selectColor($event)"></div>
+        <div class="palette white" ng-click="selectColor($event)"></div>
+        <div style="clear:both"></div>
+    </div>
+
+</div>
+
+    <!--This is just for testing storage on Save -- Remove this!!!!-->
+    <img id="imagegoeshere" style="position:absolute;top:600px" />
+
+
