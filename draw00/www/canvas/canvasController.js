@@ -29,7 +29,20 @@
 cordovaNG.controller('canvasController', function ($scope, $http, globalService) {
 
 
-    alert('canvascontroller loaded')
+    //////////////////////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////////////////
+    // var record = { "_id":"3","name": Date.now() };
+    // globalService.drawappDatabase.put(record);
+    // globalService.drawappDatabase.get("3").then(function(doc){console.log(doc.name)});
+    //////////////////////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////////////////
+
+
+
     // Scope is like the partial view datamodel.  'message' is defined in the partial html view
     //$scope.message = "Let's draw";
 
@@ -71,7 +84,6 @@ cordovaNG.controller('canvasController', function ($scope, $http, globalService)
         ctx.lineWidth = line_Width;
         // setup to trigger drawing on mouse or touch
         drawTouch();
-        //drawMouse(); // only needed for testing
         resetdrawingtoolbar();
         $('#penicon1').addClass('pen1select');
     };
@@ -81,7 +93,6 @@ cordovaNG.controller('canvasController', function ($scope, $http, globalService)
     $scope.choosePen1 = function () {
         resetdrawingtoolbar();
         drawTouch();
-        //drawMouse(); // only needed for testing
         $('#penicon1').addClass('pen1select');
         size = 5;
         ctx.beginPath(); // start a new line
@@ -94,7 +105,6 @@ cordovaNG.controller('canvasController', function ($scope, $http, globalService)
     $scope.choosePen2 = function () {
         resetdrawingtoolbar();
         drawTouch();
-        //drawMouse(); // only needed for testing
         $('#penicon2').addClass('pen2select');
         size = 12;
         ctx.beginPath(); // start a new line
@@ -107,7 +117,6 @@ cordovaNG.controller('canvasController', function ($scope, $http, globalService)
     $scope.choosePen3 = function () {
         resetdrawingtoolbar();
         drawTouch();
-        //drawMouse(); // only needed for testing
         $('#penicon3').addClass('pen3select');
         size = 30;
         ctx.beginPath(); // start a new line
@@ -121,7 +130,6 @@ cordovaNG.controller('canvasController', function ($scope, $http, globalService)
     $scope.chooseEraser = function () {
         resetdrawingtoolbar();
         eraseTouch();
-        //eraseMouse(); // for testing only
         $('#erasericon').addClass('eraserselect');
         // if brush was selected and canvas is there, draw canvas2 down on original canvas and remove canvas2
         if ($('#canvas2').length) {
@@ -134,7 +142,6 @@ cordovaNG.controller('canvasController', function ($scope, $http, globalService)
         if ($('#canvas2').length) {
             $('#canvas2').remove();
         };
-        //brushMouse();
         brushTouch(); // use for deploy to touch device
 
         $('#brushicon1').addClass('brush1select');
@@ -151,7 +158,6 @@ cordovaNG.controller('canvasController', function ($scope, $http, globalService)
         if ($('#canvas2').length) {
             $('#canvas2').remove();
         };
-        //brushMouse();
         brushTouch(); // use for deploy to touch device
         $('#brushicon2').addClass('brush2select');
         size = 18;
@@ -161,7 +167,6 @@ cordovaNG.controller('canvasController', function ($scope, $http, globalService)
         if ($('#canvas2').length) {
             $('#canvas2').remove();
         };
-        //brushMouse();
         brushTouch(); // use for deploy to touch device
         $('#brushicon3').addClass('brush3select');
         size = 40;
@@ -249,50 +254,6 @@ cordovaNG.controller('canvasController', function ($scope, $http, globalService)
         $('#canvas').on('touchmove', move);
     };
 
-    // prototype to	start drawing on MOUSE using canvas moveTo and lineTo
-    // ------------------------------------------
-    //var drawMouse = function () {
-    //    ctx.lineWidth = size;
-    //    var clicked = 0;
-
-    //    var start = function (e) {
-    //        clicked = 1;
-    //        ctx.beginPath();
-    //        ctx.globalCompositeOperation = 'source-over'; // reset this back to drawing
-    //        x = e.pageX;
-    //        y = e.pageY - 130;
-    //        ctx.moveTo(x, y);
-    //        // make a dot on tap
-    //        ctx.arc(x, y, size/1.9, 0, 2 * Math.PI, false);
-    //        ctx.fillStyle = color;
-    //        ctx.fill();
-    //        ctx.beginPath(); // after dot, start a new line and reset properties
-    //        ctx.globalCompositeOperation = 'source-over'; // reset this back to drawing
-    //    };
-    //    var move = function (e) {
-    //        if (clicked) {
-    //            lastx = x;
-    //            lasty = y;
-    //            x = e.pageX;
-    //            y = e.pageY - 130;
-    //            ctx.moveTo(lastx, lasty);
-    //            ctx.lineTo(x, y);
-    //            //ctx.quadraticCurveTo(p1.x, p1.y, midPoint.x, midPoint.y);
-    //            ctx.closePath();
-    //            ctx.strokeStyle = color;
-    //            ctx.stroke();
-    //        };
-    //    };
-    //    var stop = function (e) {
-    //        clicked = 0;
-    //        e.preventDefault;
-    //    };
-
-    //    $('#canvas').on('mousedown', start);
-    //    $('#canvas').on('mousemove', move);
-    //    $('#canvas').on('mouseup', stop);
-
-    //};
 
     function eraseTouch() {
         ctx.lineWidth = 18;
@@ -324,38 +285,7 @@ cordovaNG.controller('canvasController', function ($scope, $http, globalService)
 
     };
 
-    //function eraseMouse() {
-    //    ctx.lineWidth = 18;
-    //    var clicked2 = 0;
-    //    var starteraser = function (e) {
-    //        clicked2 = 1;
-    //        ctx.beginPath();
-    //        x = e.pageX;
-    //        y = e.pageY - 130;
-    //        ctx.moveTo(x, y);
-    //        ctx.globalCompositeOperation = 'destination-out';
-    //        ctx.strokeStyle = 'rgba(0,0,0,1)';
-    //    };
-    //    var moveeraser = function (e) {
-    //        if (clicked2) {
-    //            ctx.beginPath();
-    //            ctx.globalCompositeOperation = 'destination-out';
-    //            ctx.strokeStyle = 'rgba(0,0,0,1)';
-    //            ctx.moveTo(x, y);
-    //            x = e.pageX;
-    //            y = e.pageY - 130;
-    //            ctx.lineTo(x, y);
-    //            ctx.closePath();
-    //            ctx.stroke();
-    //        };
-    //    };
-    //    var stoperaser = function (e) {
-    //        clicked2 = 0;
-    //    };
-    //    $('#canvas').on('mousedown', starteraser);
-    //    $('#canvas').on('mousemove', moveeraser);
-    //    $('#canvas').on('mouseup', stoperaser);
-    //};
+
 
     var brushTouch = function () {
         var canvas2
@@ -424,81 +354,6 @@ cordovaNG.controller('canvasController', function ($scope, $http, globalService)
     };
     // ------------------------------------------
 
-    //var brushMouse = function () {
-   
-        ////new canvas
-        ////if (!($('#canvas2').length)) {
-        //    canvas2 = document.createElement('canvas');
-        //    canvas2.id = 'canvas2';
-        //    canvas2.width = window.innerWidth;
-        //    canvas2.height = window.innerHeight - 130;
-        //    canvas2.style.position = "absolute";
-        //    canvas2.style.left = 0;
-        //    $('#content').append(canvas2);
-        //    ctx2 = canvas2.getContext("2d");
-        //    ctx2.lineCap = "round";
-        //    ctx2.lineJoin = 'round';
-        //    ctx2.lineWidth = size;
-        //    ctx2.strokeStyle = color;
-        //    ctx2.globalAlpha = .5;
-        ////};
-
-        //var clicked = 0;
-
-        //var startbrush = function (e) {
-
-        //    ctx2.lineWidth = size;
-        //    $('#canvas2').css('opacity', '1');  //show the 2nd canvas
-
-        //    clicked = 1;
-        //    ctx2.beginPath();
-        //    ctx2.globalCompositeOperation = 'destination-atop';
-        //    x = e.pageX;
-        //    y = e.pageY - 130;
-        //    ctx2.moveTo(x, y);
-        //    // make a dot on tap
-        //    ctx2.arc(x, y, size / 1.9, 0, 2 * Math.PI, false);
-        //    ctx2.fillStyle = color;
-        //    ctx2.fill();
-        //    ctx2.beginPath(); // after dot, start a new line and reset properties
-        //    ctx2.globalCompositeOperation = 'destination-atop';
-        //};
-        //var movebrush = function (e) {
-        //    if (clicked) {
-        //        lastx = x;
-        //        lasty = y;
-        //        x = e.pageX;
-        //        y = e.pageY - 130;
-        //        ctx2.lineWidth = size;
-        //        ctx2.moveTo(lastx, lasty);
-        //        ctx2.lineTo(x, y);
-        //        ctx2.closePath();
-        //        ctx2.strokeStyle = color;
-        //        ctx2.stroke();
-        //    };
-        //};
-        //var stopbrush = function (e) {
-        //    clicked = 0;
-        //    e.preventDefault;
-
-        //    // draw canvas2 down on original canvas and remove canvas2
-        //    var img = new Image();
-        //    img.src = canvas2.toDataURL();
-        //    ctx.globalCompositeOperation = 'source-over'; // reset this back to drawing
-        //    ctx.drawImage(img,0,0);
-        //    $('#canvas2').css('opacity','0');  //hide the canvas after you copy it down so you don't see it duplicated
-        //};
-
-        //$('#canvas2').on('mousedown', startbrush);
-        //$('#canvas2').on('mousemove', movebrush);
-        //$('#canvas2').on('mouseup', stopbrush);
-
-    //};
-    // ------------------------------------------
-
-
-
-
 
 
     // Function to get picuture from camera and insert onto canvas
@@ -561,14 +416,28 @@ cordovaNG.controller('canvasController', function ($scope, $http, globalService)
                 // Save filepath to IndexedDB for gallery
                 // --------
                 var uid = globalService.makeUniqueID();
-                var record = { uid: uid, filepath: filepath, datetime: Date.now() }; //JSON for unique id for picture, filepath to retrieve it, datetime in milliseconds
-                globalService.drawappDatabase.put(record, function () { console.log('db put success') }, function () { console.log('db put error') }); //record, onDBsuccess, onDBerror
+                var record = { "_id": uid, "filepath": filepath, "datetime": Date.now() }; //JSON for unique id for picture, filepath to retrieve it, datetime in milliseconds
+                // &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+                //globalService.drawappDatabase.put(record); //record, onDBsuccess, onDBerror
+                globalService.drawappDatabase.put(record, function (error, response) {
+                    if (error) {
+                        console.log(error);
+                        return;
+                    } else if(response && response.ok) {
+                        console.log(response)
+                    }
+                });
+                globalService.drawappDatabase.get(uid).then(function (doc) {
+                    console.log(JSON.stringify(doc.filepath));
+                    alert(JSON.stringify(doc))
+                });
+
                 // --------
             },
             function (err) {console.log(err);},
             document.getElementById('canvas') // This names the element that is the Canvas.  Other params can follow here with commas...format, quality,etc... ",'.jpg', 80," 
        );   
-        $('#canvas').css('background-image', 'url()');// reset the CSS background 
+        //$('#canvas').css('background-image', 'url()');// reset the CSS background 
     };
 
 
@@ -670,7 +539,6 @@ cordovaNG.controller('canvasController', function ($scope, $http, globalService)
         ctx.lineWidth = line_Width;
     // setup to trigger drawing on mouse or touch
         drawTouch();
-        //drawMouse(); // only needed for testing
         $('#penicon1').addClass('pen1select');
         $('.black').css("borderColor", "transparent");
 

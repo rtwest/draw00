@@ -10,6 +10,7 @@
   <preference name="windows-target-version" value="8.1" />
   <!-- Support for Cordova 5.0.0 plugin system -->
   <plugin name="cordova-plugin-whitelist" version="1" />
+  <allow-navigation href="*" />
   <allow-navigation href="http: //*/*" />
   <allow-intent href="http://*/*" />
   <allow-intent href="https://*/*" />
@@ -109,18 +110,17 @@
   <access origin="http://rtwdevstorage.blob.core.windows.net" />
   <access origin="https://fonts.googleapis.com" />
   <access origin="https://fonts.gstatic.com" />
-  <preference name="KeepRunning" value="False" />
-  <preference name="ShowTitle" value="True" />
-  <preference name="InAppBrowserStorageEnabled" value="False" />
-  <preference name="SuppressesIncrementalRendering" value="True" />
-  <vs:plugin name="cordova-plugin-device" version="1.0.1" />
-  <vs:plugin name="cordova-plugin-inappbrowser" version="1.0.1" />
+  <preference name="KeepRunning" value="True" />
+  <preference name="ShowTitle" value="False" />
+  <preference name="InAppBrowserStorageEnabled" value="True" />
+  <preference name="SuppressesIncrementalRendering" value="False" />
   <vs:plugin name="com.microsoft.azure-mobile-services" version="1.2.9" />
-  <vs:plugin name="cordova-plugin-camera" version="1.2.0" />
   <vs:plugin name="org.devgeeks.Canvas2ImagePlugin" version="0.6.0" src="https://github.com/devgeeks/Canvas2ImagePlugin.git" />
   <vs:plugin name="com.phonegap.plugins.PushPlugin" version="2.5.0" src="https://github.com/phonegap-build/PushPlugin.git" />
-  <vs:plugin name="cordova-plugin-dialogs" version="1.1.1" />
-  <vs:plugin name="cordova-plugin-whitelist" version="1.0.0" />
   <preference name="Orientation" value="portrait" />
   <preference name="DisallowOverscroll" value="true" />
+  <vs:plugin name="cordova-plugin-device" version="1.0.1" />
+  <vs:plugin name="cordova-plugin-dialogs" version="1.1.1" />
+  <vs:plugin name="cordova-plugin-inappbrowser" version="1.0.1" />
+  <vs:plugin name="io.litehelpers.cordova.sqlite" version="0.7.10" src="https://github.com/litehelpers/Cordova-sqlite-storage.git" />
 </widget>

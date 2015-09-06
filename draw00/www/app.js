@@ -1,5 +1,12 @@
 ﻿/*  
+=====================================================================================================================
+=====================================================================================================================
+
 NOTES:
+
+
+=====================================================================================================================
+=====================================================================================================================
 */
 
 // THIS IS THE MORE STANDARD CORDOVA WAY.  MEANS YOU HAVE TO ADD <SCRIPT>app.initialize();</SCRIPT> TO INDEX.HTML ALSO
@@ -33,8 +40,12 @@ var app = {
     // function, we must explicitly call 'app.receivedEvent(...);'
     onDeviceReady: function () {
 
+        // @@@@@@@@@@@@@ Manually starting Angular used when you remove 'ng App' from HTML @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+        angular.bootstrap(document, ['cordovaNG']);
+        console.log('bootstrapping NG');
+
         // #region notification-registration	
-        // &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+        // &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
         // Define the PushPlugin.
         var pushNotification = window.plugins.pushNotification;
 		
@@ -261,7 +272,7 @@ BEGIN ANGULAR SIDE OF THE APP
 var cordovaNG = angular.module('cordovaNG', [
     'ngRoute',
     'azure-mobile-service.module',
-    'ui.bootstrap'
+    'ui.bootstrap',
 ]);
 // ==================================================
 // ==================================================
@@ -307,21 +318,14 @@ cordovaNG.config(function ($routeProvider) {
 // Inject factory/service <name> as a dependency to controllers to make available.
 // ==================================================
 
+
 cordovaNG.service('globalService', ['$location', function ($location) {
 
-    // SETTING UP LOCALSTORAGE.  
-    // Create a new IndexedDB store using IDBWrapper.  NOTE: takes some time to create the store and will error if you use before it is ready.
-    // http://jensarps.de/2011/11/25/working-with-idbwrapper-part-1/
-    // -----------------------------
-    var drawappDatabase = new IDBStore({
-        dbVersion: 1,
-        storeName: 'drawappDatabase',
-        keyPath: 'id', //primary key of record
-        autoIncrement: true,
-        onStoreReady: function () { console.log('database is ready') },
-        indexes: [{ name: 'uid' }] //this adds a uniqe id column to query against later
-    });
-    // ----------------------
+    // SETTING UP STORAGE.  
+    // Open connection to the database using PouchDB.  @@@@@@@@ If adapter is not given, it defaults to IndexedDB, then fails over to WebSQL @@@@@@@@
+    //var drawappDatabase = new PouchDB("drawappDatabase", { adapter: 'websql' });
+    var drawappDatabase = new PouchDB("drawappDatabase");
+    //-------------------------
 
     return  {
         // Functions for get/set on global vars.  
@@ -339,9 +343,9 @@ cordovaNG.service('globalService', ['$location', function ($location) {
             }, {});
         },
 
-        // Database IDBWrapper methods
+        // Database  methods
         // -----------------
-        drawappDatabase: drawappDatabase, // return the IndexedDB store
+        drawappDatabase: drawappDatabase, // return the Database
 
         // Clever function to make a GUID compliant with standard format cast as type STRING
         // ----------------
@@ -475,3 +479,7 @@ cordovaNG.controller('view2Controller', function ($scope) {
 
 // ==================================================
 // ==================================================
+
+
+
+

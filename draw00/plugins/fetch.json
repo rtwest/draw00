@@ -44,18 +44,14 @@
             "type": "git",
             "url": "https://github.com/devgeeks/Canvas2ImagePlugin.git",
             "subdir": "."
-        },
-        "is_top_level": true,
-        "variables": {}
+        }
     },
     "com.phonegap.plugins.PushPlugin": {
         "source": {
             "type": "git",
             "url": "https://github.com/phonegap-build/PushPlugin.git",
             "subdir": "."
-        },
-        "is_top_level": true,
-        "variables": {}
+        }
     },
     "cordova-plugin-dialogs": {
         "source": {
@@ -69,6 +65,15 @@
         "source": {
             "type": "registry",
             "id": "cordova-plugin-whitelist@1"
+        },
+        "is_top_level": true,
+        "variables": {}
+    },
+    "io.litehelpers.cordova.sqlite": {
+        "source": {
+            "type": "git",
+            "url": "https://github.com/litehelpers/Cordova-sqlite-storage.git",
+            "subdir": "."
         },
         "is_top_level": true,
         "variables": {}
