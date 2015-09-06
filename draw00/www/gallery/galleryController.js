@@ -5,35 +5,26 @@ cordovaNG.controller('galleryController', function ($scope, globalService) {
     // Scope is like the view datamodel.  'gallerymessage' is defined in the paritial view
     //$scope.gallerymessage = "Nothing here yet";  //- TEST ONLY
 
-
-
-
-
-    //  @@@@@@@@@@@@@@@@@@@@@@@@@   THIS DOES NOT WORK @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-    // @@@@@@@@@@@@@@@@@@@@@@@@@@@  NEED WORK HERE FOR RETRIEVING GALLERY USING POUCHDB @@@@@@@@@@@@@@@@@@@@@@@@@@@@
-    var test = globalService.drawappDatabase.get("3").then(function (doc) { return doc });
-    $scope.gallerymessage = "Saved image to " + JSON.stringify(test); // FOR TESTTING
-
-    //// IDB Wrapper - Get All saved images into an array
-    //// ===============================================
-    //var onSuccess = function (data) {
-    //    // --- Split the JSON collection into an Array of JSON
-    //    var arr = [];
-    //    for (var x in data) {
-    //        arr.push(data[x]);
-    //    }  // ---
-    //    $scope.galleryItems = arr; // Put the array from indexedDB into this view's scope
-    //    $scope.$apply(); // @@@ CRITICAL: To get view to update after $scope datamodel has updated -- but no UI action triggered it, use .$apply() @@@
-    //    // ...
-    //    // Put other functions of the page here on data load success
-    //    // ...
-    //};
-    //// This is the main trigger on the page that kicks off the other actions in onSuccess
-    //globalService.drawappDatabase.getAll(onSuccess, function () { console.log('error') })  //onSuccess is the key part.  After ',' is onFail
     //// ================================================
-
-
-
+    //// Get all records (called 'docs' in PouchDB) from local storage (websql or indexeded)
+    //// ================================================
+    // include_docs:true is need to get the whole record
+    globalService.drawappDatabase.allDocs({include_docs: true}).then(function (result) {
+        // --- Split the JSON collection into an Array of JSON
+        // Each PouchDB row has a .doc object.  To split into array of just these rows, map the array to contain just the .doc objects.
+        records = result.rows.map(function (row) { // this iterates through the JSON
+            //row.doc.Date = new Date(row.doc.Date);  // you can change data on the way as you iterate through
+            return row.doc;  // return just the 'doc' parts in the JSON
+        });
+        $scope.galleryItems = records; // Put the array of records into this view's scope
+        $scope.$apply(); // @@@ CRITICAL: To get view to update after $scope datamodel has updated -- but no UI action triggered it, use .$apply() @@@
+        // ---
+    }).catch(function (err) {
+        console.log(err);
+        alert(err)
+    });
+    //// ================================================
+    //// ================================================
 
 
 

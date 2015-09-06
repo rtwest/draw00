@@ -417,7 +417,8 @@ cordovaNG.controller('canvasController', function ($scope, $http, globalService)
                 // --------
                 var uid = globalService.makeUniqueID();
                 var record = { "_id": uid, "filepath": filepath, "datetime": Date.now() }; //JSON for unique id for picture, filepath to retrieve it, datetime in milliseconds
-                // &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+                
+                // &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
                 //globalService.drawappDatabase.put(record); //record, onDBsuccess, onDBerror
                 globalService.drawappDatabase.put(record, function (error, response) {
                     if (error) {
@@ -427,9 +428,10 @@ cordovaNG.controller('canvasController', function ($scope, $http, globalService)
                         console.log(response)
                     }
                 });
+
                 globalService.drawappDatabase.get(uid).then(function (doc) {
                     console.log(JSON.stringify(doc.filepath));
-                    alert(JSON.stringify(doc))
+                    alert(JSON.stringify(doc.filepath))
                 });
 
                 // --------

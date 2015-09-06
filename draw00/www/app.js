@@ -323,6 +323,7 @@ cordovaNG.service('globalService', ['$location', function ($location) {
 
     // SETTING UP STORAGE.  
     // Open connection to the database using PouchDB.  @@@@@@@@ If adapter is not given, it defaults to IndexedDB, then fails over to WebSQL @@@@@@@@
+    // http://pouchdb.com/guides/documents.html
     //var drawappDatabase = new PouchDB("drawappDatabase", { adapter: 'websql' });
     var drawappDatabase = new PouchDB("drawappDatabase");
     //-------------------------
