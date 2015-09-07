@@ -28,21 +28,6 @@
 
 cordovaNG.controller('canvasController', function ($scope, $http, globalService) {
 
-
-    //////////////////////////////////////////////////////////////////////////////////////////
-    //////////////////////////////////////////////////////////////////////////////////////////
-    //////////////////////////////////////////////////////////////////////////////////////////
-    //////////////////////////////////////////////////////////////////////////////////////////
-    // var record = { "_id":"3","name": Date.now() };
-    // globalService.drawappDatabase.put(record);
-    // globalService.drawappDatabase.get("3").then(function(doc){console.log(doc.name)});
-    //////////////////////////////////////////////////////////////////////////////////////////
-    //////////////////////////////////////////////////////////////////////////////////////////
-    //////////////////////////////////////////////////////////////////////////////////////////
-    //////////////////////////////////////////////////////////////////////////////////////////
-
-
-
     // Scope is like the partial view datamodel.  'message' is defined in the partial html view
     //$scope.message = "Let's draw";
 
@@ -412,15 +397,15 @@ cordovaNG.controller('canvasController', function ($scope, $http, globalService)
         // ---
         window.canvas2ImagePlugin.saveImageDataToLibrary(
             function (filepath) {
-                console.log('image file path is: ' + filepath); //alert(filepath); //filepath is the filename path (for android and iOS)
+                console.log('image file path is: ' + filepath); //filepath is the filename path (for android and iOS)
+
                 // Save filepath to IndexedDB for gallery
                 // --------
                 var uid = globalService.makeUniqueID();
                 var record = { "_id": uid, "filepath": filepath, "datetime": Date.now() }; //JSON for unique id for picture, filepath to retrieve it, datetime in milliseconds
                 
-                // &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
-                //globalService.drawappDatabase.put(record); //record, onDBsuccess, onDBerror
-                globalService.drawappDatabase.put(record, function (error, response) {
+                // Use .put for update or add new.  Use .post for just add new
+                globalService.drawappDatabase.put(record, function (error, response) { //record, onDBsuccess, onDBerror
                     if (error) {
                         console.log(error);
                         return;
@@ -429,11 +414,9 @@ cordovaNG.controller('canvasController', function ($scope, $http, globalService)
                     }
                 });
 
-                globalService.drawappDatabase.get(uid).then(function (doc) {
-                    console.log(JSON.stringify(doc.filepath));
-                    alert(JSON.stringify(doc.filepath))
-                });
-
+                //globalService.drawappDatabase.get(uid).then(function (doc) {
+                //    alert(JSON.stringify(doc.filepath))
+                //});
                 // --------
             },
             function (err) {console.log(err);},

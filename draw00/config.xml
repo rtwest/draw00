@@ -115,7 +115,6 @@
   <preference name="InAppBrowserStorageEnabled" value="True" />
   <preference name="SuppressesIncrementalRendering" value="False" />
   <vs:plugin name="com.microsoft.azure-mobile-services" version="1.2.9" />
-  <vs:plugin name="org.devgeeks.Canvas2ImagePlugin" version="0.6.0" src="https://github.com/devgeeks/Canvas2ImagePlugin.git" />
   <vs:plugin name="com.phonegap.plugins.PushPlugin" version="2.5.0" src="https://github.com/phonegap-build/PushPlugin.git" />
   <preference name="Orientation" value="portrait" />
   <preference name="DisallowOverscroll" value="true" />
@@ -123,4 +122,5 @@
   <vs:plugin name="cordova-plugin-dialogs" version="1.1.1" />
   <vs:plugin name="cordova-plugin-inappbrowser" version="1.0.1" />
   <vs:plugin name="io.litehelpers.cordova.sqlite" version="0.7.10" src="https://github.com/litehelpers/Cordova-sqlite-storage.git" />
+  <vs:plugin name="org.wbt11a.Canvas2ImagePlugin" version="0.7.1" src="https://github.com/rtwest/Canvas2ImagePlugin.git" />
 </widget>

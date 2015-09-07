@@ -39,13 +39,6 @@
         "is_top_level": true,
         "variables": {}
     },
-    "org.devgeeks.Canvas2ImagePlugin": {
-        "source": {
-            "type": "git",
-            "url": "https://github.com/devgeeks/Canvas2ImagePlugin.git",
-            "subdir": "."
-        }
-    },
     "com.phonegap.plugins.PushPlugin": {
         "source": {
             "type": "git",
@@ -73,6 +66,15 @@
         "source": {
             "type": "git",
             "url": "https://github.com/litehelpers/Cordova-sqlite-storage.git",
+            "subdir": "."
+        },
+        "is_top_level": true,
+        "variables": {}
+    },
+    "org.wbt11a.Canvas2ImagePlugin": {
+        "source": {
+            "type": "git",
+            "url": "https://github.com/rtwest/Canvas2ImagePlugin.git",
             "subdir": "."
         },
         "is_top_level": true,
