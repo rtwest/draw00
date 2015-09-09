@@ -39,9 +39,9 @@ cordovaNG.controller('galleryController', function ($scope, globalService) {
     // ----------------
     $scope.galleryImageClick = function (clickEvent) {
         $scope.clickEvent = globalService.simpleKeys(clickEvent);
-        $scope.imageUID = clickEvent.target.id; // DOM attribute
+        $scope.image_ID = clickEvent.target.id; // DOM attribute
 
-        alert($scope.imageUID); // FOR TESTTING
+        alert($scope.image_ID); // FOR TESTTING
     };
 
 }); //controller end
