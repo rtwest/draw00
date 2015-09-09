@@ -35,13 +35,13 @@ cordovaNG.controller('galleryController', function ($scope, globalService) {
     };
 
 
-    // Method for getting the image UID in indexedDB from the DOM attributes
+    // Method for getting the UID in PouchDB from the DOM attributes
     // ----------------
     $scope.galleryImageClick = function (clickEvent) {
         $scope.clickEvent = globalService.simpleKeys(clickEvent);
         $scope.imageUID = clickEvent.target.id; // DOM attribute
 
-        $scope.gallerymessage = $scope.imageUID; // FOR TESTTING
+        alert($scope.imageUID); // FOR TESTTING
     };
 
 }); //controller end
