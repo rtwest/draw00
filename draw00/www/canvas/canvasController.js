@@ -438,12 +438,12 @@ cordovaNG.controller('canvasController', function ($scope, $http, globalService)
         var photoId;
         var requestUrl = "https://service-poc.azure-mobile.net/api/getuploadblobsas" // URL to the custom rest API
 
-        // Save Canvas and combine any Background image first
-        // @@@@@@@@@@@@@@@@@@@@@@@@@
-        $scope.saveImage();
+        // Save Canvas and combine any Background image first.  @@ No background image yet!!
+        //$scope.saveImage();
 
-        // @@@@@@@@@@@@@ THIS IS BEING CALLED BEFORE SAVEIMAGE IS DONE SO THE BACKGROUND ISN'T IN CANVAS YET.
-        var blob = dataURItoBlob(canvas.toDataURL("image/png", 1.0));// Convert the Base64 encoded image to just the blob
+        var mycanvas = document.getElementById('canvas');
+        var blob = dataURItoBlob(mycanvas.toDataURL("image/png", 1.0));// Convert the Base64 encoded image to just the blob
+
 
         // -------------------
         // Using a callback function passed as a para is supposed to work on StackOverflow
@@ -467,7 +467,7 @@ cordovaNG.controller('canvasController', function ($scope, $http, globalService)
                 //putFile(sasUrl);
             });
             response.error(function (data, status, headers, config) {
-                //console.log(status);
+                console.log(status); alert(status);
             });
         };
 
