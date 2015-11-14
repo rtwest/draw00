@@ -2,22 +2,13 @@
 
 //////////////////////////////////////////////////////////////////////////////////////////
 //  ISSUES
-//  - *** Background not saved 'autosaved' with canvas on uploading.  Save, then Upload does work because Background is drawn into canvas. 
-//  - Fix orientation to prevent rotating screen.  I think I fixed this in config.xml
 //  -------
 //  iOS
 //  -------
 //  ANDROID - KINDLE
 //  -------
-//  - Need localStorage photolibrary.  Limit is 2-5MB.
-//    - save to camera roll / photo gallery & store file path in localStorage
-//    - NEED TO DROP THE SUCCESS ALERT AFTER SAVING IMAGE IN THE IOS AND ANDROID BUILD PROJECTS
-//  - Need to figure out Sharing data needs
-//    - Data needs - imagename, Who shared with > ,  
-//
 //
 //  TODO
-//
 //  - BE MINIMAL
 //  - AUTO SAVE AS YOU GO
 //
@@ -526,5 +517,7 @@ cordovaNG.controller('canvasController', function ($scope, $http, globalService)
         drawTouch();
         $('#penicon1').addClass('pen1select');
         $('.black').css("borderColor", "transparent");
+
+
 
     });

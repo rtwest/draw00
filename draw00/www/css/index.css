@@ -13,6 +13,21 @@ body{
 }
 
 
+/* slide in from the right */
+@keyframes slideInRight {
+    from    { transform:translateX(100%); }
+    to      { transform: translateX(0); }
+}
+@keyframes slideOutLeft {
+	to 		{ transform: translateX(-100%); }
+}
+.pageview.ng-enter{ 
+    animation: slideInRight 0.5s both ease-in; z-index: 8888; 
+}
+.pageview.ng-leave{ 
+    animation: slideOutLeft 0.5s both ease-in; z-index: 9999; 
+}
+
 .svgicon {
     background-image: url('../images/kidstagramicons.svg');
     background-repeat: no-repeat;

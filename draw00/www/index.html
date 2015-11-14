@@ -1,7 +1,7 @@
 ﻿<!DOCTYPE html>
 <html>
 <head>
-    <title>drawingapp2</title>
+    <title>RedYellowBlue</title>
     <meta charset="utf-8" />
     <meta name="format-detection" content="telephone=no" />
     <meta name=" viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
@@ -39,7 +39,7 @@
         <li><a href="#view2">View2</a></li>-->
 
         <!-- this is where NG content will be injected -->
-        <div ng-view></div>
+        <div class="pageview" ng-view></div>
 
         <div id="log" style="opacity:1"></div>  <!--Hiding the log for now-->
 
@@ -61,6 +61,7 @@
     <!-- AngularJS reference and AppJS goes after DOM loaded -->
     <script src="scripts/angular.min.js"></script>
     <script src="scripts/angular-route.js"></script>
+    <script src="scripts/angular-animate.js"></script>
     <script src="scripts/angular-azure-mobile-service.js"></script>
     <script src="scripts/ui-bootstrap-tpls-0.11.0.min.js"></script>
     <!-- localStorage using PouchDB adapter with SQLite Cordova plugin -->
@@ -70,6 +71,13 @@
     <script src="scripts/NotificationHub.js"></script>
     <script src="canvas/canvasController.js"></script>
     <script src="gallery/galleryController.js"></script>
+    <script src="signin/signinController.js"></script>
+    <script src="admindash/admindashController.js"></script>
+    <script src="clientproperties/clientpropertiesController.js"></script>
+    <script src="clientstart/clientstartController.js"></script>
+    <script src="clienttimeline/clienttimelineController.js"></script>
+    <script src="invitationlist/invitationlistController.js"></script>
+    <script src="pictureview/pictureviewController.js"></script>
     <!--Required if you use common Cordova style JS var app = {}-->
     <script type="text/javascript">
         app.initialize();

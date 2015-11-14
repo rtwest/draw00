@@ -273,6 +273,7 @@ var cordovaNG = angular.module('cordovaNG', [
     'ngRoute',
     'azure-mobile-service.module',
     'ui.bootstrap',
+    'ngAnimate',
 ]);
 // ==================================================
 // ==================================================
@@ -285,13 +286,23 @@ var cordovaNG = angular.module('cordovaNG', [
 
 cordovaNG.config(function ($routeProvider) {
     $routeProvider
+        // route for the Signin view.  Is also the default view '/'
+        .when('/', {
+            templateUrl: 'signin/signin.html',
+            controller: 'signinController'
+        })
+        // route for the admindash view
+        .when('/admindash', {
+            templateUrl: 'admindash/admindash.html',
+            controller: 'admindashController'
+        })
         // route for the gallery view
         .when('/gallery', {
             templateUrl: 'gallery/gallery.html',
             controller: 'galleryController'
         })
-        // route for the canvas view.  Is also the default view '/'
-        .when('/', {
+        // route for the canvas view.
+        .when('/canvas', {
             templateUrl: 'canvas/canvas.html',
             controller: 'canvasController'
         })

@@ -1,4 +1,4 @@
-QUESTIONS - updated
+QUESTIONS
 -----------------------------
 
 
@@ -14,10 +14,6 @@ PICTURE RECORD: picture_id, kid_id, datetime
 SHARE RECORD: picture_id, from_kid_id, to_kid_id
 
 
-
-
-
-
 CREATING A NEW INVITATION
 1. enter parent email and lookup to verify
 2. enter the kids display name and lookup to verify
@@ -25,8 +21,27 @@ CREATING A NEW INVITATION
 4. create new invitation record with the 4 corresponding IDs
 
 
-
-
  REGISTERING THE CLIENT DEVICE WITH PARENT DEVICE
  - On Parent device, create kid record with Display_Name. This creates a record with a generated Registration_Code and Status of "pending"
  - On Client device, after splash screen, enter kid Display_Name and matching Registration_Code.  When verified, change Status
+
+
+
+
+ TO DO
+-----------------------------
+
+View
+------------
+- Add splash screen
+- Start with Gallery as Home screen.  Seed it with one picture.
+-	easy button for New Picture.  easy button for Add Friends.
+-	show shares and likes on the gallery - remember kids are learning counting - be visual.
+-	order by most recent activity - new picture, new likes, new stickers
+-	show your pictures, and pictures shared with you.  
+-		Clearly divide these. split screen.
+-		Color code friends. Stack pictures by friend. Profile image has colored circle background. Image shared has colored background.
+-		Easy button to like friends picture
+- gallery detailed image view
+-	where you delete image if yours
+-	if shared image, you can like it here also
