@@ -390,7 +390,7 @@ cordovaNG.controller('canvasController', function ($scope, $http, globalService)
             function (filepath) {
                 console.log('image file path is: ' + filepath); //filepath is the filename path (for android and iOS)
 
-                // Save filepath to IndexedDB for gallery
+                // Save filepath to PouchDB for gallery
                 // --------
                 var uid = globalService.makeUniqueID();
                 var record = { "_id": uid, "filepath": filepath, "datetime": Date.now() }; //JSON for unique id for picture, filepath to retrieve it, datetime in milliseconds

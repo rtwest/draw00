@@ -2,9 +2,10 @@ QUESTIONS
 -----------------------------
 
 
-
-Tables
-----------
+S T O R A G E 
+=======================================================================================
+Azure Tables
+------------
 PARENT RECORD: parent_id, displayname, emailaddress
 KID RECORD: kid_id, displayname, parent_id, profileimage, registration_code, status
 FRIEND RECORD: kid_id1, kid_id2
@@ -12,6 +13,25 @@ INVITATION RECORD: from_parent_id, from_kid_id, to_parent_id, to_kid_id, status,
 COMMENT RECORD: picture_id, from_kid_id, to_kid_id, comment_content, datetime
 PICTURE RECORD: picture_id, kid_id, datetime
 SHARE RECORD: picture_id, from_kid_id, to_kid_id
+
+Pouch DB Tables in "drawappDatabase" on client side for large storage
+------------------------------------
+IMAGE RECORD: _id, filepath, datetime
+
+Array on client side for small storage -- @@@@@ where to check for these???
+----------------------------------
+Other client side needs
+- is this first time sign in? - If yes, first time experience - FIRST TIME KEYPAIR FLAG
+- what mode is this in - admin or client or unknown? - go to admin signin, client register, or mode selection screen.  Look for USER RECORD
+- do i have user details? SINGLE USER RECORD (usertype, name, ..other_as_needed..)
+	- admin details (name, parent_id, reqs FB registration?) - if not, show FB sign in
+	- client details (name, kid_id) - if not, show client code input
+- for client, list of friends (name, kid_id) - FRIENDS ARRAY
+- for admin, list of clients (name, kid_id) - CLIENT ARRAY
+
+=======================================================================================
+
+
 
 
 CREATING A NEW INVITATION
@@ -30,6 +50,14 @@ CREATING A NEW INVITATION
 
  TO DO
 -----------------------------
+- Need to think through start up login and checking registration from App.JS on startup
+-- What is need for local DB? - Mode, UserRegistration_ID, UserName, -- gallery stuff --
+- Need to check for web connection on load and alert
+- Need to restrict permissions on azure tables to authenticate users for admin and client(probably) 
+
+
+
+
 
 View
 ------------

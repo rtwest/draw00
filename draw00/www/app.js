@@ -306,6 +306,31 @@ cordovaNG.config(function ($routeProvider) {
             templateUrl: 'canvas/canvas.html',
             controller: 'canvasController'
         })
+        // route for the clientproperties view
+        .when('/clientproperties', {
+            templateUrl: 'clientproperties/clientproperties.html',
+            controller: 'clientpropertiesController'
+        })
+        // route for the clientstart view
+        .when('/clientstart', {
+            templateUrl: 'clientstart/clientstart.html',
+            controller: 'clientstartController'
+        })
+        // route for the clienttimeline view.
+        .when('/clienttimeline', {
+            templateUrl: 'clienttimeline/clienttimeline.html',
+            controller: 'clienttimelineController'
+        })
+        // route for the invitationlist view
+        .when('/invitationlist', {
+            templateUrl: 'invitationlist/invitationlist.html',
+            controller: 'invitationlistController'
+        })
+        // route for the pictureview view
+        .when('/pictureview', {
+            templateUrl: 'pictureview/pictureview.html',
+            controller: 'pictureviewController'
+        })
         // route for the home view
         .when('/home', {
             templateUrl: 'partials/home.html',
@@ -317,7 +342,6 @@ cordovaNG.config(function ($routeProvider) {
             controller: 'view2Controller'
         });
 });
-
 // ==================================================
 // ==================================================
 
@@ -329,13 +353,12 @@ cordovaNG.config(function ($routeProvider) {
 // Inject factory/service <name> as a dependency to controllers to make available.
 // ==================================================
 
-
 cordovaNG.service('globalService', ['$location', function ($location) {
 
     // SETTING UP STORAGE.  
     // Open connection to the database using PouchDB.  @@@@@@@@ If adapter is not given, it defaults to IndexedDB, then fails over to WebSQL @@@@@@@@
     // http://pouchdb.com/guides/documents.html
-    //var drawappDatabase = new PouchDB("drawappDatabase", { adapter: 'websql' });
+    // EXAMPLE: var drawappDatabase = new PouchDB("drawappDatabase", { adapter: 'websql' });
     var drawappDatabase = new PouchDB("drawappDatabase");
     //-------------------------
 

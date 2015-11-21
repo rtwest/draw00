@@ -106,7 +106,7 @@
   <platform name="wp8">
     <splash src="res/screens/wp8/SplashScreenImage.jpg" width="480" height="800" />
   </platform>
-  <preference name="Fullscreen" value="False" />
+  <preference name="Fullscreen" value="True" />
   <access origin="http://rtwdevstorage.blob.core.windows.net" />
   <access origin="https://fonts.googleapis.com" />
   <access origin="https://fonts.gstatic.com" />
@@ -123,4 +123,5 @@
   <vs:plugin name="cordova-plugin-inappbrowser" version="1.0.1" />
   <vs:plugin name="io.litehelpers.cordova.sqlite" version="0.7.10" src="https://github.com/litehelpers/Cordova-sqlite-storage.git" />
   <vs:plugin name="org.wbt11a.Canvas2ImagePlugin" version="0.7.1" src="https://github.com/rtwest/Canvas2ImagePlugin.git" />
+  <access origin="https://www.facebook.com" />
 </widget>
