@@ -2,16 +2,6 @@
 
 <p>Mode Selection and SignIn</p>
 
-    <button type="button" class="btn btn-primary" style="box-shadow:none;" ng-click="azurelogin()">
-        Log In
-    </button>
-
-<button type="button" class="btn btn-primary" style="box-shadow:none;" ng-click="azurelogout()">
-    Log Out
-</button>
-
-
-
 <p>check for local registration id (previous sign in)</p>
 
 <p>select kid or parent mode</p>
@@ -19,5 +9,25 @@
 <p>signin</p>
 
 <p>get and store registration id so you don't sign in again</p>
+
+
+<div class="content content-padded">
+
+    <button class="btn btn-block" ng-click="login()">Login with Facebook</button>
+    <hr />
+
+    <button class="btn btn-block" ng-click="getInfo()">Get My Info</button>
+    <p>Name: {{user.name}}</p>
+    <img ng-src="{{'http://graph.facebook.com/' + user.id + '/picture?type=small'}}" />
+    <hr />
+
+    <textarea id="Message" placeholder="What's on your mind?" rows="5"></textarea>
+    <button class="btn btn-block" ng-click="share()">Share</button>
+    <hr />
+
+
+</div>
+
+
 
 

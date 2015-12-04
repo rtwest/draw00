@@ -44,6 +44,8 @@ var app = {
         angular.bootstrap(document, ['cordovaNG']);
         console.log('bootstrapping NG');
 
+
+
         // #region notification-registration	
         // &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
         // Define the PushPlugin.
@@ -271,9 +273,10 @@ BEGIN ANGULAR SIDE OF THE APP
 
 var cordovaNG = angular.module('cordovaNG', [
     'ngRoute',
-    'azure-mobile-service.module',
+    'azure-mobile-service.module',//NG wrapper around Azure mobile service
     'ui.bootstrap',
     'ngAnimate',
+    'ngOpenFB', //NG wrapper for OpenFB wrapper around FB api
 ]);
 // ==================================================
 // ==================================================
