@@ -11,21 +11,28 @@ cordovaNG.controller('signinController', function ($scope, globalService, ngFB) 
     // signin as parent
     // go to admin or client home view
 
-    alert("controller loaded");
-
     // ngFB stuff
     // ---------------------
-    // Defaults to sessionStorage for storing the Facebook token
-    ngFB.init({ appId: '550469961767419' });
+    // Defaults to sessionStorage for storing the Facebook token unless SessionStorage specifice
+    //ngFB.init({ appId: '550469961767419' });
+    ngFB.init({ appId: '550469961767419', tokenStore: window.localStorage });
 
-    //  Uncomment the line below to store the Facebook token in localStorage instead of sessionStorage
-    //  openFB.init({appId: 'YOUR_FB_APP_ID', tokenStore: window.localStorage});
+    //check localStorage for 'fbAccessToken' and use it for user properties
+    if (window.localStorage.getItem('fbAccessToken')) {
+        ngFB.api({
+            method: 'GET',
+            path: '/me',
+            params: { fields: 'id,name,email,first_name' }
+        }).then(
+            function (result) {
+                alert(JSON.stringify(result));
+                $scope.user = result;
+            },
+            errorHandler);
+    };
 
     $scope.login = function () {
-
-        alert("login");
-
-        ngFB.login({ scope: 'email' }).then(
+        ngFB.login({ scope: 'email' }).then( // request other Facebook permissions in with scope with ", 'publish_action' "
             function (response) {
                 alert('Facebook login succeeded, got access token: ' + response.authResponse.accessToken);
             },
@@ -37,7 +44,20 @@ cordovaNG.controller('signinController', function ($scope, globalService, ngFB) 
         ngFB.api({ path: '/me' }).then(
             function (user) {
                 console.log(JSON.stringify(user));
+                alert(JSON.stringify(user));
                 $scope.user = user;
+            },
+            errorHandler);
+    }
+    $scope.getProfile = function () {
+        ngFB.api({
+            method: 'GET',
+            path: '/me',
+            params: { fields: 'id,name,email,first_name' }
+        }).then(
+            function (result) {
+                alert(JSON.stringify(result));
+                $scope.user = result;
             },
             errorHandler);
     }
@@ -52,31 +72,31 @@ cordovaNG.controller('signinController', function ($scope, globalService, ngFB) 
             },
             errorHandler);
     }
-    $scope.readPermissions = function () {
-        ngFB.api({
-            method: 'GET',
-            path: '/me/permissions'
-        }).then(
-            function (result) {
-                alert(JSON.stringify(result.data));
-            },
-            errorHandler
-        );
-    }
-    $scope.revoke = function () {
-        ngFB.revokePermissions().then(
-            function () {
-                alert('Permissions revoked');
-            },
-            errorHandler);
-    }
-    $scope.logout = function () {
-        ngFB.logout().then(
-            function () {
-                alert('Logout successful');
-            },
-            errorHandler);
-    }
+    //$scope.readPermissions = function () {
+    //    ngFB.api({
+    //        method: 'GET',
+    //        path: '/me/permissions'
+    //    }).then(
+    //        function (result) {
+    //            alert(JSON.stringify(result.data));
+    //        },
+    //        errorHandler
+    //    );
+    //}
+    //$scope.revoke = function () {
+    //    ngFB.revokePermissions().then(
+    //        function () {
+    //            alert('Permissions revoked');
+    //        },
+    //        errorHandler);
+    //}
+    //$scope.logout = function () {
+    //    ngFB.logout().then(
+    //        function () {
+    //            alert('Logout successful');
+    //        },
+    //        errorHandler);
+    //}
     function errorHandler(error) {
         alert(error.message);
     }

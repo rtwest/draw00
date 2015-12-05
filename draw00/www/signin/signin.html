@@ -16,8 +16,10 @@
     <button class="btn btn-block" ng-click="login()">Login with Facebook</button>
     <hr />
 
-    <button class="btn btn-block" ng-click="getInfo()">Get My Info</button>
+    <button class="btn btn-block" ng-click="getProfile()">Get My Info</button>
     <p>Name: {{user.name}}</p>
+    <p>Email: {{user.email}}</p>
+    <p>First name: {{user.first_name}}</p>
     <img ng-src="{{'http://graph.facebook.com/' + user.id + '/picture?type=small'}}" />
     <hr />
 
