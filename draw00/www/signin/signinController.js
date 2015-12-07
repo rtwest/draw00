@@ -11,7 +11,7 @@ cordovaNG.controller('signinController', function ($scope, globalService, ngFB) 
     // signin as parent
     // go to admin or client home view
 
-    // ngFB stuff
+    // OpenFB / ngFB stuff
     // ---------------------
     // Defaults to sessionStorage for storing the Facebook token unless SessionStorage specifice
     //ngFB.init({ appId: '550469961767419' });
@@ -35,6 +35,28 @@ cordovaNG.controller('signinController', function ($scope, globalService, ngFB) 
         ngFB.login({ scope: 'email' }).then( // request other Facebook permissions in with scope with ", 'publish_action' "
             function (response) {
                 alert('Facebook login succeeded, got access token: ' + response.authResponse.accessToken);
+                // Get profile data to make User Array
+                // -----------------------------------
+                ngFB.api({
+                    method: 'GET',
+                    path: '/me',
+                    params: { fields: 'id,name,email,first_name' }
+                }).then(
+                function (result) {
+                    $scope.user = result;
+                    // put JSON result into User Array
+                    var userarray = new Array();
+                    userarry[0] = globalService.makeUniqueID(); // made GUID for Azaure table
+                    userarry[1] = result.name;
+                    userarry[2] = result.email;
+                    userarry[3] = result.first_name;
+                    window.localStorage["RYB_userarray"] = JSON.stringify(userarray);
+                    alert(JSON.stringify(userarray));
+                    //var userarray = JSON.parse(window.localStorage["RYB_userarray"]);
+                },
+                errorHandler);
+                // -----------------------------------
+
             },
             function (error) {
                 alert('Facebook login failed: ' + error);

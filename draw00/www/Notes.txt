@@ -22,8 +22,8 @@ Array on client side for small storage -- @@@@@ where to check for these???
 ----------------------------------
 Other client side needs
 - is this first time sign in? - If yes, first time experience - FIRST TIME KEYPAIR FLAG
-- what mode is this in - admin or client or unknown? - go to admin signin, client register, or mode selection screen.  Look for USER RECORD
-- do i have user details? SINGLE USER RECORD (usertype, name, ..other_as_needed..)
+- what mode is this in - admin or client or unknown? - go to admin signin, client register, or mode selection screen.  Look for USER ARRAY
+- do i have user details? SINGLE USER ARRAY (usertype, name, parent_id, email ..other_as_needed..)
 	- admin details (name, parent_id, reqs FB registration?) - if not, show FB sign in
 	- client details (name, kid_id) - if not, show client code input
 - for client, list of friends (name, kid_id) - FRIENDS ARRAY

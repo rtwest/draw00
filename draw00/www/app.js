@@ -35,6 +35,9 @@ var app = {
         //alert('app resumed');
     },
 
+    // ==================================================
+    // @@@@@@@@@@@@@     onDeviceReady      @@@@@@@@@@@@@
+    // ==================================================
     // deviceready Event Handler
     // The scope of 'this' is the event. In order to call the 'receivedEvent'
     // function, we must explicitly call 'app.receivedEvent(...);'
@@ -44,6 +47,21 @@ var app = {
         angular.bootstrap(document, ['cordovaNG']);
         console.log('bootstrapping NG');
 
+
+        // ==================================================
+        // Things to check for on start up 
+        // ==================================================
+
+        // Check for User Array - for registration
+        if (window.localStorage.getItem('RYB_userarray')) {
+            var userarray = JSON.parse(localStorage["RYB_userarray"]); // get JSON from localstorage key pair array
+            alert(JSON.parse(localStorage["RYB_userarray"]));
+        };
+        // First time start up flag - for OOBE
+        if (window.localStorage.getItem('RYB_oobeflag')) {
+
+        };
+        // ==================================================
 
 
         // #region notification-registration	
@@ -506,13 +524,6 @@ cordovaNG.controller('view2Controller', function ($scope) {
     $scope.message = 'Angular routing is working too';
 
 });
-
-
-// ==================================================
-// ==================================================
-
-
-
 
 
 // ==================================================
