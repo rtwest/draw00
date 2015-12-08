@@ -310,7 +310,16 @@ cordovaNG.config(function ($routeProvider) {
         // route for the Signin view.  Is also the default view '/'
         .when('/', {
             templateUrl: 'signin/signin.html',
-            controller: 'signinController'
+            controller: 'signinController',
+            resolve: {
+                "check": function ($location) {
+                    if (localStorage["RYB_userarray"]) { // if there is a user array
+                        $location.path('/admindash'); //redirect user new page
+                    } else {
+                        // something else
+                    }
+                }
+            }
         })
         // route for the admindash view
         .when('/admindash', {

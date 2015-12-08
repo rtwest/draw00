@@ -25,8 +25,16 @@ cordovaNG.controller('signinController', function ($scope, globalService, ngFB) 
             params: { fields: 'id,name,email,first_name' }
         }).then(
             function (result) {
-                alert(JSON.stringify(result));
+                //alert(JSON.stringify(result));
                 $scope.user = result;
+                // put JSON result into User Array
+                var userarray = new Array();
+                userarray[0] = globalService.makeUniqueID(); // made GUID for Azure table
+                userarray[1] = result.name;
+                userarray[2] = result.email;
+                userarray[3] = result.first_name;
+                localStorage["RYB_userarray"] = JSON.stringify(userarray);
+                alert(localStorage["RYB_userarray"]);
             },
             errorHandler);
     };
@@ -46,11 +54,11 @@ cordovaNG.controller('signinController', function ($scope, globalService, ngFB) 
                     $scope.user = result;
                     // put JSON result into User Array
                     var userarray = new Array();
-                    userarry[0] = globalService.makeUniqueID(); // made GUID for Azaure table
-                    userarry[1] = result.name;
-                    userarry[2] = result.email;
-                    userarry[3] = result.first_name;
-                    window.localStorage["RYB_userarray"] = JSON.stringify(userarray);
+                    userarray[0] = "test" //globalService.makeUniqueID(); // made GUID for Azure table
+                    userarray[1] = result.name;
+                    userarray[2] = result.email;
+                    userarray[3] = result.first_name;
+                    localStorage["RYB_userarray"] = JSON.stringify(userarray);
                     alert(JSON.stringify(userarray));
                     //var userarray = JSON.parse(window.localStorage["RYB_userarray"]);
                 },
