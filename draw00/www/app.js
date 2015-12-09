@@ -43,9 +43,13 @@ var app = {
     // function, we must explicitly call 'app.receivedEvent(...);'
     onDeviceReady: function () {
 
-        // @@@@@@@@@@@@@ Manually starting Angular used when you remove 'ng App' from HTML @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+        // =========================================================================================
+        // @@@ Manually bootstrap AngularJS app after DeviceReady and not the default way with  HTML 
+        // =========================================================================================
         angular.bootstrap(document, ['cordovaNG']);
         console.log('bootstrapping NG');
+        // =========================================================================================
+        // =========================================================================================
 
 
         // ==================================================
@@ -55,10 +59,22 @@ var app = {
         // Check for User Array - for registration
         if (window.localStorage.getItem('RYB_userarray')) {
             var userarray = JSON.parse(localStorage["RYB_userarray"]); // get JSON from localstorage key pair array
-            alert(JSON.parse(localStorage["RYB_userarray"]));
-        };
-        // First time start up flag - for OOBE
-        if (window.localStorage.getItem('RYB_oobeflag')) {
+            if (userarray[1] = 'admin') { // if user type is 'admin', go to admin home screen
+
+            }
+            else if (userarray[1] = 'client') { // if user type is 'client', go to client home screen
+
+            }
+            else { //if neither, go to user type screen and start over
+
+            };
+        }
+        // If no user but first time start up flag is set, go to user type screen
+        else if (localStorage.RYB_oobeflag) {
+
+        }
+        // If first time start up flag no set, go to start up screen
+        else {
 
         };
         // ==================================================
