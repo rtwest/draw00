@@ -52,33 +52,6 @@ var app = {
         // =========================================================================================
 
 
-        // ==================================================
-        // Things to check for on start up 
-        // ==================================================
-
-        // Check for User Array - for registration
-        if (window.localStorage.getItem('RYB_userarray')) {
-            var userarray = JSON.parse(localStorage["RYB_userarray"]); // get JSON from localstorage key pair array
-            if (userarray[1] = 'admin') { // if user type is 'admin', go to admin home screen
-
-            }
-            else if (userarray[1] = 'client') { // if user type is 'client', go to client home screen
-
-            }
-            else { //if neither, go to user type screen and start over
-
-            };
-        }
-        // If no user but first time start up flag is set, go to user type screen
-        else if (localStorage.RYB_oobeflag) {
-
-        }
-        // If first time start up flag no set, go to start up screen
-        else {
-
-        };
-        // ==================================================
-
 
         // #region notification-registration	
         // &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
@@ -324,18 +297,18 @@ var cordovaNG = angular.module('cordovaNG', [
 cordovaNG.config(function ($routeProvider) {
     $routeProvider
         // route for the Signin view.  Is also the default view '/'
-        .when('/', {
+        .when('/signin', {
             templateUrl: 'signin/signin.html',
             controller: 'signinController',
-            resolve: {
-                "check": function ($location) {
-                    if (localStorage["RYB_userarray"]) { // if there is a user array
-                        $location.path('/admindash'); //redirect user new page
-                    } else {
-                        // something else
-                    }
-                }
-            }
+            //resolve: {
+            //    "check": function ($location) {
+            //        if (localStorage["RYB_userarray"]) { // if there is a user array
+            //            $location.path('/admindash'); //redirect user new page
+            //        } else {
+            //            // something else
+            //        }
+            //    }
+            //}
         })
         // route for the admindash view
         .when('/admindash', {
@@ -377,15 +350,25 @@ cordovaNG.config(function ($routeProvider) {
             templateUrl: 'pictureview/pictureview.html',
             controller: 'pictureviewController'
         })
+        // route for the signin view
+        .when('/signin', {
+            templateUrl: 'signin/signin.html',
+            controller: 'signinController'
+        })
+        // route for the oobe view
+        .when('/oobe', {
+            templateUrl: 'oobe/oobe.html',
+            controller: 'oobeController'
+        })
         // route for the home view
         .when('/home', {
             templateUrl: 'partials/home.html',
             controller: 'mainController'
         })
         // route for the managed users view
-        .when('/view2', {
-            templateUrl: 'partials/view2.html',
-            controller: 'view2Controller'
+        .when('/', {
+            templateUrl: 'partials/about.html',
+            controller: 'viewController'
         });
 });
 // ==================================================
@@ -543,11 +526,46 @@ cordovaNG.controller('mainController', function ($scope, Azureservice) {
 // ==================================================
 
 
-cordovaNG.controller('view2Controller', function ($scope) {
+cordovaNG.controller('viewController', function ($scope,globalService) {
 
     // Scope is like the partial view datamodel.  'message' is defined in the paritial view
-    $scope.message = 'Angular routing is working too';
+    //$scope.message = 'Angular routing is working too';
 
+    // ==================================================
+    // Things to check for on start up 
+    // ==================================================
+
+    alert(localStorage.getItem('RYB_userarray'));
+    console.log(localStorage.getItem('RYB_userarray'))
+
+    // Check for User Array - for registration
+    if (localStorage.getItem('RYB_userarray')) {
+        var userarray = JSON.parse(localStorage["RYB_userarray"]); // get JSON from localstorage key pair array
+        if (userarray[1] = 'admin') { // if user type is 'admin', go to admin home screen
+            globalService.changeView('admindash');
+            alert('1');
+        }
+        else if (userarray[1] = 'client') { // if user type is 'client', go to client home screen
+            globalService.changeView('clientstart');
+            alert('2');
+        }
+        else { //if neither, go to user type screen and start over
+            globalService.changeView('signin');
+            alert('3');
+        };
+    }
+    // If no user but first time start up flag is set, go to user type screen
+    else if (localStorage.RYB_oobeflag) {
+        globalService.changeView('signin');
+        alert('4');
+    }
+    // If first time start up flag no set, go to start up screen
+    else {
+        alert('5');
+        console.log('5');
+        globalService.changeView('oobe');
+    };
+    // ==================================================
 });
 
 

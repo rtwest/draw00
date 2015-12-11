@@ -54,11 +54,15 @@ cordovaNG.controller('signinController', function ($scope, globalService, ngFB) 
                     // put JSON result into User Array
                     var userarray = new Array();
                     userarray[0] = globalService.makeUniqueID(); // made GUID for Azure table
-                    userarray[1] = result.name;
-                    userarray[2] = result.email;
-                    userarray[3] = result.first_name;
+                    userarray[1] = "admin"; //user role
+                    userarray[2] = result.name;
+                    userarray[3] = result.email;
+                    userarray[4] = result.first_name;
                     localStorage["RYB_userarray"] = JSON.stringify(userarray);
                     //var userarray = JSON.parse(localStorage["RYB_userarray"]);
+
+                    globalService.changeView('admindash'); // go to admin dask
+
                 },
                 errorHandler);
                 // -----------------------------------
