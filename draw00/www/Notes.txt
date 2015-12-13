@@ -6,7 +6,7 @@ S T O R A G E
 =======================================================================================
 Azure Tables
 ------------
-PARENT RECORD: parent_id, displayname, emailaddress
+PARENT RECORD: parent_id, name, emailaddress
 KID RECORD: kid_id, displayname, parent_id, profileimage, registration_code, status
 FRIEND RECORD: kid_id1, kid_id2
 INVITATION RECORD: from_parent_id, from_kid_id, to_parent_id, to_kid_id, status, datetime

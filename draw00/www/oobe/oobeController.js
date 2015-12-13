@@ -6,8 +6,6 @@ cordovaNG.controller('oobeController', function ($scope, globalService) {
     //$scope.message = "Nothing here yet";  //- TEST ONLY
 
 
-    localStorage.setItem('RYB_oobeflag', '1');  // set the flag that OOBE is done
-
 
 
     // View changer.  Have to use $scope. to make available to the view

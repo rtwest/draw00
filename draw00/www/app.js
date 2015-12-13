@@ -289,6 +289,12 @@ var cordovaNG = angular.module('cordovaNG', [
 // ==================================================
 
 
+// Setup for AzureMobileServie NG Wrapper
+angular.module('cordovaNG').constant('AzureMobileServiceClient', {
+    API_URL: 'https://service-poc.azure-mobile.net/',
+    API_KEY: 'IfISqwqStqWVFuRgKbgJtedgtBjwrc24',
+});
+
 
 // ==================================================
 // Configure the routes for navigation
@@ -526,7 +532,7 @@ cordovaNG.controller('mainController', function ($scope, Azureservice) {
 // ==================================================
 
 
-cordovaNG.controller('viewController', function ($scope,globalService) {
+cordovaNG.controller('startupController', function ($scope,globalService) {
 
     // Scope is like the partial view datamodel.  'message' is defined in the paritial view
     //$scope.message = 'Angular routing is working too';
@@ -535,12 +541,11 @@ cordovaNG.controller('viewController', function ($scope,globalService) {
     // Things to check for on start up 
     // ==================================================
 
-    alert(localStorage.getItem('RYB_userarray'));
-    console.log(localStorage.getItem('RYB_userarray'))
+    alert("local stored user data is: " + localStorage.getItem('RYB_userarray'));
 
     // Check for User Array - for registration
     if (localStorage.getItem('RYB_userarray')) {
-        var userarray = JSON.parse(localStorage["RYB_userarray"]); // get JSON from localstorage key pair array
+        var userarray = JSON.parse(localStorage.getItem('RYB_userarray')); // get array from localstorage key pair and string
         if (userarray[1] = 'admin') { // if user type is 'admin', go to admin home screen
             globalService.changeView('admindash');
             alert('1');
@@ -562,7 +567,6 @@ cordovaNG.controller('viewController', function ($scope,globalService) {
     // If first time start up flag no set, go to start up screen
     else {
         alert('5');
-        console.log('5');
         globalService.changeView('oobe');
     };
     // ==================================================
