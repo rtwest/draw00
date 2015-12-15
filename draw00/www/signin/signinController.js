@@ -181,12 +181,12 @@ cordovaNG.controller('signinController', function ($scope, globalService, ngFB, 
     // ==========================================
     //  Store new user on Azure
     // ==========================================
-    checkUserandInsert = function (email, name) {
-
-        Azureservice.read('parents', '$filter=email eq ' + email + "'") // query to see if 'email' exists
-        .then(function (items) {
-
+    function checkUserandInsert(email, name) {
+        var query = "$filter=email eq '" + email + "'";
+        Azureservice.read('parents', query).then(function (items) {  // query to see if 'email' exists
             if (items.length == 0) { // if not found, then insert it
+                //console.log('email not found')
+
                 Azureservice.insert('parents', {
                     id: globalService.makeUniqueID(),
                     name: name,
@@ -194,14 +194,15 @@ cordovaNG.controller('signinController', function ($scope, globalService, ngFB, 
                     isFinished: false
                 })
                 .then(function () {
-                    console.log('Insert successful');
+                    //console.log('Insert successful');
                 }, function (err) {
-                    console.error('Azure Error: ' + err);
+                    alert('Azure Error: ' + err);
                 });
-            };
+            }
+            else { alert('email exists already'), console.log('email exists already') };
 
         }).catch(function (error) {
-            console.log(error)
+            alert(error)
         })
     };
     // ==========================================
