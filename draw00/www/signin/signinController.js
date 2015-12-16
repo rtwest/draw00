@@ -1,5 +1,17 @@
 ﻿// signinController
 
+
+
+// NEED TO THINK THROUGH ALL THE LOGIC ON THIS PAGE AND THE ORDER IN WHICH IT GOES
+
+
+
+
+
+
+
+
+
 cordovaNG.controller('signinController', function ($scope, globalService, ngFB, Azureservice) {
 
     // Scope is like the view datamodel.  'message' is defined in the paritial view html {{message}}
@@ -16,7 +28,7 @@ cordovaNG.controller('signinController', function ($scope, globalService, ngFB, 
     // - Uses JSON obj
     // - You can use custom row IDs when inserting
     // - When updating, specify the row ID and values to update
-    //
+    // - https://github.com/TerryMooreII/angular-azure-mobile-service
     // Query example where col = val
     // ------------------------------
     //Azureservice.read('parents', "$filter=email eq 'bogus@test.com'")
@@ -39,7 +51,18 @@ cordovaNG.controller('signinController', function ($scope, globalService, ngFB, 
     //}, function (err) {
     //    console.error('Azure Error: ' + err);
     //});
-
+    // Update example with customer row ID
+    // ------------------------------
+    //Azureservice.update('kids', {
+    //    id: rowGUID, // ID for the row to update
+    //    status: 'accepted', // columns to update
+    //    isFinished: false
+    //})
+    //.then(function () {
+    //    console.log('Update successful');
+    //}, function (err) {
+    //    console.error('Azure Error: ' + err);
+    //});
     // %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
@@ -54,26 +77,27 @@ cordovaNG.controller('signinController', function ($scope, globalService, ngFB, 
 
     ngFB.init({ appId: '550469961767419', tokenStore: window.localStorage });
 
-    //check localStorage for 'fbAccessToken' and use it for user properties
-    if (window.localStorage.getItem('fbAccessToken')) {
-        ngFB.api({
-            method: 'GET',
-            path: '/me',
-            params: { fields: 'id,name,email,first_name' }
-        }).then(
-            function (result) {
-                $scope.user = result;
-                // put JSON result into User Array
-                var userarray = new Array();
-                userarray[0] = globalService.makeUniqueID(); // made GUID for Azure table
-                userarray[1] = "admin"; //user role
-                userarray[2] = result.name;
-                userarray[3] = result.email;
-                userarray[4] = result.first_name;
-                localStorage["RYB_userarray"] = JSON.stringify(userarray);
-            },
-            errorHandler);
-    };
+    // -- KEPT FOR REFERENCE
+    ////check localStorage for 'fbAccessToken' and use it for user properties
+    //if (window.localStorage.getItem('fbAccessToken')) {
+    //    ngFB.api({
+    //        method: 'GET',
+    //        path: '/me',
+    //        params: { fields: 'id,name,email,first_name' }
+    //    }).then(
+    //        function (result) {
+    //            $scope.user = result;
+    //            // put JSON result into User Array
+    //            var userarray = new Array();
+    //            userarray[0] = globalService.makeUniqueID(); // made GUID for Azure table
+    //            userarray[1] = "admin"; //user role
+    //            userarray[2] = result.name;
+    //            userarray[3] = result.email;
+    //            userarray[4] = result.first_name;
+    //            localStorage["RYB_userarray"] = JSON.stringify(userarray);
+    //        },
+    //        errorHandler);
+    //};
 
     $scope.login = function () {
         ngFB.login({ scope: 'email' }).then( // request other Facebook permissions in with scope with ", 'publish_action' "
@@ -97,10 +121,9 @@ cordovaNG.controller('signinController', function ($scope, globalService, ngFB, 
                     userarray[4] = result.first_name;
                     localStorage["RYB_userarray"] = JSON.stringify(userarray);
 
-                    checkUserandInsert(result.email, result.name);
+                    azureCheckUserandInsert(result.email, result.name); //@@@ Function to query azure 'parent' table to look for email and insert record
 
-                    //globalService.changeView('admindash'); // go to admin dask
-
+                    //globalService.changeView('admindash'); // @@@ this was moved to the end of azureCheckandInsert to ensure a serial order of successful tasks
                 },
                 errorHandler);
                 // -----------------------------------
@@ -110,6 +133,7 @@ cordovaNG.controller('signinController', function ($scope, globalService, ngFB, 
                 alert('Facebook login failed: ' + error);
             });
     }
+    // -- KEPT FOR REFERENCE
     //$scope.getInfo = function () {
     //    ngFB.api({ path: '/me' }).then(
     //        function (user) {
@@ -179,9 +203,9 @@ cordovaNG.controller('signinController', function ($scope, globalService, ngFB, 
 
 
     // ==========================================
-    //  Store new user on Azure
+    //  Store new Admin user on Azure
     // ==========================================
-    function checkUserandInsert(email, name) {
+    function azureCheckUserandInsert(email, name) {
         var query = "$filter=email eq '" + email + "'";
         Azureservice.read('parents', query).then(function (items) {  // query to see if 'email' exists
             if (items.length == 0) { // if not found, then insert it
@@ -195,25 +219,70 @@ cordovaNG.controller('signinController', function ($scope, globalService, ngFB, 
                 })
                 .then(function () {
                     //console.log('Insert successful');
+                    globalService.changeView('admindash'); // @@@ after user is added, go to admin dash
+
                 }, function (err) {
                     alert('Azure Error: ' + err);
                 });
             }
-            else { alert('email exists already'), console.log('email exists already') };
+            else {
+                //alert('email exists already'),
+                //console.log('email exists already')
+                globalService.changeView('admindash'); // @@@ if user already exists, go to admin dash
+            };
 
         }).catch(function (error) {
-            alert(error)
+            console.log(error)
+        })
+    };
+    // ==========================================
+
+    // ==========================================
+    //  Update Client registration on Azure
+    // ==========================================
+    function azureUpdateClientRegistration(reg_code) {
+        var query = "$filter=reg_code eq '" + reg_code + "'";
+        Azureservice.read('kids', query).then(function (items) {  // query to see if this 'reg_code' exists
+            if (items.length == 0) { // if reg_code not found, then
+
+                alert('reg_code not found.  start over')
+                //console.log('reg_code not found')
+
+            }
+            else {
+                alert('found code'),
+                //console.log('email exists already')
+
+                // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ Get row GUID to update.  Get client details and make localStorage array.  
+
+                // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ Update client   @@@@@@@@@ REMOVE CODE AFTER ACCEPTING?  USE THAT COL FOR STATUS ALSO?  
+                Azureservice.update('kids', {
+                    id: rowGUID, // ID for the row to update
+                    status: 'accepted', // columns to update
+                    isFinished: false
+                })
+                .then(function () {
+                    console.log('Update successful');
+                    globalService.changeView('clientstart'); // @@@ go to clientstart view
+                }, function (err) {
+                    console.error('Azure Error: ' + err);
+                });
+
+            };
+
+        }).catch(function (error) {
+            console.log(error)
         })
     };
     // ==========================================
 
 
-
-    // View changer.  Have to use $scope. to make available to the view
-    // --------------
-    $scope.gotoView = function () {
-        globalService.changeView('admindash');
-    };
+    // -- NOT NEEDED
+    //// View changer.  Have to use $scope. to make available to the view
+    //// --------------
+    //$scope.gotoView = function () {
+    //    globalService.changeView('admindash');
+    //};
 
 
 

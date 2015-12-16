@@ -442,6 +442,8 @@ cordovaNG.service('globalService', ['$location', function ($location) {
 // Create the controllers and inject Angular's $scope
 // ==================================================
 
+
+// NOT USED
 cordovaNG.controller('mainController', function ($scope, Azureservice) {
 
     // Scope is like the partial view datamodel.  'message' is defined in the paritial view
