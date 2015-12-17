@@ -67,6 +67,41 @@ cordovaNG.controller('signinController', function ($scope, globalService, ngFB, 
 
 
 
+
+
+    
+    // TESTING THIS OUT    
+    function makeid(){        
+        var text = "";        
+        //var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";        
+        var possible = "abcdefghijklmnopqrstuvwxyz";        
+        for( var i=0; i < 6; i++ )            
+            text += possible.charAt(Math.floor(Math.random() * possible.length));        
+        return text;    
+    }
+
+    var test_reg = makeid();    
+    alert(test_reg);
+
+    Azureservice.insert('kid', {        
+        id: globalService.makeUniqueID(), // made GUID for Azure table        
+        name: 'johny quest',        
+        parent_id: 'long guid',        
+        registration_code: test_reg,        
+        reg_status: '0',        //isFinished: false    
+    })    
+    .then(function () {        
+        console.log('Insert successful');
+        azureUpdateClientRegistration(test_reg);
+    },
+    function (err) {        
+        console.error('Azure Error: ' + err);    
+    });
+
+
+    // -----------------------
+
+
     // ==========================================
     //  Admin Sign In
     // ==========================================
@@ -241,8 +276,8 @@ cordovaNG.controller('signinController', function ($scope, globalService, ngFB, 
     //  Update Client registration on Azure
     // ==========================================
     function azureUpdateClientRegistration(reg_code) {
-        var query = "$filter=reg_code eq '" + reg_code + "'";
-        Azureservice.read('kids', query).then(function (items) {  // query to see if this 'reg_code' exists
+        var query = "$filter=registration_code eq '" + reg_code + "'";
+        Azureservice.read('kid', query).then(function (items) {  // query to see if this 'reg_code' exists
             if (items.length == 0) { // if reg_code not found, then
 
                 alert('reg_code not found.  start over')
@@ -250,16 +285,15 @@ cordovaNG.controller('signinController', function ($scope, globalService, ngFB, 
 
             }
             else {
-                alert('found code'),
-                //console.log('email exists already')
-
-                // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ Get row GUID to update.  Get client details and make localStorage array.  
+                
+                // Get row GUID to update.  @@@@@@@@@@@@@@@@@@@@@@@  Get client details and make localStorage array.  
+                console.log('found code: ' + JSON.stringify(items) + " -- " + items[0].id);
 
                 // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ Update client   @@@@@@@@@ REMOVE CODE AFTER ACCEPTING?  USE THAT COL FOR STATUS ALSO?  
-                Azureservice.update('kids', {
-                    id: rowGUID, // ID for the row to update
-                    status: 'accepted', // columns to update
-                    isFinished: false
+                Azureservice.update('kid', {
+                    id: items[0].id, // ID for the row to update
+                    status: '1', // columns to update
+                    //isFinished: false
                 })
                 .then(function () {
                     console.log('Update successful');
