@@ -23,90 +23,19 @@ cordovaNG.controller('signinController', function ($scope, globalService, ngFB, 
     // signin as parent
     // go to admin or client home view
 
-    // %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    //  Azure testing
-    // - Uses JSON obj
-    // - You can use custom row IDs when inserting
-    // - When updating, specify the row ID and values to update
-    // - https://github.com/TerryMooreII/angular-azure-mobile-service
-    // Query example where col = val
-    // ------------------------------
-    //Azureservice.read('parents', "$filter=email eq 'bogus@test.com'")
-    //.then(function (items) {
-    //    //console.log(items)
-    //    console.log(items.length)
-    //}).catch(function (error) {
-    //    console.log(error)
-    //})
-    // Insert example with customer row ID
-    // ------------------------------
-    //Azureservice.insert('parents', {
-    //    id: globalService.makeUniqueID(), // made GUID for Azure table
-    //    name: 'johny quest',
-    //    email: 'test@test.com',
-    //    isFinished: false
-    //})
-    //.then(function () {
-    //    console.log('Insert successful');
-    //}, function (err) {
-    //    console.error('Azure Error: ' + err);
-    //});
-    // Update example with customer row ID
-    // ------------------------------
-    //Azureservice.update('kids', {
-    //    id: rowGUID, // ID for the row to update
-    //    status: 'accepted', // columns to update
-    //    isFinished: false
-    //})
-    //.then(function () {
-    //    console.log('Update successful');
-    //}, function (err) {
-    //    console.error('Azure Error: ' + err);
-    //});
-    // %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+   
 
 
 
 
 
     
-    // TESTING THIS OUT    
-    function makeid(){        
-        var text = "";        
-        //var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";        
-        var possible = "abcdefghijklmnopqrstuvwxyz";        
-        for( var i=0; i < 6; i++ )            
-            text += possible.charAt(Math.floor(Math.random() * possible.length));        
-        return text;    
-    }
 
-    var test_reg = makeid();    
-    alert(test_reg);
-
-    Azureservice.insert('kid', {        
-        id: globalService.makeUniqueID(), // made GUID for Azure table        
-        name: 'johny quest',        
-        parent_id: 'long guid',        
-        registration_code: test_reg,        
-        reg_status: '0',        //isFinished: false    
-    })    
-    .then(function () {        
-        console.log('Insert successful');
-        azureUpdateClientRegistration(test_reg);
-    },
-    function (err) {        
-        console.error('Azure Error: ' + err);    
-    });
-
-
-    // -----------------------
 
 
     // ==========================================
     //  Admin Sign In
     // ==========================================
-
-
     // OpenFB / ngFB stuff
     // ---------------------
 
@@ -249,8 +178,7 @@ cordovaNG.controller('signinController', function ($scope, globalService, ngFB, 
                 Azureservice.insert('parents', {
                     id: globalService.makeUniqueID(),
                     name: name,
-                    email: email,
-                    isFinished: false
+                    email: email
                 })
                 .then(function () {
                     //console.log('Insert successful');
@@ -280,19 +208,28 @@ cordovaNG.controller('signinController', function ($scope, globalService, ngFB, 
         Azureservice.read('kid', query).then(function (items) {  // query to see if this 'reg_code' exists
             if (items.length == 0) { // if reg_code not found, then
 
+                // @@@@@@@@@@@@@@@@@@  Error message
                 alert('reg_code not found.  start over')
                 //console.log('reg_code not found')
 
             }
             else {
-                
-                // Get row GUID to update.  @@@@@@@@@@@@@@@@@@@@@@@  Get client details and make localStorage array.  
-                console.log('found code: ' + JSON.stringify(items) + " -- " + items[0].id);
+                // Get client details and make localStorage array.  
+                // Get row GUID to update.   
+                console.log('reg found code: ' + JSON.stringify(items) + " -- " + items[0].id);
+                // put JSON result into User Array
+                var userarray = new Array();
+                userarray[0] = items[0].id; // GUID from Azure table
+                userarray[1] = "client"; //user role
+                userarray[2] = items[0].name; //full name
+                userarray[3] = 'none'; //email
+                userarray[4] = items[0].name; //first name
+                localStorage["RYB_userarray"] = JSON.stringify(userarray);
 
                 // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ Update client   @@@@@@@@@ REMOVE CODE AFTER ACCEPTING?  USE THAT COL FOR STATUS ALSO?  
                 Azureservice.update('kid', {
                     id: items[0].id, // ID for the row to update
-                    status: '1', // columns to update
+                    reg_status: '1', // columns to update
                     //isFinished: false
                 })
                 .then(function () {
@@ -309,14 +246,6 @@ cordovaNG.controller('signinController', function ($scope, globalService, ngFB, 
         })
     };
     // ==========================================
-
-
-    // -- NOT NEEDED
-    //// View changer.  Have to use $scope. to make available to the view
-    //// --------------
-    //$scope.gotoView = function () {
-    //    globalService.changeView('admindash');
-    //};
 
 
 

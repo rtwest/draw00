@@ -6,8 +6,8 @@ S T O R A G E
 =======================================================================================
 Azure Tables
 ------------
-PARENT RECORD: parent_id, name, emailaddress
-KID RECORD: kid_id, displayname, parent_id, profileimage, registration_code, status
+PARENT RECORD: id, name, email
+KID RECORD: id, name, parent_id, profileimage, registration_code, reg_status
 FRIEND RECORD: kid_id1, kid_id2
 INVITATION RECORD: from_parent_id, from_kid_id, to_parent_id, to_kid_id, status, datetime
 COMMENT RECORD: picture_id, from_kid_id, to_kid_id, comment_content, datetime
@@ -20,11 +20,12 @@ IMAGE RECORD: _id, filepath, datetime
 
 Array on client side for small storage -- @@@@@ where to check for these???
 ----------------------------------
-Other client side needs
-- is this first time sign in? - If yes, first time experience - FIRST TIME KEYPAIR FLAG
-- what mode is this in - admin or client or unknown? - go to admin signin, client register, or mode selection screen.  Look for USER ARRAY
-- do i have user details? SINGLE USER ARRAY (usertype, name, parent_id, email ..other_as_needed..)
-	- admin details (name, parent_id, reqs FB registration?) - if not, show FB sign in
+Other local client side needs
+- Flag for first time launch: Look for "localStorage.getItem('RYB_oobeflag')"
+- FaceBook Access Token: Calling the NbFB module automatically stores the user's FaceBook token:  Look for "localStorage.getItem('fbAccessToken')
+- what mode is this in - admin or client or unknown? - go to admin signin, client register, or mode selection screen.  Look for "localStorage.getItem('RYB_userarray')"
+	- 'RYB_userarray' (id, usertype, name, email, first name, ..other_as_needed..)
+	- admin details (name, parent_id, reqs FB registration?)
 	- client details (name, kid_id) - if not, show client code input
 - for client, list of friends (name, kid_id) - FRIENDS ARRAY
 - for admin, list of clients (name, kid_id) - CLIENT ARRAY
@@ -73,3 +74,48 @@ View
 - gallery detailed image view
 -	where you delete image if yours
 -	if shared image, you can like it here also
+
+
+
+
+
+
+
+Azure Wrapper Examples
+-----------------------
+- Uses JSON obj
+- You can use custom row IDs when inserting
+- When updating, specify the row ID and values to update
+- https://github.com/TerryMooreII/angular-azure-mobile-service
+// Query example where col = val
+------------------------------
+Azureservice.read('parents', "$filter=email eq 'bogus@test.com'")
+  .then(function (items) {
+      console.log(items)
+      console.log(items.length)
+  }).catch(function (error) {
+      console.log(error)
+  })
+// Insert example with customer row ID
+------------------------------
+Azureservice.insert('parents', {
+    id: globalService.makeUniqueID(), // made GUID for Azure table
+    name: 'johny quest',
+    email: 'test@test.com',
+})
+.then(function () {
+    console.log('Insert successful');
+}, function (err) {
+    console.error('Azure Error: ' + err);
+});
+// Update example with customer row ID
+------------------------------
+Azureservice.update('kids', {
+    id: rowGUID, // ID for the row to update
+    status: 'accepted', // columns to update
+})
+.then(function () {
+    console.log('Update successful');
+}, function (err) {
+    console.error('Azure Error: ' + err);
+});
