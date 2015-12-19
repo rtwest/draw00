@@ -1,28 +1,44 @@
 ﻿<!-- Mode Selection and SignIn -->
 
 <p>Mode Selection and SignIn</p>
-
 <p>check for local registration id (previous sign in)</p>
-
 <p>select kid or parent mode</p>
-
-<button type="button" class="btn btn-primary" style="box-shadow:none;" ng-click="selectClient()">
-    Kid
-</button>
-<button type="button" class="btn btn-primary" style="box-shadow:none;" ng-click="selectAdmin()">
-    Parent
-</button>
-
 <p>signin</p>
-
 <p>check for previous sign in on the server</p>
-
 <p>get and store registration id UserArray so you don't sign in again</p>
 
 
-<div class="content content-padded">
+<!--Select User Mode UI-->
+<div>
+    <button type="button" class="btn btn-primary" style="box-shadow:none;" ng-click="selectClient()">
+        Kid
+    </button>
+    <button type="button" class="btn btn-primary" style="box-shadow:none;" ng-click="selectAdmin()">
+        Parent
+    </button>
+</div>
 
-    <button class="btn btn-block" ng-click="login()">Login with Facebook</button>
+
+
+
+
+
+<!--Client Login UI-->
+<div>
+    <button type="button" class="btn btn-primary" style="box-shadow:none;" ng-click="clientLogin()">
+        Parent
+    </button>
+    <div id="clientErrorMessage">{{clienterrormessage}}</div>
+</div>
+
+
+
+
+
+<!--Admin Login UI-->
+<div>
+
+    <button class="btn btn-block" ng-click="adminLogin()">Login with Facebook</button>
     <hr />
 
     <button class="btn btn-block" ng-click="getProfile()">Get My Info</button>
@@ -35,7 +51,6 @@
     <textarea id="Message" placeholder="What's on your mind?" rows="5"></textarea>
     <button class="btn btn-block" ng-click="share()">Share</button>
     <hr />
-
 
 </div>
 

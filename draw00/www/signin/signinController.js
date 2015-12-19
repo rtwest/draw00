@@ -63,7 +63,7 @@ cordovaNG.controller('signinController', function ($scope, globalService, ngFB, 
     //        errorHandler);
     //};
 
-    $scope.login = function () {
+    $scope.adminLogin = function () {
         ngFB.login({ scope: 'email' }).then( // request other Facebook permissions in with scope with ", 'publish_action' "
             function (response) {
                 alert('Facebook login succeeded, got access token: ' + response.authResponse.accessToken);
@@ -160,10 +160,6 @@ cordovaNG.controller('signinController', function ($scope, globalService, ngFB, 
     }
 
 
-    // ==========================================
-    //  Client Sign In
-    //  - Enter client ID.  Validate ID in Azure record.  Update Azure client record status
-    // ==========================================
 
 
     // ==========================================
@@ -200,17 +196,24 @@ cordovaNG.controller('signinController', function ($scope, globalService, ngFB, 
     };
     // ==========================================
 
+
+
     // ==========================================
-    //  Update Client registration on Azure
+    //  Client SignIn.  Update Client registration on Azure
     // ==========================================
+
+    $scope.clientLogin = function () {
+    }
+
     function azureUpdateClientRegistration(reg_code) {
         var query = "$filter=registration_code eq '" + reg_code + "'";
         Azureservice.read('kid', query).then(function (items) {  // query to see if this 'reg_code' exists
             if (items.length == 0) { // if reg_code not found, then
 
-                // @@@@@@@@@@@@@@@@@@  Error message
+                // @@@@@@@@@@@@@@@@@@  Handle error message  @@@@@@@@@@@@@@@@@@
+                // - Show in UI.  'show/hide' error div?
+
                 alert('reg_code not found.  start over')
-                //console.log('reg_code not found')
 
             }
             else {
@@ -221,16 +224,15 @@ cordovaNG.controller('signinController', function ($scope, globalService, ngFB, 
                 var userarray = new Array();
                 userarray[0] = items[0].id; // GUID from Azure table
                 userarray[1] = "client"; //user role
-                userarray[2] = items[0].name; //full name
-                userarray[3] = 'none'; //email
+                userarray[2] = ""; //full name
+                userarray[3] = ""; //email
                 userarray[4] = items[0].name; //first name
                 localStorage["RYB_userarray"] = JSON.stringify(userarray);
 
-                // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ Update client   @@@@@@@@@ REMOVE CODE AFTER ACCEPTING?  USE THAT COL FOR STATUS ALSO?  
+                // Update client 
                 Azureservice.update('kid', {
                     id: items[0].id, // ID for the row to update
                     reg_status: '1', // columns to update
-                    //isFinished: false
                 })
                 .then(function () {
                     console.log('Update successful');
