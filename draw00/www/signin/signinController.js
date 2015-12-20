@@ -13,8 +13,8 @@ cordovaNG.controller('signinController', function ($scope, globalService, ngFB, 
     // go to admin or client home view
 
     $scope.clientregistrationcode = ''; // define the $scope var to tie to the UI using the tag ng-model='clientregistrationcode' on the input element
-   
-
+    $scope.clientregistrationerror = false; // flag for use in the UI to toggle the error message
+    $scope.usermode = ''; // flag for use in the UI to toggle the user sign in
 
     // ==========================================
     //  Admin Sign In
@@ -139,7 +139,7 @@ cordovaNG.controller('signinController', function ($scope, globalService, ngFB, 
     //        errorHandler);
     //}
     function errorHandler(error) {
-        alert(error.message);
+        //alert(error.message);
     }
     // ==========================================
 
@@ -187,6 +187,7 @@ cordovaNG.controller('signinController', function ($scope, globalService, ngFB, 
 
     $scope.clientLogin = function (reg_code) {
         azureUpdateClientRegistration(reg_code)
+        $scope.clientregistrationerror = false;
     }
 
     function azureUpdateClientRegistration(reg_code) {
@@ -195,7 +196,8 @@ cordovaNG.controller('signinController', function ($scope, globalService, ngFB, 
             if (items.length == 0) { // if reg_code not found, then
 
                 // @@@@@@@@@@@@@@@@@@  Handle error message  @@@@@@@@@@@@@@@@@@ - 'show/hide' error div
-                $scope.clienterrormessage = '"'+ reg_code +'" is not a valid sign in code.  Please check your code and try again.'
+                $scope.clientregistrationerror = true;
+                $scope.clienterrormessage = '"' + reg_code + '" is not a valid sign in code.  Please check your code and try again.'
                 console.log('reg code not found')
             }
             else {

@@ -1,22 +1,12 @@
 ﻿<!-- Mode Selection and SignIn -->
 
-<p>Mode Selection and SignIn</p>
-<p>check for local registration id (previous sign in)</p>
-<p>select kid or parent mode</p>
-<p>signin</p>
-<p>check for previous sign in on the server</p>
-<p>get and store registration id UserArray so you don't sign in again</p>
 
 
 <!--Select User Mode UI-->
-<div id="userroleselection">
-    <div>Are a kid or a parent?</div>
-    <button type="button" class="btn btn-primary" style="box-shadow:none;" ng-click="selectClient()">
-        Kid
-    </button>
-    <button type="button" class="btn btn-primary" style="box-shadow:none;" ng-click="selectAdmin()">
-        Parent
-    </button>
+<div id="userroleselection" ng-hide="usermode!==''">
+    <div>Are your a kid or a parent?</div>
+    <button type="button" class="btn btn-primary" style="box-shadow:none;" ng-click="usermode='client'">Kid</button>
+    <button type="button" class="btn btn-primary" style="box-shadow:none;" ng-click="usermode='admin'">Parent</button>
 </div>
 
 
@@ -25,13 +15,13 @@
 
 
 <!--Client Login UI-->
-<div id="clientregistration">
+<div id="clientregistration" ng-show="usermode=='client'">
     <div>What is your sign in code?</div>
-    <input id="regcodeinput" type="text" ng-model='clientregistrationcode' placeholder="Sign in code" />
+    <input id="regcodeinput" type="text" ng-model='clientregistrationcode' placeholder="Sign in code" ng-focus="clientregistrationcode=''"/>
     <button type="button" class="btn btn-primary" style="box-shadow:none;" ng-click="clientLogin(clientregistrationcode)">
         Sign in
     </button>
-    <div id="clientErrorMessage">{{clienterrormessage}}</div>
+    <div ng-show="clientregistrationerror" id="clientErrorMessage">{{clienterrormessage}}</div>
 </div>
 
 
@@ -39,10 +29,9 @@
 
 
 <!--Admin Login UI-->
-<div id="adminlogin">
+<div id="adminlogin" ng-show="usermode=='admin'">
 
-    <button class="btn btn-block" ng-click="adminLogin()">Login with Facebook</button>
-
+    <button class="btn btn-primary" ng-click="adminLogin()">Login with Facebook</button>
 
     <!--<button class="btn btn-block" ng-click="getProfile()">Get My Info</button>
     <p>Name: {{user.name}}</p>

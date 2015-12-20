@@ -543,32 +543,32 @@ cordovaNG.controller('startupController', function ($scope,globalService) {
     // Things to check for on start up 
     // ==================================================
 
-    alert("local stored user data is: " + localStorage.getItem('RYB_userarray'));
+    console.log("local stored user data is: " + localStorage.getItem('RYB_userarray'));
 
     // Check for User Array - for registration
     if (localStorage.getItem('RYB_userarray')) {
         var userarray = JSON.parse(localStorage.getItem('RYB_userarray')); // get array from localstorage key pair and string
-        if (userarray[1] = 'admin') { // if user type is 'admin', go to admin home screen
+        if (userarray[1] == 'admin') { // if user type is 'admin', go to admin home screen
             globalService.changeView('admindash');
-            alert('1');
+            console.log('user is admin');
         }
-        else if (userarray[1] = 'client') { // if user type is 'client', go to client home screen
+        else if (userarray[1] == 'client') { // if user type is 'client', go to client home screen
             globalService.changeView('clientstart');
-            alert('2');
+            console.log('user is client');
         }
         else { //if neither, go to user type screen and start over
             globalService.changeView('signin');
-            alert('3');
+            console.log('user is unknown type, go to user role selection');
         };
     }
     // If no user but first time start up flag is set, go to user type screen
     else if (localStorage.RYB_oobeflag) {
         globalService.changeView('signin');
-        alert('4');
+        console.log('user is unknown type - but oobe flat set, go to user role selection');
     }
     // If first time start up flag no set, go to start up screen
     else {
-        alert('5');
+        console.log('no oobe flag, go to oobe');
         globalService.changeView('oobe');
     };
     // ==================================================
