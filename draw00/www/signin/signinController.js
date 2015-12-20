@@ -1,17 +1,6 @@
 ﻿// signinController
 
 
-
-// NEED TO THINK THROUGH ALL THE LOGIC ON THIS PAGE AND THE ORDER IN WHICH IT GOES
-
-
-
-
-
-
-
-
-
 cordovaNG.controller('signinController', function ($scope, globalService, ngFB, Azureservice) {
 
     // Scope is like the view datamodel.  'message' is defined in the paritial view html {{message}}
@@ -23,14 +12,8 @@ cordovaNG.controller('signinController', function ($scope, globalService, ngFB, 
     // signin as parent
     // go to admin or client home view
 
+    $scope.clientregistrationcode = ''; // define the $scope var to tie to the UI using the tag ng-model='clientregistrationcode' on the input element
    
-
-
-
-
-
-    
-
 
 
     // ==========================================
@@ -158,7 +141,7 @@ cordovaNG.controller('signinController', function ($scope, globalService, ngFB, 
     function errorHandler(error) {
         alert(error.message);
     }
-
+    // ==========================================
 
 
 
@@ -187,7 +170,7 @@ cordovaNG.controller('signinController', function ($scope, globalService, ngFB, 
             else {
                 //alert('email exists already'),
                 //console.log('email exists already')
-                globalService.changeView('admindash'); // @@@ if user already exists, go to admin dash
+                globalService.changeView('admindash'); // @@@ if user already exists, just go to admin dash
             };
 
         }).catch(function (error) {
@@ -202,7 +185,8 @@ cordovaNG.controller('signinController', function ($scope, globalService, ngFB, 
     //  Client SignIn.  Update Client registration on Azure
     // ==========================================
 
-    $scope.clientLogin = function () {
+    $scope.clientLogin = function (reg_code) {
+        azureUpdateClientRegistration(reg_code)
     }
 
     function azureUpdateClientRegistration(reg_code) {
@@ -210,11 +194,9 @@ cordovaNG.controller('signinController', function ($scope, globalService, ngFB, 
         Azureservice.read('kid', query).then(function (items) {  // query to see if this 'reg_code' exists
             if (items.length == 0) { // if reg_code not found, then
 
-                // @@@@@@@@@@@@@@@@@@  Handle error message  @@@@@@@@@@@@@@@@@@
-                // - Show in UI.  'show/hide' error div?
-
-                alert('reg_code not found.  start over')
-
+                // @@@@@@@@@@@@@@@@@@  Handle error message  @@@@@@@@@@@@@@@@@@ - 'show/hide' error div
+                $scope.clienterrormessage = '"'+ reg_code +'" is not a valid sign in code.  Please check your code and try again.'
+                console.log('reg code not found')
             }
             else {
                 // Get client details and make localStorage array.  
@@ -235,7 +217,7 @@ cordovaNG.controller('signinController', function ($scope, globalService, ngFB, 
                     reg_status: '1', // columns to update
                 })
                 .then(function () {
-                    console.log('Update successful');
+                    //console.log('Update successful');
                     globalService.changeView('clientstart'); // @@@ go to clientstart view
                 }, function (err) {
                     console.error('Azure Error: ' + err);
