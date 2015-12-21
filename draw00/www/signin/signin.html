@@ -17,10 +17,8 @@
 <!--Client Login UI-->
 <div id="clientregistration" ng-show="usermode=='client'">
     <div>What is your sign in code?</div>
-    <input id="regcodeinput" type="text" ng-model='clientregistrationcode' placeholder="Sign in code" ng-focus="clientregistrationcode=''"/>
-    <button type="button" class="btn btn-primary" style="box-shadow:none;" ng-click="clientLogin(clientregistrationcode)">
-        Sign in
-    </button>
+    <input id="regcodeinput" type="text" ng-model='clientregistrationcode' placeholder="Sign in code" ng-focus="clientregistrationcode=''"/>  <!--'clientregistrationcode' is only defined here and not on controller-->
+    <button type="button" class="btn btn-primary" style="box-shadow:none;" ng-click="clientLogin(clientregistrationcode)">Sign in</button>
     <div ng-show="clientregistrationerror" id="clientErrorMessage">{{clienterrormessage}}</div>
 </div>
 

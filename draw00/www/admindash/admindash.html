@@ -2,8 +2,43 @@
 
 <p>Admin Dashboard and Home Screen</p>
 
-<button type="button" class="btn btn-primary" style="box-shadow:none;" ng-click="gotoView()">
-    Button
-</button>
+<div>header goes here</div>
 
-<p>...notes...</p>
+<button type="button" class="btn btn-primary" style="box-shadow:none;" ng-click="showaddclientui=true">Add</button>
+
+<button type="button" class="btn btn-primary" style="box-shadow:none;" ng-click="gotoView()">Button</button>
+
+
+
+<!--Client List Repeater-->
+<div>
+    repeater for clients goes here
+
+    <!--'For Each' loop using object 'clientlist' known to the $scope when defined in the controller -->
+    <!--'row' is a new local var created here then used in controllerJS-->
+    <!--???????????????????'todoitemtitle' is a column name discoverd-->
+    <div ng-repeat="row in clientarray" ng-include="'repeaterTemplate.html'"></div>
+
+</div>
+<!-- This is one way to specify the repeater item template used above
+Could also be in separate HTML file loaded with ng-include="'folder/repeaterTemplate.html'" -->
+<script type="text/ng-template" id="repeaterTemplate.html">
+    <div id="{{row[0]}}" ng-click="clientclick($event)">
+        <div>
+            <i class="icon-material-keyboard-arrow-right"></i> {{row.firstname}}   <!--!!!!!????? Not sure how to pull this from the array-->
+        </div>
+        <div>
+            <i class="icon-material-star-outline"></i> {{row[1]}}
+        </div>
+    </div>
+</script>
+
+
+<!--Modal for add new client-->
+<div id="addclientUI" ng-show="showaddclientui"> <!--ng-show is logic to toggle show/hide for this UI-->
+    <div>Add new kid</div>
+    <input id="kidnameinput" type="text" ng-model='kidname' placeholder="Name" ng-focus="kidname=''" />  <!--'kidname' is only defined here and not in controller-->
+    <button type="button" class="btn btn-primary" style="box-shadow:none;" ng-click="addNewClient(kidname);kidname=''">Add</button>
+    <button type="button" class="btn btn-primary" style="box-shadow:none;" ng-click="showaddclientui=false;kidname=''">Cancel</button>
+
+</div> 

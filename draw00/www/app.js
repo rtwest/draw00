@@ -564,7 +564,7 @@ cordovaNG.controller('startupController', function ($scope,globalService) {
     // If no user but first time start up flag is set, go to user type screen
     else if (localStorage.RYB_oobeflag) {
         globalService.changeView('signin');
-        console.log('user is unknown type - but oobe flat set, go to user role selection');
+        console.log('user is unknown type - but oobe flag set, go to user role selection');
     }
     // If first time start up flag no set, go to start up screen
     else {

@@ -16,14 +16,14 @@ SHARE RECORD: picture_id, from_kid_id, to_kid_id
 
 Pouch DB Tables in "drawappDatabase" on client side for large storage
 ------------------------------------
-IMAGE RECORD: _id, filepath, datetime
+IMAGE RECORD: _id, filepath on device, datetime
 
-Array on client side for small storage -- @@@@@ where to check for these???
+Array on client side for small storage  
 ----------------------------------
 Other local client side needs
 - Flag for first time launch: Look for "localStorage.getItem('RYB_oobeflag')"
-- FaceBook Access Token: Calling the NbFB module automatically stores the user's FaceBook token:  Look for "localStorage.getItem('fbAccessToken')
-- what mode is this in - admin or client or unknown? - go to admin signin, client register, or mode selection screen.  Look for "localStorage.getItem('RYB_userarray')"
+- FaceBook Access Token: Calling the NbFB module automatically stores the user's FaceBook token:  Look for "localStorage.getItem('fbAccessToken')"
+- What user mode is this in? Look for "localStorage.getItem('RYB_userarray')"
 	- 'RYB_userarray' (id, usertype, name, email, first name, ..other_as_needed..)
 	- admin details (name, parent_id, reqs FB registration?)
 	- client details (name, kid_id) - if not, show client code input

@@ -46,10 +46,12 @@ cordovaNG.controller('signinController', function ($scope, globalService, ngFB, 
     //        errorHandler);
     //};
 
+    var guid = globalService.makeUniqueID(); // made GUID for Azure table
+
     $scope.adminLogin = function () {
         ngFB.login({ scope: 'email' }).then( // request other Facebook permissions in with scope with ", 'publish_action' "
             function (response) {
-                alert('Facebook login succeeded, got access token: ' + response.authResponse.accessToken);
+                console.log('Facebook login succeeded, got access token: ' + response.authResponse.accessToken);
                 // Get profile data to make User Array
                 // -----------------------------------
                 ngFB.api({
@@ -61,7 +63,7 @@ cordovaNG.controller('signinController', function ($scope, globalService, ngFB, 
                     $scope.user = result;
                     // put JSON result into User Array
                     var userarray = new Array();
-                    userarray[0] = globalService.makeUniqueID(); // made GUID for Azure table
+                    userarray[0] = guid;
                     userarray[1] = "admin"; //user role
                     userarray[2] = result.name;
                     userarray[3] = result.email;
@@ -155,7 +157,7 @@ cordovaNG.controller('signinController', function ($scope, globalService, ngFB, 
                 //console.log('email not found')
 
                 Azureservice.insert('parents', {
-                    id: globalService.makeUniqueID(),
+                    id: guid,
                     name: name,
                     email: email
                 })
@@ -195,7 +197,7 @@ cordovaNG.controller('signinController', function ($scope, globalService, ngFB, 
         Azureservice.read('kid', query).then(function (items) {  // query to see if this 'reg_code' exists
             if (items.length == 0) { // if reg_code not found, then
 
-                // @@@@@@@@@@@@@@@@@@  Handle error message  @@@@@@@@@@@@@@@@@@ - 'show/hide' error div
+                // 'clientregistrationerror' is a flag the UI uses to check for 'show/hide' error div
                 $scope.clientregistrationerror = true;
                 $scope.clienterrormessage = '"' + reg_code + '" is not a valid sign in code.  Please check your code and try again.'
                 console.log('reg code not found')
@@ -216,7 +218,7 @@ cordovaNG.controller('signinController', function ($scope, globalService, ngFB, 
                 // Update client 
                 Azureservice.update('kid', {
                     id: items[0].id, // ID for the row to update
-                    reg_status: '1', // columns to update
+                    reg_status: '1', // column to update named 'reg_status'
                 })
                 .then(function () {
                     //console.log('Update successful');
