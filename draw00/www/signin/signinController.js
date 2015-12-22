@@ -62,7 +62,7 @@ cordovaNG.controller('signinController', function ($scope, globalService, ngFB, 
                 function (result) {
                     $scope.user = result;
                     // put JSON result into User Array
-                    var userarray = new Array();
+                    var userarray = [];
                     userarray[0] = guid;
                     userarray[1] = "admin"; //user role
                     userarray[2] = result.name;
@@ -207,7 +207,7 @@ cordovaNG.controller('signinController', function ($scope, globalService, ngFB, 
                 // Get row GUID to update.   
                 console.log('reg found code: ' + JSON.stringify(items) + " -- " + items[0].id);
                 // put JSON result into User Array
-                var userarray = new Array();
+                var userarray = [];
                 userarray[0] = items[0].id; // GUID from Azure table
                 userarray[1] = "client"; //user role
                 userarray[2] = ""; //full name

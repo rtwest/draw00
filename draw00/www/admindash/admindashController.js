@@ -19,20 +19,17 @@ cordovaNG.controller('admindashController', function ($scope, globalService, Azu
 
     $scope.clientarray = []; //create as an array
 
-    // ==========================================  WORKING HERE ===================================
-    alert(localStorage.getItem('RYB_clientarray'));
-
-    if (localStorage.getItem('RYB_clientarray')) { // check for some clients
-
+    // alert(localStorage.getItem('RYB_clientarray'));  // the returned string is not a usable array.  Needs Json.Parse for that.
+    // Check for some clients
+    // ---------------------
+    if (localStorage.getItem('RYB_clientarray')) { 
         $scope.clientarray = JSON.parse(localStorage.getItem('RYB_clientarray')); // get array from localstorage key pair and string
-        alert($scope.clientarray)
+        alert("array length: " + $scope.clientarray.length + " - " + $scope.clientarray)
     }
     else { // if no clients
         // @@@@@@@@@@@@@@ Add special message for this case  @@@@@@@@@@@@@@
         alert('no clients found')
     };
-
-
 
 
     // ==========================================
@@ -59,18 +56,29 @@ cordovaNG.controller('admindashController', function ($scope, globalService, Azu
 
         // Store in localStorage
         // ---------------
-        var clientitemarray = new Array();
+        var clientitemarray = [];
         clientitemarray[0] = guid;
         clientitemarray[1] = name;
-        localStorage["RYB_clientarray"] = localStorage.getItem('RYB_clientarray') + JSON.stringify(clientitemarray); //append to localstorage arraystring
+        if ($scope.clientarray.length > 0) { // if it exists already (not the first one)
+            var arraylength = $scope.clientarray.length; // 'length' is actually array+1 because of zero index
+            $scope.clientarray[arraylength] = clientitemarray; //add new item to client array
+            localStorage["RYB_clientarray"] = JSON.stringify($scope.clientarray);
+        }
+        else{ // it doesn't already exist and this is the first one
+            $scope.clientarray[0] = clientitemarray; //add first item to localstorage arraystring
+            localStorage["RYB_clientarray"] = JSON.stringify($scope.clientarray);
+        };
+        $scope.clientarray = JSON.parse(localStorage.getItem('RYB_clientarray')); // get updated array from localstorage key pair and string
+        //alert("array length = "+ $scope.clientarray.length + " - " + $scope.clientarray)
 
+        // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@2@@@ ADD CONFIRMATION MESSAGE              
 
         // Create on Azure
         // ---------------
         Azureservice.insert('kid', {
             id: guid, // made GUID for Azure table        
             name: name,
-            parent_id: userarray[0],  //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  ERROR looks like the FB guid, not my Azure guid %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+            parent_id: userarray[0],  
             registration_code: makeRegistrationCode(),
             reg_status: '0'
         })
@@ -96,7 +104,8 @@ cordovaNG.controller('admindashController', function ($scope, globalService, Azu
     $scope.clientclick = function (clickEvent) {
         $scope.clickEvent = globalService.simpleKeys(clickEvent);
         $scope.clientId = clickEvent.target.id;
-        alert('selected item ' + $scope.clientId);
+        alert(clickEvent.target.id);
+        alert('selected item = ' + $scope.clientId);
     };
     // ==========================================
 

@@ -28,7 +28,10 @@
  </div> 
 
 
-<!-- This is one way to specify the repeater item template used below.  Could also be in separate HTML file loaded with ng-include="'folder/repeaterTemplate.html'" -->
+<!-- This is one way to specify the repeater item template used above
+    Could also be in separate HTML file loaded with ng-include="'folder/repeaterTemplate.html'"
+    Have to have the element ID on everything because the obj id is passed where ever you click
+-->
 <script type="text/ng-template" id="repeaterTemplate.html">
 
         <!--only this div's id works - need to have this ID on anything clicked-->

@@ -16,19 +16,21 @@
 
     <!--'For Each' loop using object 'clientlist' known to the $scope when defined in the controller -->
     <!--'row' is a new local var created here then used in controllerJS-->
-    <!--???????????????????'todoitemtitle' is a column name discoverd-->
-    <div ng-repeat="row in clientarray" ng-include="'repeaterTemplate.html'"></div>
+    <!-- Can use 'arr.[x]' for array and 'ParamName/Colname' if JSON -->
+    <div ng-repeat="row in clientarray track by $index" ng-include="'repeaterTemplate.html'"></div>
 
 </div>
 <!-- This is one way to specify the repeater item template used above
-Could also be in separate HTML file loaded with ng-include="'folder/repeaterTemplate.html'" -->
+    Could also be in separate HTML file loaded with ng-include="'folder/repeaterTemplate.html'" 
+    Have to have the element ID on everything because the obj id is passed where ever you click
+-->
 <script type="text/ng-template" id="repeaterTemplate.html">
     <div id="{{row[0]}}" ng-click="clientclick($event)">
-        <div>
-            <i class="icon-material-keyboard-arrow-right"></i> {{row.firstname}}   <!--!!!!!????? Not sure how to pull this from the array-->
+        <div id="{{row[0]}}" >
+            {{row[0]}}
         </div>
-        <div>
-            <i class="icon-material-star-outline"></i> {{row[1]}}
+        <div id="{{row[0]}}" >
+            {{row[1]}}
         </div>
     </div>
 </script>
