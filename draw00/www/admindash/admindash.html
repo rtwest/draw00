@@ -22,8 +22,7 @@
 </div>
 <!-- This is one way to specify the repeater item template used above
     Could also be in separate HTML file loaded with ng-include="'folder/repeaterTemplate.html'" 
-    Have to have the element ID on everything because the obj id is passed where ever you click
--->
+    Have to have the element ID on everything because the obj id is passed where ever you click-->
 <script type="text/ng-template" id="repeaterTemplate.html">
     <div id="{{row[0]}}" ng-click="clientclick($event)">
         <div id="{{row[0]}}" >
@@ -33,6 +32,7 @@
             {{row[1]}}
         </div>
     </div>
+    <div id="{{row[0]}}" ng-click="deleteClientClick($event)">Delete</div>
 </script>
 
 

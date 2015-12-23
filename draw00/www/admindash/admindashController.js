@@ -96,8 +96,15 @@ cordovaNG.controller('admindashController', function ($scope, globalService, Azu
     // ==========================================
     // Delete Client
     // ==========================================
+    $scope.deleteClientClick = function (clickEvent) {
+        $scope.clickEvent = globalService.simpleKeys(clickEvent);
+        $scope.clientId = clickEvent.target.id;
+        alert('delete item = ' + $scope.clientId);
 
-    $scope.deleteClient = function (id) {
+        deleteClient($scope.clientId);
+    }
+
+    function deleteClient(id) {
         // Delete from localStorage
         // ---------------
         var foundIndex;
@@ -105,9 +112,9 @@ cordovaNG.controller('admindashController', function ($scope, globalService, Azu
         for (i = 0; i < len; i++) {
             if ($scope.clientarray[i].indexOf(id) > -1) { // If found in this subarray 
                 foundIndex = i;
-                alert('found at: ' + foundIndex);
+                //alert('found at: ' + foundIndex);
                 $scope.clientarray.splice(foundIndex, 1) // remove from this element at index number from 'clientarray'
-                alert($scope.clientarray);
+                //alert($scope.clientarray);
                 localStorage["RYB_clientarray"] = JSON.stringify($scope.clientarray); //push back to localStorage
 
                 // Delete on Azure
@@ -117,8 +124,10 @@ cordovaNG.controller('admindashController', function ($scope, globalService, Azu
                 })
                 .then(function () {
                     console.log('Delete successful');
+                    //alert('Delete successful')
                 }, function (err) {
-                    console.error('Azure Error: ' + err);
+                    //console.error('Azure Error: ' + err);
+                    alert('Azure Error: ' + err);
                 });
 
                 break;
@@ -140,8 +149,6 @@ cordovaNG.controller('admindashController', function ($scope, globalService, Azu
         $scope.clientId = clickEvent.target.id;
         alert('selected item = ' + $scope.clientId);
 
-
-        $scope.deleteClient($scope.clientId);
     };
     // ==========================================
 
