@@ -68,7 +68,7 @@ cordovaNG.controller('signinController', function ($scope, globalService, ngFB, 
                     userarray[2] = result.name;
                     userarray[3] = result.email;
                     userarray[4] = result.first_name;
-                    localStorage["RYB_userarray"] = JSON.stringify(userarray);
+                    localStorage["RYB_userarray"] = JSON.stringify(userarray); //push back to localStorage
 
                     azureCheckUserandInsert(result.email, result.name); //@@@ Function to query azure 'parent' table to look for email and insert record
 

@@ -20,6 +20,7 @@ cordovaNG.controller('admindashController', function ($scope, globalService, Azu
     $scope.clientarray = []; //create as an array
 
     // alert(localStorage.getItem('RYB_clientarray'));  // the returned string is not a usable array.  Needs Json.Parse for that.
+
     // Check for some clients
     // ---------------------
     if (localStorage.getItem('RYB_clientarray')) { 
@@ -62,11 +63,11 @@ cordovaNG.controller('admindashController', function ($scope, globalService, Azu
         if ($scope.clientarray.length > 0) { // if it exists already (not the first one)
             var arraylength = $scope.clientarray.length; // 'length' is actually array+1 because of zero index
             $scope.clientarray[arraylength] = clientitemarray; //add new item to client array
-            localStorage["RYB_clientarray"] = JSON.stringify($scope.clientarray);
+            localStorage["RYB_clientarray"] = JSON.stringify($scope.clientarray); //push back to localStorage
         }
         else{ // it doesn't already exist and this is the first one
             $scope.clientarray[0] = clientitemarray; //add first item to localstorage arraystring
-            localStorage["RYB_clientarray"] = JSON.stringify($scope.clientarray);
+            localStorage["RYB_clientarray"] = JSON.stringify($scope.clientarray); //push back to localStorage
         };
         $scope.clientarray = JSON.parse(localStorage.getItem('RYB_clientarray')); // get updated array from localstorage key pair and string
         //alert("array length = "+ $scope.clientarray.length + " - " + $scope.clientarray)
@@ -89,23 +90,58 @@ cordovaNG.controller('admindashController', function ($scope, globalService, Azu
             console.error('Azure Error: ' + err);
         });
     };
+    // ==========================================
 
 
+    // ==========================================
+    // Delete Client
+    // ==========================================
+
+    $scope.deleteClient = function (id) {
+        // Delete from localStorage
+        // ---------------
+        var foundIndex;
+        var len = $scope.clientarray.length;
+        for (i = 0; i < len; i++) {
+            if ($scope.clientarray[i].indexOf(id) > -1) { // If found in this subarray 
+                foundIndex = i;
+                alert('found at: ' + foundIndex);
+                $scope.clientarray.splice(foundIndex, 1) // remove from this element at index number from 'clientarray'
+                alert($scope.clientarray);
+                localStorage["RYB_clientarray"] = JSON.stringify($scope.clientarray); //push back to localStorage
+
+                // Delete on Azure
+                // ---------------
+                Azureservice.del('kid', {
+                    id: id // ID for the row to delete    
+                })
+                .then(function () {
+                    console.log('Delete successful');
+                }, function (err) {
+                    console.error('Azure Error: ' + err);
+                });
+
+                break;
+            };
+        };
+
+    };
     // ==========================================
 
 
     // ==========================================
     // Click on Client
     // ==========================================
-
     // Ng-repeat used to list DOM elements with DB table rowid loaded into elementID so its captured on the target.id
     // Need this to retreive GUID in Div ID property for record CRUD
     // ------------------------------------------
     $scope.clientclick = function (clickEvent) {
         $scope.clickEvent = globalService.simpleKeys(clickEvent);
         $scope.clientId = clickEvent.target.id;
-        alert(clickEvent.target.id);
         alert('selected item = ' + $scope.clientId);
+
+
+        $scope.deleteClient($scope.clientId);
     };
     // ==========================================
 

@@ -112,10 +112,20 @@ Azureservice.insert('parents', {
 ------------------------------
 Azureservice.update('kids', {
     id: rowGUID, // ID for the row to update
-    status: 'accepted', // columns to update
+    status: 'accepted', // column(s) to update
 })
 .then(function () {
     console.log('Update successful');
 }, function (err) {
     console.error('Azure Error: ' + err);
+});
+// Delete example with customer row ID
+------------------------------
+Azureservice.del('tablename', {
+    id: rowGUID // ID for the row to delete    
+})
+.then(function() {
+        console.log('Delete successful');
+}, function(err) {
+        console.error('Azure Error: ' + err);
 });
