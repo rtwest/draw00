@@ -1,8 +1,9 @@
 ﻿// admindashController
 
-// - load the client array.  CRUD operations here are pushed to web, so the local store is alway most current
-// - check web for 
+// - load the client array.  CRUD operations here are pushed to web, so the local store is always most current
 
+// NEED SPECIAL MESSAGE FOR NO CLIENTS
+// NEED MESSAGE ABOUT WHAT TO DO WITHTEH CLIENT WHEN CREATED
 
 
 
