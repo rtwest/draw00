@@ -10,9 +10,8 @@ PARENT RECORD: id, name, email
 KID RECORD: id, name, parent_id, profileimage, registration_code, reg_status
 FRIEND RECORD: kid_id1, kid_id2
 INVITATION RECORD: from_parent_id, from_kid_id, to_parent_id, to_kid_id, status, datetime
-COMMENT RECORD: picture_id, from_kid_id, to_kid_id, comment_content, datetime
-PICTURE RECORD: picture_id, kid_id, datetime
-SHARE RECORD: picture_id, from_kid_id, to_kid_id
+EVENT RECORD: picture_id, from_kid_id, to_kid_id, comment_content, datetime
+PICTURE RECORD: picture_blob, picture_id, kid_id, datetime
 
 Pouch DB Tables in "drawappDatabase" on client side for large storage
 ------------------------------------
@@ -51,8 +50,8 @@ CREATING A NEW INVITATION
 
  TO DO
 -----------------------------
-- Need to think through start up login and checking registration from App.JS on startup
--- What is need for local DB? - Mode, UserRegistration_ID, UserName, -- gallery stuff --
+- --- From Admin, Create an invitation and accept invitation.  Pull new friends it from client
+- What is need for local DB?  
 - Need to check for web connection on load and alert
 - Need to restrict permissions on azure tables to authenticate users for admin and client(probably) 
 
