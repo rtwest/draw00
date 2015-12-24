@@ -12,13 +12,11 @@
 
 <!--Client List Repeater-->
 <div>
-    repeater for clients goes here
-
     <!--'For Each' loop using object 'clientlist' known to the $scope when defined in the controller -->
     <!--'row' is a new local var created here then used in controllerJS-->
     <!-- Can use 'arr.[x]' for array and 'ParamName/Colname' if JSON -->
     <div ng-repeat="row in clientarray track by $index" ng-include="'repeaterTemplate.html'"></div>
-
+    <div ng-show="noClientFlag">No clients</div>
 </div>
 <!-- This is one way to specify the repeater item template used above
     Could also be in separate HTML file loaded with ng-include="'folder/repeaterTemplate.html'" 
@@ -42,5 +40,14 @@
     <input id="kidnameinput" type="text" ng-model='kidname' placeholder="Name" ng-focus="kidname=''" />  <!--'kidname' is only defined here and not in controller-->
     <button type="button" class="btn btn-primary" style="box-shadow:none;" ng-click="addNewClient(kidname);kidname=''">Add</button>
     <button type="button" class="btn btn-primary" style="box-shadow:none;" ng-click="showaddclientui=false;kidname=''">Cancel</button>
+
+</div> 
+
+<!--Modal for client added message-->
+<div id="clientAddedUI" ng-show="showClientAddedUI">
+    <!--ng-show is logic to toggle show/hide for this UI-->
+    <div>Next steps</div>
+    <div>Install on another device. Choose Kid mode and enter this registration code.</div>
+    <div type="button" ng-click="showClientAddedUI=false;">close</div>
 
 </div> 

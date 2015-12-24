@@ -13,10 +13,12 @@ cordovaNG.controller('admindashController', function ($scope, globalService, Azu
     //$scope.message = "Nothing here yet";  //- TEST ONLY
 
     $scope.showaddclientui = false; // boolean for ng-show for add client modal
+    $scope.showClientAddedUI = false; // boolean for ng-show for ClientAdded message
+    $scope.noClientFlag = false; // boolean for ng-show for 'no client' message
 
     // @@@@@@@@@@@@  Need to add it to global scope. Don't need this here if you already got it from the signin screen.  
-    var userarray = JSON.parse(localStorage.getItem('RYB_userarray')); // get user array from localstorage key pair and string.  
-    alert(userarray);
+    //var userarray = JSON.parse(localStorage.getItem('RYB_userarray')); // get user array from localstorage key pair and string.  
+    //alert(globalService.userarray);
 
     $scope.clientarray = []; //create as an array
 
@@ -31,6 +33,7 @@ cordovaNG.controller('admindashController', function ($scope, globalService, Azu
     else { // if no clients
         // @@@@@@@@@@@@@@ Add special message for this case  @@@@@@@@@@@@@@
         alert('no clients found')
+        $scope.noClientFlag = true;
     };
 
 
@@ -73,14 +76,16 @@ cordovaNG.controller('admindashController', function ($scope, globalService, Azu
         $scope.clientarray = JSON.parse(localStorage.getItem('RYB_clientarray')); // get updated array from localstorage key pair and string
         //alert("array length = "+ $scope.clientarray.length + " - " + $scope.clientarray)
 
-        // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@2@@@ ADD CONFIRMATION MESSAGE              
+        // Confirmation message
+        $scope.showClientAddedUI = true; // toggle this boolean for ng-show in the UI
+        $scope.noClientFlag = false;
 
         // Create on Azure
         // ---------------
         Azureservice.insert('kid', {
             id: guid, // made GUID for Azure table        
             name: name,
-            parent_id: userarray[0],  
+            parent_id: globalService.userarray[0],
             registration_code: makeRegistrationCode(),
             reg_status: '0'
         })
@@ -134,6 +139,7 @@ cordovaNG.controller('admindashController', function ($scope, globalService, Azu
                 break;
             };
         };
+        if (len == 1) { $scope.noClientFlag = true }; // If only one item in client array and you remove it, then show no clients UI
 
     };
     // ==========================================

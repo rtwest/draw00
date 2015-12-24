@@ -390,6 +390,8 @@ cordovaNG.config(function ($routeProvider) {
 
 cordovaNG.service('globalService', ['$location', function ($location) {
 
+    var userarray = []; //user data
+
     // SETTING UP STORAGE.  
     // Open connection to the database using PouchDB.  @@@@@@@@ If adapter is not given, it defaults to IndexedDB, then fails over to WebSQL @@@@@@@@
     // http://pouchdb.com/guides/documents.html
@@ -416,6 +418,8 @@ cordovaNG.service('globalService', ['$location', function ($location) {
         // Database  methods
         // -----------------
         drawappDatabase: drawappDatabase, // return the Database
+
+        userarray:userarray, // return the user data
 
         // Clever function to make a GUID compliant with standard format cast as type STRING
         // ----------------
@@ -547,12 +551,15 @@ cordovaNG.controller('startupController', function ($scope,globalService) {
 
     // Check for User Array - for registration
     if (localStorage.getItem('RYB_userarray')) {
-        var userarray = JSON.parse(localStorage.getItem('RYB_userarray')); // get array from localstorage key pair and string
-        if (userarray[1] == 'admin') { // if user type is 'admin', go to admin home screen
+
+        // add to globalservice var to make available to all views
+        globalService.userarray = JSON.parse(localStorage.getItem('RYB_userarray')); // get array from localstorage key pair and string
+
+        if (globalService.userarray[1] == 'admin') { // if user type is 'admin', go to admin home screen
             globalService.changeView('admindash');
             console.log('user is admin');
         }
-        else if (userarray[1] == 'client') { // if user type is 'client', go to client home screen
+        else if (globalService.userarray[1] == 'client') { // if user type is 'client', go to client home screen
             globalService.changeView('clientstart');
             console.log('user is client');
         }

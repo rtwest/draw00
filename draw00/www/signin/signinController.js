@@ -62,12 +62,12 @@ cordovaNG.controller('signinController', function ($scope, globalService, ngFB, 
                 function (result) {
                     $scope.user = result;
                     // put JSON result into User Array
-                    var userarray = [];
-                    userarray[0] = guid;
-                    userarray[1] = "admin"; //user role
-                    userarray[2] = result.name;
-                    userarray[3] = result.email;
-                    userarray[4] = result.first_name;
+                    //var userarray = [];
+                    globalService.userarray[0] = guid;
+                    globalService.userarray[1] = "admin"; //user role
+                    globalService.userarray[2] = result.name;
+                    globalService.userarray[3] = result.email;
+                    globalService.userarray[4] = result.first_name;
                     localStorage["RYB_userarray"] = JSON.stringify(userarray); //push back to localStorage
 
                     azureCheckUserandInsert(result.email, result.name); //@@@ Function to query azure 'parent' table to look for email and insert record
@@ -207,12 +207,12 @@ cordovaNG.controller('signinController', function ($scope, globalService, ngFB, 
                 // Get row GUID to update.   
                 console.log('reg found code: ' + JSON.stringify(items) + " -- " + items[0].id);
                 // put JSON result into User Array
-                var userarray = [];
-                userarray[0] = items[0].id; // GUID from Azure table
-                userarray[1] = "client"; //user role
-                userarray[2] = ""; //full name
-                userarray[3] = ""; //email
-                userarray[4] = items[0].name; //first name
+                //var userarray = [];
+                globalService.userarray[0] = items[0].id; // GUID from Azure table
+                globalService.userarray[1] = "client"; //user role
+                globalService.userarray[2] = ""; //full name
+                globalService.userarray[3] = ""; //email
+                globalService.userarray[4] = items[0].name; //first name
                 localStorage["RYB_userarray"] = JSON.stringify(userarray);
 
                 // Update client 
