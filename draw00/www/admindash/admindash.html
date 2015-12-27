@@ -5,6 +5,8 @@
 <div>header goes here</div>
 
 <button type="button" class="btn btn-primary" style="box-shadow:none;" ng-click="showaddclientui=true">Add</button>
+<button type="button" class="btn btn-primary" style="box-shadow:none;" ng-click="showInvitationForm=true">New invitation</button>
+
 
 <button type="button" class="btn btn-primary" style="box-shadow:none;" ng-click="gotoView()">Button</button>
 
@@ -16,7 +18,7 @@
     <!--'row' is a new local var created here then used in controllerJS-->
     <!-- Can use 'arr.[x]' for array and 'ParamName/Colname' if JSON -->
     <div ng-repeat="row in clientarray track by $index" ng-include="'repeaterTemplate.html'"></div>
-    <div ng-show="noClientFlag">No clients</div>
+    <div ng-show="noClientFlag">No clients</div> 
 </div>
 <!-- This is one way to specify the repeater item template used above
     Could also be in separate HTML file loaded with ng-include="'folder/repeaterTemplate.html'" 
@@ -49,5 +51,34 @@
     <div>Next steps</div>
     <div>Install on another device. Choose Kid mode and enter this registration code.</div>
     <div type="button" ng-click="showClientAddedUI=false;">close</div>
+
+</div>
+
+
+
+
+
+ THIS IS SOME UI USED IN OTHER VIEWS.  MAYBE SHOULD BE A NG-TEMPLATE AND DEFINED IN 'PARTIALS' FOR GENERAL REUSE?
+<!--Modal for Create New Invitation -->
+<div id="newInvitationForm" ng-show="showInvitationForm"><!--ng-show is logic to toggle show/hide for this UI-->
+    <div>New invitation request</div>
+
+    <input id="parentemailinput" type="text" ng-model='parentemail' placeholder="Parent email" ng-focus="parentemail='';verifyParentSuccess=false;verifyParentError=false" />  <!--'parentemail' is only defined here and not in controller-->
+    <button type="button" class="btn btn-primary" style="box-shadow:none;" ng-click="verifyParent(parentemail)">Verify</button>
+    <div ng-show="verifyParentSuccess">success</div>
+    <div ng-show="verifyParentError">{{verifyParentErrorMessage}}</div>
+    
+    <div id="kidVerificationForm" ng-show="verifyParentSuccess">
+        <input id="kidnameinput2" type="text" ng-model='kidname2' placeholder="Kid name" ng-focus="kidname2='';verifyKidSuccess=false;verifyKidError=false" />  <!--'kidname2' is only defined here and not in controller-->
+        <button type="button" class="btn btn-primary" style="box-shadow:none;" ng-click="verifyKid(kidname2)">Verify</button>
+        <div ng-show="verifyKidSuccess">success</div>
+        <div ng-show="verifyKidError">{{verifyKidErrorMessage}}</div>
+    </div>
+
+    <!--ng-disabled="!verifyKidSuccess" means disable this control IF NOT TRUE-->
+    <button type="button" class="btn btn-primary" style="box-shadow:none;" ng-disabled="!verifyKidSuccess" ng-click="addNewInvitation(parentemail,kidname2);parentemail='';kidname2='';verifyParentSuccess=false;verifyParentError=false;verifyKidSuccess=false;verifyKidError=false">Send invitation</button>
+    <button type="button" class="btn btn-primary" style="box-shadow:none;" ng-click="showInvitationForm=false;parentemail='';kidname2='';verifyParentSuccess=false;verifyParentError=false;verifyKidSuccess=false;verifyKidError=false">Cancel</button>
+    <div>success</div>
+    <div>error</div>
 
 </div> 

@@ -1,11 +1,6 @@
 ﻿// admindashController
 
-// - load the client array.  CRUD operations here are pushed to web, so the local store is always most current
-
-// NEED SPECIAL MESSAGE FOR NO CLIENTS
-// NEED MESSAGE ABOUT WHAT TO DO WITHTEH CLIENT WHEN CREATED
-
-
+// - Load the client array.  CRUD operations here are pushed to web, so the local store is always most current
 
 
 cordovaNG.controller('admindashController', function ($scope, globalService, Azureservice) {
@@ -15,32 +10,33 @@ cordovaNG.controller('admindashController', function ($scope, globalService, Azu
     $scope.showaddclientui = false; // boolean for ng-show for add client modal
     $scope.showClientAddedUI = false; // boolean for ng-show for ClientAdded message
     $scope.noClientFlag = false; // boolean for ng-show for 'no client' message
+    // ---
+    $scope.showInvitationForm = false; // boolean for ng-show for add invitation modal
 
-    // @@@@@@@@@@@@  Need to add it to global scope. Don't need this here if you already got it from the signin screen.  
-    //var userarray = JSON.parse(localStorage.getItem('RYB_userarray')); // get user array from localstorage key pair and string.  
+
     //alert(globalService.userarray);
-
-    $scope.clientarray = []; //create as an array
-
     // alert(localStorage.getItem('RYB_clientarray'));  // the returned string is not a usable array.  Needs Json.Parse for that.
 
-    // Check for some clients
-    // ---------------------
+    // ==========================================
+    //  Get local client array.   
+    // ==========================================
+    $scope.clientarray = []; //create as an array
+
     if (localStorage.getItem('RYB_clientarray')) { 
         $scope.clientarray = JSON.parse(localStorage.getItem('RYB_clientarray')); // get array from localstorage key pair and string
         alert("array length: " + $scope.clientarray.length + " - " + $scope.clientarray)
     }
-    else { // if no clients
-        // @@@@@@@@@@@@@@ Add special message for this case  @@@@@@@@@@@@@@
+    else { // if no clients, show special message for this case 
         alert('no clients found')
         $scope.noClientFlag = true;
     };
+    // ==========================================
+
 
 
     // ==========================================
     //  Create new client.  Store locally and create on Azure
     // ==========================================
-
     $scope.addNewClient = function (name) {
         addKid(name);
         $scope.showaddclientui = false;
@@ -162,10 +158,102 @@ cordovaNG.controller('admindashController', function ($scope, globalService, Azu
 
 
 
+
+
+
+
+    // ==========================================
+    //  Create New Friend request record on Azure.  Store locally and create on Azure
+    // ==========================================
+    //1. enter parent email and lookup to verify
+    //2. enter the kids display name and lookup to verify
+    //3. default to the display of the kid whose context you're creating the invitation in
+    //4. create new invitation record with the 4 corresponding IDs
+    // INVITATION RECORD: from_parent_id, from_kid_id, to_parent_id, to_kid_id, status, datetime
+
+    // Verify Parent
+    // ------------
+    $scope.verifyParent = function (email) {
+        azureQueryParent(email)
+        $scope.verifyParentError = false;
+    };
+    function azureQueryParent(email) {
+        var query = "$filter=email eq '" + email + "'";
+        Azureservice.read('parents', query).then(function (items) {  // query to see if this 'reg_code' exists
+            if (items.length == 0) { // if email not found, then
+                // 'verifyParentError' is a flag the UI uses to check for 'show/hide' error div
+                $scope.verifyParentError = true;
+                $scope.verifyParentErrorMessage = '"' + email + '" is not a valid email.  Please check and try again.'
+                console.log('email not found')
+            }
+            else { // if email found, show verify success and kid verification UI
+                $scope.verifyParentSuccess = true;
+            };
+        }).catch(function (error) {
+            console.log(error)
+            alert(error);
+        })
+    };
+
+    // Verify Kid
+    // ------------
+    $scope.verifyKid = function (name) {
+        azureQueryKid(name)
+        $scope.verifyKidError = false;
+    };
+    function azureQueryKid(name) {
+        var query = "$filter=name eq '" + name + "'";
+        Azureservice.read('kid', query).then(function (items) {  // query to see if this 'name' exists
+            if (items.length == 0) { // if email not found, then
+                // 'verifyKidError' is a flag the UI uses to check for 'show/hide' error div
+                $scope.verifyKidError = true;
+                $scope.verifyKidErrorMessage = '"' + name + '" is not a valid user.  Please check and try again.'
+                console.log('kid name not found')
+            }
+            else { // if kid name found, show verify success and addNewInvitation button
+                $scope.verifyKidSuccess = true;
+            };
+        }).catch(function (error) {
+            console.log(error);
+            alert(error);
+        })
+    };
+
+
+    $scope.addNewInvitation = function (parentemail, kidname) {
+        $scope.verifyKidSuccess = false; //toggle to turn off the UI modal (could be in html also)
+
+        // Create on Azure @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+        // ---------------
+        Azureservice.insert('invitations', {
+            id: globalService.makeUniqueID(), // made GUID for Azure table        
+            fromparent_id: globalService.userarray[0],
+            toparent_id: name,
+            fromkid_id: name,
+            tokid_id: name,
+            status: 'pending', // maybe only show 'pending' in the table.  remove after accepted?????????????????????????????????????????
+        })
+        .then(function () {
+            //console.log('new invitation insert successful');
+            $scope.addNewInvitationSuccess = true; // UI flag that invitation was sent
+        },
+        function (err) {
+            console.error('Azure Error: ' + err);
+        });
+    };
+
+    // ==========================================
+
+
+
     // View changer.  Have to use $scope. to make available to the view
     // --------------
     $scope.gotoView = function () {
         globalService.changeView('/');
     };
+
+
+
+
 
 }); //controller end
