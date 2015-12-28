@@ -52,16 +52,19 @@ var app = {
         // =========================================================================================
 
 
-
+        // =========================================================================================
+        // =========================================================================================
         // #region notification-registration	
-        // &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
         // Define the PushPlugin.
+        // =========================================================================================
+
         var pushNotification = window.plugins.pushNotification;
 		
         // Platform-specific registrations.
         if ( device.platform == 'android' || device.platform == 'Android' ){
             // Register with GCM for Android apps.
             console.log('this is android device');
+            alert('this is android device');
 
             pushNotification.register(
                app.successHandler, app.errorHandler,
@@ -106,10 +109,14 @@ var app = {
             case 'registered':
                 // Handle the registration.
                 //document.getElementById('log').innerHTML += 'GCM regid from PushNotification is '+ e.regid +' </br>'// old school dom injection
+                alert('GCM regid from PushNotification is '+ e.regid)
 
                 if (e.regid.length > 0) {
                     console.log("gcm id " + e.regid);
 
+
+
+                    // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ WORKING HERE @@@@@@@@@@@@@@@@@@@@@@@@@@@@
                     if (client) {
 
                         // Create the integrated Notification Hub client.

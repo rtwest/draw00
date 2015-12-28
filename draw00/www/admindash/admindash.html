@@ -78,7 +78,7 @@
     <!--ng-disabled="!verifyKidSuccess" means disable this control IF NOT TRUE-->
     <button type="button" class="btn btn-primary" style="box-shadow:none;" ng-disabled="!verifyKidSuccess" ng-click="addNewInvitation(parentemail,kidname2);parentemail='';kidname2='';verifyParentSuccess=false;verifyParentError=false;verifyKidSuccess=false;verifyKidError=false">Send invitation</button>
     <button type="button" class="btn btn-primary" style="box-shadow:none;" ng-click="showInvitationForm=false;parentemail='';kidname2='';verifyParentSuccess=false;verifyParentError=false;verifyKidSuccess=false;verifyKidError=false">Cancel</button>
-    <div>success</div>
-    <div>error</div>
+    <div ng-show="invitationSuccess">success</div>
+    <div ng-show="invitationError">{{invitationErrorMessage}}</div>
 
 </div> 
