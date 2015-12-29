@@ -1,4 +1,7 @@
-﻿angular.module('azure-mobile-service.module', []).service('Azureservice', [
+﻿// 'AzureMobileServiceClient' is a constant with URL and Key
+// 
+
+angular.module('azure-mobile-service.module', []).service('Azureservice', [
   '$window',
   '$q',
   'AzureMobileServiceClient',

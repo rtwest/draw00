@@ -58,212 +58,273 @@ var app = {
         // Define the PushPlugin.
         // =========================================================================================
 
-        var pushNotification = window.plugins.pushNotification;
-		
-        // Platform-specific registrations.
-        if ( device.platform == 'android' || device.platform == 'Android' ){
-            // Register with GCM for Android apps.
-            console.log('this is android device');
-            alert('this is android device');
+        // Create a new PushNotification and start registration with the PNS.
+        var pushNotification = PushNotification.init({
+            "android": { "senderID": '168753624064' },
+            "ios": { "alert": "true", "badge": "false", "sound": "false" }
+        });
 
-            pushNotification.register(
-               app.successHandler, app.errorHandler,
-               { 
-                   "senderID": '168753624064',  // GCM_SENDER_ID, Project number generated on the Google Dev' Console at console.developers.google.com
-                   "ecb": "app.onNotificationGCM" 
-               });
-        } else if (device.platform === 'iOS') {
-            console.log('this is iOS device');
-
-            // Register with APNS for iOS apps.			
-            pushNotification.register(
-                app.tokenHandler,
-                app.errorHandler, { 
-                    "badge":"true",
-                    "sound":"true",
-                    "alert":"true",
-                    "ecb": "app.onNotificationAPN"
-                });
-        }
-        else if(device.platform === "Win32NT"){
-            // Register with MPNS for WP8 apps.
-            pushNotification.register(
-				app.channelHandler,
-				app.errorHandler,
-				{
-				    "channelName": "MyPushChannel",
-				    "ecb": "app.onNotificationWP8",
-				    "uccb": "app.channelHandler",
-				    "errcb": "app.ErrorHandler"
-				});
-        }
-        // #endregion notifications-registration
-        // &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
-    },
-
-    // %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    // #region notification-callbacks
-    // Callbacks from PushPlugin
-    onNotificationGCM: function (e) {
-        switch (e.event) {
-            case 'registered':
-                // Handle the registration.
-                //document.getElementById('log').innerHTML += 'GCM regid from PushNotification is '+ e.regid +' </br>'// old school dom injection
-                alert('GCM regid from PushNotification is '+ e.regid)
-
-                if (e.regid.length > 0) {
-                    console.log("gcm id " + e.regid);
-
-
-
-                    // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ WORKING HERE @@@@@@@@@@@@@@@@@@@@@@@@@@@@
-                    if (client) {
-
-                        // Create the integrated Notification Hub client.
-                        var hub = new NotificationHub(client);
-
-                        // Template registration.
-                        var template = "{ \"data\" : {\"message\":\"$(message)\"}}";
-
-                        // Register for notifications.
-                        // (gcmRegId, ["tag1","tag2"], templateName, templateBody)
-                        hub.gcm.register(e.regid, null, "myTemplate", template).done(function () {
-                            alert("Registered with hub!");
-                            document.getElementById('log').innerHTML += 'Registered with hub!</br>'// old school dom injection
-
-                        }).fail(function (error) {
-                            alert("Failed registering with hub: " + error);
-                            document.getElementById('log').innerHTML += 'Failed registering with hub:</br>'// old school dom injection
-
-                        });
-                    }
-                    //else {};
-                }
-                break;
-
-            case 'message':
-
-                if (e.foreground) {
-                    // Handle the received notification when the app is running
-                    // and display the alert message. 
-                    alert(e.payload.message);
-
-                    // Reload the items list.
-                    //refreshTodoItems();  .. this function not in my app
-                }
-                break;
-
-            case 'error':
-                alert('GCM error: ' + e.message);
-                break;
-
-            default:
-                alert('An unknown GCM event has occurred');
-                break;
-        }
-    },
-
-    // Handle the token from APNS and create a new hub registration.
-    tokenHandler: function (result) {
-        if (client) {
-
-            // Create the integrated Notification Hub client.
-            var hub = new NotificationHub(client);
-
-            // This is a template registration.
-            var template = "{\"aps\":{\"alert\":\"$(message)\"}}";
-
-            // Register for notifications.
-            // (deviceId, ["tag1","tag2"], templateName, templateBody, expiration)
-            //document.getElementById('log').innerHTML += 'device token for APNS from PushNotification : '+result+' </br>'// old school dom injection
-
-            hub.apns.register(result, null, "myTemplate", template, null).done(function () {
-                alert("Registered with hub!");
-                document.getElementById('log').innerHTML += 'Registered with hub!</br>'// old school dom injection
-
-            }).fail(function (error) {
-                alert("Failed registering with hub: " + error);
-                document.getElementById('log').innerHTML += 'Failed registering with hub:</br>'// old school dom injection
-
-            });
-        }
-        //else {};
-    },
-
-    // Handle the notification when the iOS app is running.
-    onNotificationAPN: function (event) {
-
-        if (event.alert) {
-            // Display the alert message in an alert.
-            alert(event.alert);
-
-            // Reload the items list.
-            //refreshTodoItems();
-        }
-
-        // // Other possible notification stuff we don't use in this sample.
-        // if (event.sound){
-        // var snd = new Media(event.sound);
-        // snd.play();
-        // }
-
-        // if (event.badge){
-
-        // pushNotification.setApplicationIconBadgeNumber(successHandler, errorHandler, event.badge);
-        // }
-
-    },
-
-    // Handle the channel URI from MPNS and create a new hub registration. 
-    channelHandler: function (result) {
-        if (result.uri !== "") {
-            if (client) {
-
-                // Create the integrated Notification Hub client.
-                var hub = new NotificationHub(client);
-
-                // This is a template registration.
-                var template = "<?xml version=\"1.0\" encoding=\"utf-8\"?>" +
-                    "<wp:Notification xmlns:wp=\"WPNotification\">" +
-                        "<wp:Toast>" +
-                            "<wp:Text1>$(message)</wp:Text1>" +
-                        "</wp:Toast>" +
-                    "</wp:Notification>";
-
+        // Handle the registration event.
+        pushNotification.on('registration', function (data) {
+            // Get the native platform of the device.
+            var platform = device.platform;
+            // Get the handle returned during registration.
+            var handle = data.registrationId;
+            // Set the device-specific message template.
+            if (platform == 'android' || platform == 'Android') {
+                // Template registration.
+                var template = '{ "data" : {"message":"$(message)"}}';
                 // Register for notifications.
-                // (channelUri, ["tag1","tag2"] , templateName, templateBody)
-                hub.mpns.register(result.uri, null, "myTemplate", template).done(function () {
-                    alert("Registered with hub!");
-                }).fail(function (error) {
-                    alert("Failed registering with hub: " + error);
-                });
+                mobileServiceClient.push.gcm.registerTemplate(handle,
+                    'myTemplate', template, null)
+                    .done(registrationSuccess, registrationFailure);
+            } else if (device.platform === 'iOS') {
+                // Template registration.
+                var template = '{"aps": {"alert": "$(message)"}}';
+                // Register for notifications.            
+                mobileServiceClient.push.apns.registerTemplate(handle,
+                    'myTemplate', template, null)
+                    .done(registrationSuccess, registrationFailure);
             }
-        }
-        else {
-            console.log('channel URI could not be obtained!');
-        }
-    },
+        });
 
-    // Handle the notification when the WP8 app is running.
-    onNotificationWP8: function (event) {
-        if (event.jsonContent) {
+        // Handles the notification received event.
+        pushNotification.on('notification', function (data) {
             // Display the alert message in an alert.
-            alert(event.jsonContent['wp:Text1']);
-
+            alert(data.message);
             // Reload the items list.
-            //refreshTodoItems();
-        }
-    },
-    // #endregion notification-callbacks
+            app.Storage.getData();
+        });
 
-    successHandler: function (result) {
-        console.log("callback success, result = " + result);
-    },
+        // Handles an error event.
+        pushNotification.on('error', function (e) {
+            // Display the error message in an alert.
+            alert(e.message);
+        });
 
-    errorHandler: function (error) {
-        alert(error);
-    },
-    // &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+    //});
+
+    var registrationSuccess = function () {
+        alert('Registered with Azure!');
+    }
+
+    var registrationFailure = function (error) {
+        alert('Failed registering with Azure: ' + error);
+    }
+
+
+
+        //    var pushNotification = window.plugins.pushNotification;
+
+        //    // Platform-specific registrations.
+        //    if ( device.platform == 'android' || device.platform == 'Android' ){
+        //        // Register with GCM for Android apps.
+        //        console.log('this is android device');
+        //        alert('this is android device');
+
+        //        pushNotification.register(
+        //           app.successHandler, app.errorHandler,
+        //           { 
+        //               "senderID": '168753624064',  // GCM_SENDER_ID, Project number generated on the Google Dev' Console at console.developers.google.com
+        //               "ecb": "app.onNotificationGCM" 
+        //           });
+        //    } else if (device.platform === 'iOS') {
+        //        console.log('this is iOS device');
+
+        //        // Register with APNS for iOS apps.			
+        //        pushNotification.register(
+        //            app.tokenHandler,
+        //            app.errorHandler, { 
+        //                "badge":"true",
+        //                "sound":"true",
+        //                "alert":"true",
+        //                "ecb": "app.onNotificationAPN"
+        //            });
+        //    }
+        //    else if(device.platform === "Win32NT"){
+        //        // Register with MPNS for WP8 apps.
+        //        pushNotification.register(
+        //			app.channelHandler,
+        //			app.errorHandler,
+        //			{
+        //			    "channelName": "MyPushChannel",
+        //			    "ecb": "app.onNotificationWP8",
+        //			    "uccb": "app.channelHandler",
+        //			    "errcb": "app.ErrorHandler"
+        //			});
+        //    }
+        //    // #endregion notifications-registration
+        //    // &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+        //},
+
+        //// %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        //// #region notification-callbacks
+        //// Callbacks from PushPlugin
+        //onNotificationGCM: function (e) {
+        //    switch (e.event) {
+        //        case 'registered':
+        //            // Handle the registration.
+        //            //document.getElementById('log').innerHTML += 'GCM regid from PushNotification is '+ e.regid +' </br>'// old school dom injection
+        //            alert('GCM regid from PushNotification is '+ e.regid)
+
+        //            if (e.regid.length > 0) {
+        //                console.log("gcm id " + e.regid);
+
+
+
+        //                // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ WORKING HERE @@@@@@@@@@@@@@@@@@@@@@@@@@@@
+        //                if (client) {
+
+        //                    alert('azure mobile service helper/client set up');
+
+        //                    // Create the integrated Notification Hub client.
+        //                    var hub = new NotificationHub(client);
+
+        //                    // Template registration.
+        //                    var template = "{ \"data\" : {\"message\":\"$(message)\"}}";
+
+        //                    // Register for notifications.
+        //                    // (gcmRegId, ["tag1","tag2"], templateName, templateBody)
+        //                    hub.gcm.register(e.regid, null, "myTemplate", template).done(function () {
+        //                        alert("Registered with hub!");
+        //                        document.getElementById('log').innerHTML += 'Registered with hub!</br>'// old school dom injection
+
+        //                    }).fail(function (error) {
+        //                        alert("Failed registering with hub: " + error);
+        //                        document.getElementById('log').innerHTML += 'Failed registering with hub:</br>'// old school dom injection
+
+        //                    });
+        //                }
+        //                //else {};
+        //            }
+        //            break;
+
+        //        case 'message':
+
+        //            if (e.foreground) {
+        //                // Handle the received notification when the app is running
+        //                // and display the alert message. 
+        //                alert(e.payload.message);
+
+        //                // Reload the items list.
+        //                //refreshTodoItems();  .. this function not in my app
+        //            }
+        //            break;
+
+        //        case 'error':
+        //            alert('GCM error: ' + e.message);
+        //            break;
+
+        //        default:
+        //            alert('An unknown GCM event has occurred');
+        //            break;
+        //    }
+        //},
+
+        //// Handle the token from APNS and create a new hub registration.
+        //tokenHandler: function (result) {
+        //    if (client) {
+
+        //        // Create the integrated Notification Hub client.
+        //        var hub = new NotificationHub(client);
+
+        //        // This is a template registration.
+        //        var template = "{\"aps\":{\"alert\":\"$(message)\"}}";
+
+        //        // Register for notifications.
+        //        // (deviceId, ["tag1","tag2"], templateName, templateBody, expiration)
+        //        //document.getElementById('log').innerHTML += 'device token for APNS from PushNotification : '+result+' </br>'// old school dom injection
+
+        //        hub.apns.register(result, null, "myTemplate", template, null).done(function () {
+        //            alert("Registered with hub!");
+        //            document.getElementById('log').innerHTML += 'Registered with hub!</br>'// old school dom injection
+
+        //        }).fail(function (error) {
+        //            alert("Failed registering with hub: " + error);
+        //            document.getElementById('log').innerHTML += 'Failed registering with hub:</br>'// old school dom injection
+
+        //        });
+        //    }
+        //    //else {};
+        //},
+
+        //// Handle the notification when the iOS app is running.
+        //onNotificationAPN: function (event) {
+
+        //    if (event.alert) {
+        //        // Display the alert message in an alert.
+        //        alert(event.alert);
+
+        //        // Reload the items list.
+        //        //refreshTodoItems();
+        //    }
+
+        //    // // Other possible notification stuff we don't use in this sample.
+        //    // if (event.sound){
+        //    // var snd = new Media(event.sound);
+        //    // snd.play();
+        //    // }
+
+        //    // if (event.badge){
+
+        //    // pushNotification.setApplicationIconBadgeNumber(successHandler, errorHandler, event.badge);
+        //    // }
+
+        //},
+
+        //// Handle the channel URI from MPNS and create a new hub registration. 
+        //channelHandler: function (result) {
+        //    if (result.uri !== "") {
+        //        if (client) {
+
+        //            // Create the integrated Notification Hub client.
+        //            var hub = new NotificationHub(client);
+
+        //            // This is a template registration.
+        //            var template = "<?xml version=\"1.0\" encoding=\"utf-8\"?>" +
+        //                "<wp:Notification xmlns:wp=\"WPNotification\">" +
+        //                    "<wp:Toast>" +
+        //                        "<wp:Text1>$(message)</wp:Text1>" +
+        //                    "</wp:Toast>" +
+        //                "</wp:Notification>";
+
+        //            // Register for notifications.
+        //            // (channelUri, ["tag1","tag2"] , templateName, templateBody)
+        //            hub.mpns.register(result.uri, null, "myTemplate", template).done(function () {
+        //                alert("Registered with hub!");
+        //            }).fail(function (error) {
+        //                alert("Failed registering with hub: " + error);
+        //            });
+        //        }
+        //    }
+        //    else {
+        //        console.log('channel URI could not be obtained!');
+        //    }
+        //},
+
+        //// Handle the notification when the WP8 app is running.
+        //onNotificationWP8: function (event) {
+        //    if (event.jsonContent) {
+        //        // Display the alert message in an alert.
+        //        alert(event.jsonContent['wp:Text1']);
+
+        //        // Reload the items list.
+        //        //refreshTodoItems();
+        //    }
+        //},
+        //// #endregion notification-callbacks
+
+        //successHandler: function (result) {
+        //    console.log("callback success, result = " + result);
+        //},
+
+        //errorHandler: function (error) {
+        //    alert(error);
+        //},
+        //// &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+
+
+    }, // end of 'onDeviceReady'
 
 }; // end of 'app' class
 
@@ -296,7 +357,7 @@ var cordovaNG = angular.module('cordovaNG', [
 // ==================================================
 
 
-// Setup for AzureMobileServie NG Wrapper
+// Setup for AzureMobileService NG Wrapper.  This pass URL and Key.
 angular.module('cordovaNG').constant('AzureMobileServiceClient', {
     API_URL: 'https://service-poc.azure-mobile.net/',
     API_KEY: 'IfISqwqStqWVFuRgKbgJtedgtBjwrc24',
