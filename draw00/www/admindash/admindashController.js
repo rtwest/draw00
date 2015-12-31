@@ -171,6 +171,8 @@ cordovaNG.controller('admindashController', function ($scope, globalService, Azu
     //4. create new invitation record with the 4 corresponding IDs
     // INVITATION RECORD: from_parent_id, from_kid_id, to_parent_id, to_kid_id, status, datetime
 
+    var ToParentID, ToKidName;
+
     // Verify Parent
     // ------------
     $scope.verifyParent = function (email) {
@@ -188,6 +190,7 @@ cordovaNG.controller('admindashController', function ($scope, globalService, Azu
             }
             else { // if email found, show verify success and kid verification UI
                 $scope.verifyParentSuccess = true;
+                ToParentID = items[0].id; // Get the GUID for the parent
             };
         }).catch(function (error) {
             console.log(error)
@@ -212,6 +215,7 @@ cordovaNG.controller('admindashController', function ($scope, globalService, Azu
             }
             else { // if kid name found, show verify success and addNewInvitation button
                 $scope.verifyKidSuccess = true;
+                ToKidName = name; // Get the GUID for the parent
             };
         }).catch(function (error) {
             console.log(error);
@@ -220,25 +224,27 @@ cordovaNG.controller('admindashController', function ($scope, globalService, Azu
     };
 
 
-    $scope.addNewInvitation = function (parentemail, kidname) {
+    $scope.addNewInvitation = function () {
         $scope.verifyKidSuccess = false; //toggle to turn off the UI modal (could be in html also)
 
-        // Create on Azure @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+        // Create on Azure
         // ---------------
         Azureservice.insert('invitations', {
             id: globalService.makeUniqueID(), // made GUID for Azure table        
             fromparent_id: globalService.userarray[0],
-            toparent_id: name,
-            fromkid_id: name,
-            tokid_id: name,
-            status: 'pending', // maybe only show 'pending' in the table.  remove after accepted?????????????????????????????????????????
+            toparent_id: ToParentID,
+            fromkid: "name",
+            tokid: ToKidName,
         })
         .then(function () {
-            //console.log('new invitation insert successful');
-            $scope.addNewInvitationSuccess = true; // UI flag that invitation was sent
+            console.log('new invitation insert successful');
+            $scope.invitationSuccess = true; // UI flag that invitation was sent
+            $scope.showInvitationForm = false;
         },
         function (err) {
             console.error('Azure Error: ' + err);
+            $scope.invitationError = true;
+            $scope.invitationErrorMessage = err; // UI flag that invitation was sent
         });
     };
 

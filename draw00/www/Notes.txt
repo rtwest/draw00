@@ -1,5 +1,8 @@
-QUESTIONS
+P R O B L E M S
 -----------------------------
+- clientarray in localstorage as double brackets around it = [["...,...,..."]]
+
+
 
 
 S T O R A G E 
@@ -9,7 +12,7 @@ Azure Tables
 PARENT RECORD: id, name, email
 KID RECORD: id, name, parent_id, profileimage, registration_code, reg_status
 FRIEND RECORD: kid_id1, kid_id2
-INVITATION RECORD: from_parent_id, from_kid_id, to_parent_id, to_kid_id, status, datetime
+INVITATION RECORD: fromparent_id, toparent_id, fromkid (name), tokid (name).  - Status is implied as pending because its in the table.  Remove when accepted.
 EVENT RECORD: picture_id, from_kid_id, to_kid_id, comment_content, datetime
 PICTURE RECORD: picture_blob, picture_id, kid_id, datetime
 
@@ -27,7 +30,7 @@ Other local client side needs
 	- admin details (name, parent_id, reqs FB registration?)
 	- client details (name, kid_id) - if not, show client code input
 - for client, list of friends (name, kid_id) - FRIENDS ARRAY
-- for admin, list of clients (name, kid_id) - CLIENT ARRAY
+- for admin, list of clients (kid_id, name) - CLIENT ARRAY  // This is an array of arrays - [[...,...][...,...][...,...]]
 
 =======================================================================================
 

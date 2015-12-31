@@ -68,7 +68,7 @@ cordovaNG.controller('signinController', function ($scope, globalService, ngFB, 
                     globalService.userarray[2] = result.name;
                     globalService.userarray[3] = result.email;
                     globalService.userarray[4] = result.first_name;
-                    localStorage["RYB_userarray"] = JSON.stringify(userarray); //push back to localStorage
+                    localStorage["RYB_userarray"] = JSON.stringify(globalService.userarray); //push back to localStorage
 
                     azureCheckUserandInsert(result.email, result.name); //@@@ Function to query azure 'parent' table to look for email and insert record
 
@@ -213,7 +213,7 @@ cordovaNG.controller('signinController', function ($scope, globalService, ngFB, 
                 globalService.userarray[2] = ""; //full name
                 globalService.userarray[3] = ""; //email
                 globalService.userarray[4] = items[0].name; //first name
-                localStorage["RYB_userarray"] = JSON.stringify(userarray);
+                localStorage["RYB_userarray"] = JSON.stringify(globalService.userarray);
 
                 // Update client 
                 Azureservice.update('kid', {

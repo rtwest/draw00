@@ -5,7 +5,7 @@
 <div>header goes here</div>
 
 <button type="button" class="btn btn-primary" style="box-shadow:none;" ng-click="showaddclientui=true">Add</button>
-<button type="button" class="btn btn-primary" style="box-shadow:none;" ng-click="showInvitationForm=true">New invitation</button>
+<button type="button" class="btn btn-primary" style="box-shadow:none;" ng-click="showInvitationForm=true;invitationSuccess=false">New invitation</button>
 
 
 <button type="button" class="btn btn-primary" style="box-shadow:none;" ng-click="gotoView()">Button</button>
@@ -58,7 +58,7 @@
 
 
 
- THIS IS SOME UI USED IN OTHER VIEWS.  MAYBE SHOULD BE A NG-TEMPLATE AND DEFINED IN 'PARTIALS' FOR GENERAL REUSE?
+ <!--THIS IS SOME UI USED IN OTHER VIEWS.  MAYBE SHOULD BE A NG-TEMPLATE AND DEFINED IN 'PARTIALS' FOR GENERAL REUSE?-->
 <!--Modal for Create New Invitation -->
 <div id="newInvitationForm" ng-show="showInvitationForm"><!--ng-show is logic to toggle show/hide for this UI-->
     <div>New invitation request</div>
@@ -76,9 +76,9 @@
     </div>
 
     <!--ng-disabled="!verifyKidSuccess" means disable this control IF NOT TRUE-->
-    <button type="button" class="btn btn-primary" style="box-shadow:none;" ng-disabled="!verifyKidSuccess" ng-click="addNewInvitation(parentemail,kidname2);parentemail='';kidname2='';verifyParentSuccess=false;verifyParentError=false;verifyKidSuccess=false;verifyKidError=false">Send invitation</button>
+    <button type="button" class="btn btn-primary" style="box-shadow:none;" ng-disabled="!verifyKidSuccess" ng-click="addNewInvitation();parentemail='';kidname2='';verifyParentSuccess=false;verifyParentError=false;verifyKidSuccess=false;verifyKidError=false;">Send invitation</button>
     <button type="button" class="btn btn-primary" style="box-shadow:none;" ng-click="showInvitationForm=false;parentemail='';kidname2='';verifyParentSuccess=false;verifyParentError=false;verifyKidSuccess=false;verifyKidError=false">Cancel</button>
-    <div ng-show="invitationSuccess">success</div>
     <div ng-show="invitationError">{{invitationErrorMessage}}</div>
 
 </div> 
+<div ng-show="invitationSuccess">success</div>

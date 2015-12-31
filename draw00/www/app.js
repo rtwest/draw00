@@ -58,31 +58,41 @@ var app = {
         // Define the PushPlugin.
         // =========================================================================================
 
+        AMSClient = new WindowsAzure.MobileServiceClient(
+                    'https://service-poc.azure-mobile.net/',
+                    'IfISqwqStqWVFuRgKbgJtedgtBjwrc24');
+
         // Create a new PushNotification and start registration with the PNS.
         var pushNotification = PushNotification.init({
-            "android": { "senderID": '168753624064' },
+            "android": { "senderID": "168753624064" }, // This is my Google Developer Project ID # that has GCM API enabled
             "ios": { "alert": "true", "badge": "false", "sound": "false" }
         });
 
         // Handle the registration event.
         pushNotification.on('registration', function (data) {
+            alert('push.on called'); console.log('push.on called');
+            alert(data); console.log(data);
             // Get the native platform of the device.
             var platform = device.platform;
             // Get the handle returned during registration.
             var handle = data.registrationId;
+            alert(data); console.log(data);
             // Set the device-specific message template.
             if (platform == 'android' || platform == 'Android') {
+                alert('android'); console.log('device is android');
                 // Template registration.
                 var template = '{ "data" : {"message":"$(message)"}}';
                 // Register for notifications.
-                mobileServiceClient.push.gcm.registerTemplate(handle,
+                //mobileServiceClient.push.gcm.registerTemplate(handle,
+                AMSClient.push.gcm.registerTemplate(handle,
                     'myTemplate', template, null)
                     .done(registrationSuccess, registrationFailure);
             } else if (device.platform === 'iOS') {
                 // Template registration.
                 var template = '{"aps": {"alert": "$(message)"}}';
                 // Register for notifications.            
-                mobileServiceClient.push.apns.registerTemplate(handle,
+                //mobileServiceClient.push.apns.registerTemplate(handle,
+                AMSClient.push.apns.registerTemplate(handle,
                     'myTemplate', template, null)
                     .done(registrationSuccess, registrationFailure);
             }
@@ -93,13 +103,13 @@ var app = {
             // Display the alert message in an alert.
             alert(data.message);
             // Reload the items list.
-            app.Storage.getData();
+            //app.Storage.getData();
         });
 
         // Handles an error event.
         pushNotification.on('error', function (e) {
             // Display the error message in an alert.
-            alert(e.message);
+            alert('error on registration = '+e.message);
         });
 
     //});
@@ -170,9 +180,6 @@ var app = {
         //            if (e.regid.length > 0) {
         //                console.log("gcm id " + e.regid);
 
-
-
-        //                // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ WORKING HERE @@@@@@@@@@@@@@@@@@@@@@@@@@@@
         //                if (client) {
 
         //                    alert('azure mobile service helper/client set up');
@@ -364,6 +371,10 @@ angular.module('cordovaNG').constant('AzureMobileServiceClient', {
 });
 
 
+
+
+
+
 // ==================================================
 // Configure the routes for navigation
 // ==================================================
@@ -467,6 +478,14 @@ cordovaNG.service('globalService', ['$location', function ($location) {
     var drawappDatabase = new PouchDB("drawappDatabase");
     //-------------------------
 
+    // Setting up Azureservice 
+    // ------------------------
+    // ???????????????????????????????????????
+    // ???????????????????????????????????????
+    // ???????????????????????????????????????
+    // ???????????????????????????????????????
+    // ------------------------
+
     return  {
         // Functions for get/set on global vars.  
         //----------
@@ -487,7 +506,7 @@ cordovaNG.service('globalService', ['$location', function ($location) {
         // -----------------
         drawappDatabase: drawappDatabase, // return the Database
 
-        userarray:userarray, // return the user data
+        userarray: userarray, // return the user data
 
         // Clever function to make a GUID compliant with standard format cast as type STRING
         // ----------------
