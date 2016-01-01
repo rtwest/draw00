@@ -70,20 +70,18 @@ var app = {
 
         // Handle the registration event.
         pushNotification.on('registration', function (data) {
-            alert('push.on called'); console.log('push.on called');
-            alert(data); console.log(data);
+            console.log('push.on called');
+            alert(JSON.stringify(data)); console.log(JSON.stringify(data));
             // Get the native platform of the device.
             var platform = device.platform;
             // Get the handle returned during registration.
             var handle = data.registrationId;
-            alert(data); console.log(data);
             // Set the device-specific message template.
             if (platform == 'android' || platform == 'Android') {
                 alert('android'); console.log('device is android');
                 // Template registration.
                 var template = '{ "data" : {"message":"$(message)"}}';
                 // Register for notifications.
-                //mobileServiceClient.push.gcm.registerTemplate(handle,
                 AMSClient.push.gcm.registerTemplate(handle,
                     'myTemplate', template, null)
                     .done(registrationSuccess, registrationFailure);
@@ -91,7 +89,6 @@ var app = {
                 // Template registration.
                 var template = '{"aps": {"alert": "$(message)"}}';
                 // Register for notifications.            
-                //mobileServiceClient.push.apns.registerTemplate(handle,
                 AMSClient.push.apns.registerTemplate(handle,
                     'myTemplate', template, null)
                     .done(registrationSuccess, registrationFailure);
@@ -99,7 +96,7 @@ var app = {
         });
 
         // Handles the notification received event.
-        pushNotification.on('notification', function (data) {
+        pushNotification.on('notification', function (data) { // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ WHAT TO DO AFTER NOTIFIATION @@@@@@@@@@@@@@@@@@@@@
             // Display the alert message in an alert.
             alert(data.message);
             // Reload the items list.
@@ -115,11 +112,11 @@ var app = {
     //});
 
     var registrationSuccess = function () {
-        alert('Registered with Azure!');
+        alert('Registered with Azure!'); console.log('Registered with Azure');
     }
 
     var registrationFailure = function (error) {
-        alert('Failed registering with Azure: ' + error);
+        alert('Failed registering with Azure: ' + error); console.log('Failed registering with Azure: ' + error);
     }
 
 
