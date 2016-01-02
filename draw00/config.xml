@@ -114,7 +114,6 @@
   <preference name="ShowTitle" value="False" />
   <preference name="InAppBrowserStorageEnabled" value="True" />
   <preference name="SuppressesIncrementalRendering" value="False" />
-  <vs:plugin name="com.microsoft.azure-mobile-services" version="1.2.9" />
   <preference name="Orientation" value="portrait" />
   <preference name="DisallowOverscroll" value="true" />
   <vs:plugin name="cordova-plugin-device" version="1.0.1" />
@@ -124,4 +123,5 @@
   <vs:plugin name="org.wbt11a.Canvas2ImagePlugin" version="0.7.1" src="https://github.com/rtwest/Canvas2ImagePlugin.git" />
   <vs:plugin name="phonegap-plugin-push" version="1.5.2" src="https://github.com/phonegap/phonegap-plugin-push.git" />
   <preference name="android-minSdkVersion" value="13" />
+  <vs:plugin name="com.microsoft.azure-mobile-services" version="1.2.9" />
 </widget>
