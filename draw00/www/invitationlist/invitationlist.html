@@ -1,9 +1,65 @@
 ﻿<!-- Invitation list -->
 
 <p>Invitation list</p>
+<button type="button" class="btn btn-primary" style="box-shadow:none;" ng-click="gotoAdminView()">Back</button>
+<button type="button" class="btn btn-primary" style="box-shadow:none;" ng-click="gotoView()">Button</button>
+<button type="button" class="btn btn-primary" style="box-shadow:none;" ng-click="showInvitationForm=true;invitationSuccess=false">New invitation</button>
 
-<button type="button" class="btn btn-primary" style="box-shadow:none;" ng-click="gotoView()">
-    Button
-</button>
 
-<p>...notes...</p>
+
+
+
+
+
+
+<!-- New Invitation List Repeater-->
+
+<div>New Invitations</div>
+<div>
+    <!--'For Each' loop using object 'clientlist' known to the $scope when defined in the controller -->
+    <!--'row' is a new local var created here then used in controllerJS-->
+    <!-- Can use 'arr.[x]' for array and 'ParamName/Colname' if JSON -->
+    <div ng-repeat="row in newInvitationArray track by $index" ng-include="'repeaterTemplate.html'"></div>
+    <div ng-show="noNewInvitationsMessage">No new invitations</div>
+</div>
+<!-- This is one way to specify the repeater item template used above
+    Could also be in separate HTML file loaded with ng-include="'folder/repeaterTemplate.html'"
+    Have to have the element ID on everything because the obj id is passed where ever you click-->
+<script type="text/ng-template" id="repeaterTemplate.html">
+    <div>
+        <div>To 
+            {{row.tokid}}
+        </div>
+        <div>From
+            {{row.fromkid}}
+        </div>
+        <div>
+            Parent
+            {{row.fromparent_name}}
+        </div>
+    </div>
+    <div id="{{row.id}}" ng-click="acceptInvitationClick($event)">Accept</div>
+</script>
+
+
+
+<!--Sent Invitation List Repeater-->
+
+<div>Sent Invitations</div>
+<div>
+    <div ng-repeat="row in sentInvitationArray track by $index" ng-include="'repeaterTemplate2.html'"></div>
+    <div ng-show="noSentInvitationsMessage">No new invitations</div>
+</div>
+<script type="text/ng-template" id="repeaterTemplate2.html">
+    <div>For
+        {{row.fromkid}}
+    </div>
+    <div>To 
+        {{row.tokid}}
+    </div>
+    <div>Parent
+        {{row.toparent_name}}
+    </div>
+</script>
+
+

@@ -12,8 +12,8 @@ Azure Tables
 ------------
 PARENT RECORD: id, name, email
 KID RECORD: id, name, parent_id, profileimage, registration_code, reg_status
-FRIEND RECORD: kid_id1, kid_id2
-INVITATION RECORD: fromparent_id, toparent_id, fromkid (name), tokid (name).  - Status is implied as pending because its in the table.  Remove when accepted.
+FRIEND RECORD: id, kid_id1, kid_id2
+INVITATION RECORD: id, fromparent_id, toparent_id, fromkid (name), tokid (name), fromparent_name, toparent_name.  - Status is implied as pending because its in the table.  Remove when accepted.
 EVENT RECORD: picture_id, from_kid_id, to_kid_id, comment_content, datetime
 PICTURE RECORD: picture_blob, picture_id, kid_id, datetime
 
@@ -55,7 +55,6 @@ CREATING A NEW INVITATION
  TO DO
 -----------------------------
 - --- From Admin, Create an invitation (WITH KID NAME) and VIEW INVITATIONS and ACCEPT invitation. 
-- --- For invitation, the Kid Query has to only search kids for that parent - Not all Kids. 
 - --- Pull new friends from client to update client
 - What is need for local DB?  
 - Need to check for web connection on load and alert

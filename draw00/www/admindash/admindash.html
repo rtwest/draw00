@@ -6,6 +6,7 @@
 
 <button type="button" class="btn btn-primary" style="box-shadow:none;" ng-click="showaddclientui=true">Add</button>
 <button type="button" class="btn btn-primary" style="box-shadow:none;" ng-click="showInvitationForm=true;invitationSuccess=false">New invitation</button>
+<button type="button" class="btn btn-primary" style="box-shadow:none;" ng-click="gotoInvitationView()">Invitations</button>
 
 
 <button type="button" class="btn btn-primary" style="box-shadow:none;" ng-click="gotoView()">Button</button>
@@ -36,6 +37,8 @@
 </script>
 
 
+
+
 <!--Modal for add new client-->
 <div id="addclientUI" ng-show="showaddclientui"> <!--ng-show is logic to toggle show/hide for this UI-->
     <div>Add new kid</div>
@@ -44,14 +47,12 @@
     <button type="button" class="btn btn-primary" style="box-shadow:none;" ng-click="showaddclientui=false;kidname=''">Cancel</button>
 
 </div> 
-
 <!--Modal for client added message-->
 <div id="clientAddedUI" ng-show="showClientAddedUI">
     <!--ng-show is logic to toggle show/hide for this UI-->
     <div>Next steps</div>
     <div>Install on another device. Choose Kid mode and enter this registration code.</div>
     <div type="button" ng-click="showClientAddedUI=false;">close</div>
-
 </div>
 
 

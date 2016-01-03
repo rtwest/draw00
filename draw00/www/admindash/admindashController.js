@@ -171,7 +171,7 @@ cordovaNG.controller('admindashController', function ($scope, globalService, Azu
     //4. create new invitation record with the 4 corresponding IDs
     // INVITATION RECORD: fromparent_id, toparent_id, fromkid, tokid, datetime
 
-    var ToParentID, ToKidName;
+    var ToParentID, ToParentName, ToKidName;
     var clientarray = [];
 
     // Choose Client (if needed)
@@ -200,6 +200,7 @@ cordovaNG.controller('admindashController', function ($scope, globalService, Azu
             else { // if email found, show verify success and kid verification UI
                 $scope.verifyParentSuccess = true;
                 ToParentID = items[0].id; // Get the GUID for the parent
+                ToParentName = items[0].name; // Get the GUID for the parent
                 azureQueryClientList(ToParentID)
             };
         }).catch(function (error) {
@@ -240,10 +241,10 @@ cordovaNG.controller('admindashController', function ($scope, globalService, Azu
                 found = true;
                 break;
             };
-        }
+        };
         if (found == true) { // name is in the Client array (-1 means not found), then show verify success and addNewInvitation button
             $scope.verifyKidSuccess = true;
-            ToKidName = name; // Get the GUID for the parent
+            ToKidName = name; // use the name for the kid
         }
         else { // if kid name not found, 
             // 'verifyKidError' is a flag the UI uses to check for 'show/hide' error div
@@ -264,7 +265,9 @@ cordovaNG.controller('admindashController', function ($scope, globalService, Azu
         Azureservice.insert('invitations', {
             id: globalService.makeUniqueID(), // made GUID for Azure table        
             fromparent_id: globalService.userarray[0],
+            fromparent_name: globalService.userarray[4], //first name.  full name is [2]
             toparent_id: ToParentID,
+            toparent_name: ToParentName,
             fromkid: "name",
             tokid: ToKidName,
         })
@@ -284,11 +287,15 @@ cordovaNG.controller('admindashController', function ($scope, globalService, Azu
 
 
 
-    // View changer.  Have to use $scope. to make available to the view
+    // View changers.  Have to use $scope. to make available to the view
     // --------------
     $scope.gotoView = function () {
         globalService.changeView('/');
     };
+    $scope.gotoInvitationView = function () {
+        globalService.changeView('/invitationlist');
+    };
+    
 
 
 
