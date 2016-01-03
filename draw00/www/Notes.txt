@@ -54,7 +54,9 @@ CREATING A NEW INVITATION
 
  TO DO
 -----------------------------
-- --- From Admin, Create an invitation and accept invitation.  Pull new friends it from client
+- --- From Admin, Create an invitation (WITH KID NAME) and VIEW INVITATIONS and ACCEPT invitation. 
+- --- For invitation, the Kid Query has to only search kids for that parent - Not all Kids. 
+- --- Pull new friends from client to update client
 - What is need for local DB?  
 - Need to check for web connection on load and alert
 - Need to restrict permissions on azure tables to authenticate users for admin and client(probably) 

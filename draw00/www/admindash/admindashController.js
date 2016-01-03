@@ -165,13 +165,22 @@ cordovaNG.controller('admindashController', function ($scope, globalService, Azu
     // ==========================================
     //  Create New Friend request record on Azure.  Store locally and create on Azure
     // ==========================================
-    //1. enter parent email and lookup to verify
-    //2. enter the kids display name and lookup to verify
+    //1. enter parent email and lookup to verify, and get clients for this admin
+    //2. enter the kids display name and lookup in client array verify
     //3. default to the display of the kid whose context you're creating the invitation in
     //4. create new invitation record with the 4 corresponding IDs
-    // INVITATION RECORD: from_parent_id, from_kid_id, to_parent_id, to_kid_id, status, datetime
+    // INVITATION RECORD: fromparent_id, toparent_id, fromkid, tokid, datetime
 
     var ToParentID, ToKidName;
+    var clientarray = [];
+
+    // Choose Client (if needed)
+    // ------------
+
+    // ------------
+
+
+
 
     // Verify Parent
     // ------------
@@ -191,6 +200,7 @@ cordovaNG.controller('admindashController', function ($scope, globalService, Azu
             else { // if email found, show verify success and kid verification UI
                 $scope.verifyParentSuccess = true;
                 ToParentID = items[0].id; // Get the GUID for the parent
+                azureQueryClientList(ToParentID)
             };
         }).catch(function (error) {
             console.log(error)
@@ -198,24 +208,16 @@ cordovaNG.controller('admindashController', function ($scope, globalService, Azu
         })
     };
 
-    // Verify Kid
+    // Get Clients for Admin ID
     // ------------
-    $scope.verifyKid = function (name) {
-        azureQueryKid(name)
-        $scope.verifyKidError = false;
-    };
-    function azureQueryKid(name) {
-        var query = "$filter=name eq '" + name + "'";
+    function azureQueryClientList(adminGUID) {
+        var query = "$filter=parent_id eq '" + adminGUID + "'";
         Azureservice.read('kid', query).then(function (items) {  // query to see if this 'name' exists
-            if (items.length == 0) { // if email not found, then
-                // 'verifyKidError' is a flag the UI uses to check for 'show/hide' error div
-                $scope.verifyKidError = true;
-                $scope.verifyKidErrorMessage = '"' + name + '" is not a valid user.  Please check and try again.'
-                console.log('kid name not found')
+            if (items.length == 0) { // if admin guid not found, then
+                console.log('admin guid  not found')
             }
-            else { // if kid name found, show verify success and addNewInvitation button
-                $scope.verifyKidSuccess = true;
-                ToKidName = name; // Get the GUID for the parent
+            else { // if admin guid found, get the client list (JSON) and put in array
+                clientarray = items;  //alert(clientarray[0].name);
             };
         }).catch(function (error) {
             console.log(error);
@@ -224,6 +226,36 @@ cordovaNG.controller('admindashController', function ($scope, globalService, Azu
     };
 
 
+    // Verify Kid by looking up in Client Array
+    // ------------
+    $scope.verifyKid = function (name) {
+        $scope.verifyKidError = false;
+        lookUpClientinArray(name)
+    };
+    function lookUpClientinArray(name) {
+        var found = false;
+        for (i = 0, len = clientarray.length; i < len; i++) {
+            //alert(clientarray[i].name);
+            if (clientarray[i].name == name) {
+                found = true;
+                break;
+            };
+        }
+        if (found == true) { // name is in the Client array (-1 means not found), then show verify success and addNewInvitation button
+            $scope.verifyKidSuccess = true;
+            ToKidName = name; // Get the GUID for the parent
+        }
+        else { // if kid name not found, 
+            // 'verifyKidError' is a flag the UI uses to check for 'show/hide' error div
+            $scope.verifyKidError = true;
+            $scope.verifyKidErrorMessage = '"' + name + '" is not a valid user.  Please check and try again.'
+            console.log('kid name not found')
+        };
+    };
+
+
+    // Create invitation record
+    // ------------
     $scope.addNewInvitation = function () {
         $scope.verifyKidSuccess = false; //toggle to turn off the UI modal (could be in html also)
 
