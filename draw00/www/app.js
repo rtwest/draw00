@@ -4,11 +4,6 @@
 
 NOTES:
 
-- Have problem with Azure mobile client and Push notification.  
-- Azure plugin and web service.js are redundant but I'm using webservie JS with NG wrapper.
-- The plugin and webservice.js might be colliding when setting Push up.  
-- Push code works consistently web service js is commented out
-- @@@@ look into creating the NG azure factory with the Azure plugin
 
 =====================================================================================================================
 =====================================================================================================================
@@ -351,7 +346,7 @@ cordovaNG.controller('mainController', function ($scope, Azureservice) {
 // ==================================================
 
 
-cordovaNG.controller('startupController', function ($scope,globalService) {
+cordovaNG.controller('startupController', function ($scope, globalService, Azureservice) {
 
     // Scope is like the partial view datamodel.  'message' is defined in the paritial view
     //$scope.message = 'Angular routing is working too';
@@ -397,26 +392,23 @@ cordovaNG.controller('startupController', function ($scope,globalService) {
     // ==================================================
 
 
-
-
     // =========================================================================================
     // =========================================================================================
     // Define the PushPlugin.
-    // Uses new Azure Mobile Servie and New Push Plugin.  Does not use NG Azure wrapper.
+    // Includes Factory NG Azure Wrapper around the Azure Pluging and uses Push Plugin.
     // https://github.com/Azure/mobile-services-samples/blob/master/CordovaNotificationsArticle/BackboneToDo/www/services/mobileServices/settings/services.js
     // =========================================================================================
-
-    // DON'T REGISTER FOR PUSH NOTIFICATION UNTIL USER IS SIGNED IN AND IDENTIFIED.  NEED THEIR GUID FOR REGISTRATION.
+    // - Register for Push Notifications AFTER user is signed in and has a GUID.  That's needed for the Push Notification
 
     function PushNotificationSetup() {
 
-        var user_array = JSON.parse(localStorage.getItem('RYB_userarray'));
-        alert(user_array);
         var tags = [];
-        tags[0] = user_array[0]; //Tags seems to expect an array.  Get the local user GUID
+        tags[0] = globalService.userarray[0]; //Azure Notification Hub 'Tags' var seems to expect an array.  Get the local user GUID to send to user
 
-        var MobileServiceClient = WindowsAzure.MobileServiceClient;
-        var AMSClient = new MobileServiceClient('https://service-poc.azure-mobile.net/','IfISqwqStqWVFuRgKbgJtedgtBjwrc24');
+        // @@@@ Don't want to instantiate this again if I don't have to
+        // @@@@ var MobileServiceClient = WindowsAzure.MobileServiceClient;
+        // @@@@ var AMSClient = new MobileServiceClient('https://service-poc.azure-mobile.net/', 'IfISqwqStqWVFuRgKbgJtedgtBjwrc24');
+        var AMSClient = Azureservice.client;
 
         // Create a new PushNotification and start registration with the PNS.
         var pushNotification = PushNotification.init({
@@ -424,7 +416,6 @@ cordovaNG.controller('startupController', function ($scope,globalService) {
             "ios": { "alert": "true", "badge": "false", "sound": "false" }
         });
 
-        //########################## Pushplug seems to be working.  Problem appears to be with Azure Mobile Service
         // Handle the registration event.
         pushNotification.on('registration', function (data) {
             alert(JSON.stringify(data)); console.log(JSON.stringify(data));
@@ -446,7 +437,7 @@ cordovaNG.controller('startupController', function ($scope,globalService) {
                 var template = '{"aps": {"alert": "$(message)"}}';
                 // Register for notifications.            
                 AMSClient.push.apns.registerTemplate(handle,
-                    'myTemplate', template, null)
+                    'myTemplate', template, tags)
                     .done(registrationSuccess, registrationFailure);
             }
         });
@@ -465,23 +456,14 @@ cordovaNG.controller('startupController', function ($scope,globalService) {
             alert('error on registration = ' + e.message);
         });
 
-        //});
-
         var registrationSuccess = function () {
             alert('Registered with Azure!'); console.log('Registered with Azure');
         }
-
         var registrationFailure = function (error) {
             alert('Failed registering with Azure: ' + error); console.log('Failed registering with Azure: ' + error);
         }
 
-    };//end PN setup
-
-
-
-
-
-
+    };//end Push Notification setup
 
 
 

@@ -79,6 +79,7 @@ angular.module('azure-mobile-service.module', []).service('Azureservice', [
       //Initiate the service
       init();
       return {
+          client:client, // @@@ I added this to expose the AzureMobileService 'client' itself beyond just these other defined methods on it.
           query: function (tableName, obj, withFilterFn) {
               var data = null;
               if (isNullOrUndefined(tableName)) {

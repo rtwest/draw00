@@ -1,6 +1,7 @@
 P R O B L E M S
 -----------------------------
-- clientarray in localstorage as double brackets around it = [["...,...,..."]]
+- Had a problem in creating Azure push notifications.  I think I solved it by remove the Azure mobile web services JS file - which was redundant to the Azure cordova plugin.  I thought I needed the JS file for the NG Azure JS wrapper but all the Azure table CRUD ops work fine without it.
+
 
 
 
