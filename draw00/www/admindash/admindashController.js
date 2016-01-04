@@ -171,12 +171,15 @@ cordovaNG.controller('admindashController', function ($scope, globalService, Azu
     //4. create new invitation record with the 4 corresponding IDs
     // INVITATION RECORD: fromparent_id, toparent_id, fromkid, tokid, datetime
 
-    var ToParentID, ToParentName, ToKidName;
+    var ToParentID, ToParentName, ToKidName, FromKidName, FromKidID, ToKidID;
     var clientarray = [];
+
+
 
     // Choose Client (if needed)
     // ------------
-
+    FromKidID = '37469041-2c81-4f42-8973-0b82e18919b7' // FOR TESTING
+    FromKidName = 'Lani'
     // ------------
 
 
@@ -239,6 +242,7 @@ cordovaNG.controller('admindashController', function ($scope, globalService, Azu
             //alert(clientarray[i].name);
             if (clientarray[i].name == name) {
                 found = true;
+                ToKidID = clientarray[i].id; // Get the GUID for this client
                 break;
             };
         };
@@ -262,14 +266,17 @@ cordovaNG.controller('admindashController', function ($scope, globalService, Azu
 
         // Create on Azure
         // ---------------
+        // @@@ Push Notification sent by Node after Insert to ToParent for invitation 
         Azureservice.insert('invitations', {
             id: globalService.makeUniqueID(), // made GUID for Azure table        
             fromparent_id: globalService.userarray[0],
             fromparent_name: globalService.userarray[4], //first name.  full name is [2]
             toparent_id: ToParentID,
             toparent_name: ToParentName,
-            fromkid: "name",
+            fromkid: FromKidName,
             tokid: ToKidName,
+            fromkid_id: FromKidID,
+            tokid_id: ToKidID,
         })
         .then(function () {
             console.log('new invitation insert successful');

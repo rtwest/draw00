@@ -12,7 +12,7 @@ Azure Tables
 ------------
 PARENT RECORD: id, name, email
 KID RECORD: id, name, parent_id, profileimage, registration_code, reg_status
-FRIEND RECORD: id, kid_id1, kid_id2
+FRIEND RECORD: id, kid1_id, kid2_id, kid1_name, kid2_name
 INVITATION RECORD: id, fromparent_id, toparent_id, fromkid (name), tokid (name), fromparent_name, toparent_name.  - Status is implied as pending because its in the table.  Remove when accepted.
 EVENT RECORD: picture_id, from_kid_id, to_kid_id, comment_content, datetime
 PICTURE RECORD: picture_blob, picture_id, kid_id, datetime

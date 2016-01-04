@@ -47,7 +47,7 @@ cordovaNG.controller('invitationlistController', function ($scope, globalService
             console.log('no sent invitations not found')
         }
         else { // if invitations found, add to invitationArray
-            $scope.sentInvitationArray = items; // Get the GUID for the parent
+            $scope.sentInvitationArray = items; // Get the Azure data into local array
             alert(JSON.stringify(items));
         };
     }).catch(function (error) {
@@ -62,7 +62,7 @@ cordovaNG.controller('invitationlistController', function ($scope, globalService
     //  Accept invitation.  Delete invitation record from Azure Invitation table.  Add Friend Record to Azure Friends table. 
     //     ????? Add to Friend Local Storage ?????
     // ==========================================
-    $scope.acceptInvitationClick= function (clickEvent) {
+    $scope.acceptInvitationClick = function (clickEvent) {
         $scope.clickEvent = globalService.simpleKeys(clickEvent);
         $scope.clientId = clickEvent.target.id;
         alert('accept invitation id = ' + $scope.clientId);
@@ -72,14 +72,26 @@ cordovaNG.controller('invitationlistController', function ($scope, globalService
 
     // Delete invitation record from Azure Invitation Table
     // ---------------
-    function acceptInvitation(id) {
+    function acceptInvitation(record_id) {
 
+
+        // @@@@@@@@@@@@@@@@@@@ WORKING HERE @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@2
+        //  NEED TO GET THE CLICKED RECORD ID AND LOOK UP IN INVITATION ARRAY TO GET KID NAMES AND GUIDS FOR FRIENDS RECORD
+
+
+
+        // ----------
+
+
+        // Azure part
+        // ----------
+        // @@@ Push Notification is sent from Node on Delete to let both users know invitation was accepted.
         Azureservice.del('invitations', {
-            id: id // ID for the row to delete    
+            id: record_id // ID for the row to delete
         })
         .then(function () { // if success,
             console.log('Accept/Delete successful'); alert('Accept/Delete successful')
-            InsertFriendRecord(kid1, kid2); // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@22  Insert new Friend record in Azure Friend Table
+            InsertFriendRecord(kid1, kid2, kid1name, kid2name); // @@@ On success, Insert new Friend record in Azure Friend Table
         }, function (err) {
             console.error('Azure Error: ' + err);
             alert('Azure Error: ' + err);
@@ -88,17 +100,20 @@ cordovaNG.controller('invitationlistController', function ($scope, globalService
     };
 
     // Insert new Friend record in Azure Friend Table
-    // @@@@@@@@@@@@@@@@@@@ WORKING HERE @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@2
-    // WHAT IS NEED IN FRIEND RECORD?  GUIDS AND NAMES? JUST GUIDS?
-    // How will this be pulled down by clients?  If just GUID, then i'll have to do another look up to the the name from the GUID>
     // ---------------
-    function InsertFriendRecord(kid1, kid2) {
+    // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@2
+    // How will this be pulled down by clients?  If just GUID, then i'll have to do another look up to the the name from the GUID>
+    // Do I store friends list on Admin local storage also -- or just pull down on the view?
+    function InsertFriendRecord(kid1, kid2, kid1name, kid2name) {
         // Create on Azure
         // ---------------
+        // @@@ Push Notification is sent from Node on Insert to let both Kids know Friend connection made
         Azureservice.insert('friends', {
-            //id: guid, // made GUID for Azure table //  LET AZURE HANDEL THIS GUID.  I DON'T NEED TO TRACK IT.        
+            //id: guid, // I'll let Azure handel this GUID since I don't need to track it locally        
             kid1_id: kid1,
             kid2_id: kid2,
+            kid1_name:kid1name,
+            kid2_name: kid2name
         })
         .then(function () {
             console.log('new friend insert successful');
