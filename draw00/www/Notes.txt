@@ -1,3 +1,14 @@
+R I G H T  N O W
+-----------------------------
+- Update js on NODE for INVTATION UPDATE doesn't know about senders.  So, how do you pass more data in that function?
+- Insert JS on NODE for FRIEND INSERT says it can't send to redundant
+- Check SCHEDULLER on NODE to see if job ran to remove STATUS=1 INVITATIONS
+
+
+
+
+
+
 P R O B L E M S
 -----------------------------
 - Had a problem in creating Azure push notifications.  I think I solved it by remove the Azure mobile web services JS file - which was redundant to the Azure cordova plugin.  I thought I needed the JS file for the NG Azure JS wrapper but all the Azure table CRUD ops work fine without it.
@@ -13,7 +24,7 @@ Azure Tables
 PARENT RECORD: id, name, email
 KID RECORD: id, name, parent_id, profileimage, registration_code, reg_status
 FRIEND RECORD: id, kid1_id, kid2_id, kid1_name, kid2_name
-INVITATION RECORD: id, fromparent_id, toparent_id, fromkid (name), tokid (name), fromparent_name, toparent_name.  - Status is implied as pending because its in the table.  Remove when accepted.
+INVITATION RECORD: id, fromparent_id, toparent_id, fromkid (name), tokid (name), fromparent_name, toparent_name, fromkid_id, tokid_id.  - Status is implied as pending because its in the table.  Remove when accepted.
 EVENT RECORD: picture_id, from_kid_id, to_kid_id, comment_content, datetime
 PICTURE RECORD: picture_blob, picture_id, kid_id, datetime
 

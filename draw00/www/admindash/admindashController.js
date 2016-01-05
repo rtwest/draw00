@@ -277,6 +277,7 @@ cordovaNG.controller('admindashController', function ($scope, globalService, Azu
             tokid: ToKidName,
             fromkid_id: FromKidID,
             tokid_id: ToKidID,
+            status: '0', // unaccepted
         })
         .then(function () {
             console.log('new invitation insert successful');
