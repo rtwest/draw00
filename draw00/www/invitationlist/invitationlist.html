@@ -48,7 +48,7 @@
 <div>Sent Invitations</div>
 <div>
     <div ng-repeat="row in sentInvitationArray track by $index" ng-include="'repeaterTemplate2.html'"></div>
-    <div ng-show="noSentInvitationsMessage">No new invitations</div>
+    <div ng-show="noSentInvitationsMessage">No pending invitations</div>
 </div>
 <script type="text/ng-template" id="repeaterTemplate2.html">
     <div>From

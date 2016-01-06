@@ -1,8 +1,6 @@
 R I G H T  N O W
 -----------------------------
 - Update js on NODE for INVTATION UPDATE doesn't know about senders.  So, how do you pass more data in that function?
-- Insert JS on NODE for FRIEND INSERT says it can't send to redundant
-- Check SCHEDULLER on NODE to see if job ran to remove STATUS=1 INVITATIONS
 
 
 
@@ -12,8 +10,10 @@ R I G H T  N O W
 P R O B L E M S
 -----------------------------
 - Had a problem in creating Azure push notifications.  I think I solved it by remove the Azure mobile web services JS file - which was redundant to the Azure cordova plugin.  I thought I needed the JS file for the NG Azure JS wrapper but all the Azure table CRUD ops work fine without it.
-
-
+- Insert JS on NODE for FRIEND INSERT.  Need registered clients to test if Push Notification works.
+- Registering for Push Notification seems to block other Azure calls when waiting for response
+- @@@@@@  DON'T CALL OUT TO AZURE AGAIN ON RETURN VISITS TO VIEWS.  IF THE LOCAL IS ARRAY IS THERE, DON'T NEED TO CALL AZURE AGAIN
+- @@@@@@  - NEED A REFRESH BUTTON INSTEAD
 
 
 
@@ -111,6 +111,20 @@ Azureservice.read('parents', "$filter=email eq 'bogus@test.com'")
   }).catch(function (error) {
       console.log(error)
   })
+// Different query example with Parament Object not string
+------------------------------
+Azureservice.query('invitations',{
+    criteria:{
+		id: '1234-qwer-1234-asdf',
+		status: '0'
+		}
+    })
+    .then(function(items) {
+        console.log('Query successful');
+        $scope.item = items;
+    }, function(err) {
+        console.error('Azure Error: ' + err);
+    });
 // Insert example with customer row ID
 ------------------------------
 Azureservice.insert('parents', {

@@ -16,20 +16,26 @@ cordovaNG.controller('invitationlistController', function ($scope, globalService
     var localuserGUID = globalService.userarray[0]; //locally stored data about the user
 
     // Get new invitations sent to you
-    var query = "$filter=toparent_id eq '" + localuserGUID + "'";  // Query for records where localuser is 'toparent_id'
-    Azureservice.read('invitations', query).then(function (items) {  
-        if (items.length == 0) { // if no invitations found, then
-            // 'noInvitationsMessage' is a flag the UI uses to check for 'show/hide' msg div
-            $scope.noNewInvitationsMessage = true;
-            console.log('no invitations not found')
-        }
-        else { // if invitations found, add to invitationArray
-            $scope.newInvitationArray = items; // Get the GUID for the parent
-            alert(JSON.stringify(items));
-        };
-    }).catch(function (error) {
-        console.log(error); alert(error);
-    })
+    // -----
+    Azureservice.query('invitations', {
+        criteria: { // Query for records where localuser is 'toparent_id'
+            toparent_id: localuserGUID,
+            status: '0'
+            }
+        })
+        .then(function (items) {
+            if (items.length == 0) { // if no invitations found, then
+                // 'noInvitationsMessage' is a flag the UI uses to check for 'show/hide' msg div
+                $scope.noNewInvitationsMessage = true;
+                console.log('no invitations not found')
+            }
+            else { // if invitations found, add to invitationArray
+                $scope.newInvitationArray = items; // Get the GUID for the parent
+                alert(JSON.stringify(items));
+            };
+        }).catch(function (error) {
+            console.log(error); alert(error);
+        })
     // ==========================================
 
 
@@ -39,38 +45,45 @@ cordovaNG.controller('invitationlistController', function ($scope, globalService
     $scope.sentInvitationArray = []
 
     // Get invitations from you
-    var query = "$filter=fromparent_id eq '" + localuserGUID + "'";  // Query for records where localuser is 'toparent_id'
-    Azureservice.read('invitations', query).then(function (items) {
-        if (items.length == 0) { // if no invitations found, then
-            // 'noInvitationsMessage' is a flag the UI uses to check for 'show/hide' msg div
-            $scope.noNewInvitationsMessage = true;
-            console.log('no sent invitations not found')
-        }
-        else { // if invitations found, add to invitationArray
-            $scope.sentInvitationArray = items; // Get the Azure data into local array
-            alert(JSON.stringify(items));
-        };
-    }).catch(function (error) {
-        console.log(error); alert(error);
-    });
+    // -----
+    Azureservice.query('invitations', {
+        criteria: {   // Query for records where localuser is 'fromparent_id'
+            fromparent_id: localuserGUID,
+            status: '0'
+            }
+        })
+        .then(function (items) {
+            if (items.length == 0) { // if no invitations found, then
+                // 'noInvitationsMessage' is a flag the UI uses to check for 'show/hide' msg div
+                $scope.noSentInvitationsMessage = true;
+                console.log('no sent invitations not found')
+            }
+            else { // if invitations found, add to invitationArray
+                $scope.sentInvitationArray = items; // Get the Azure data into local array
+                alert(JSON.stringify(items));
+            };
+        }).catch(function (error) {
+            console.log(error); alert(error);
+        });
     // ==========================================
 
 
 
 
     // ==========================================
-    //  Accept invitation.  Delete invitation record from Azure Invitation table.  Add Friend Record to Azure Friends table. 
-    //     ????? Add to Friend Local Storage ?????
+    //  Accept invitation.  Update invitation record from Azure Invitation table.  
+    //  Add Friend Record to Azure Friends table. 
     // ==========================================
     $scope.acceptInvitationClick = function (clickEvent) {
         $scope.clickEvent = globalService.simpleKeys(clickEvent);
         $scope.clientId = clickEvent.target.id;
         alert('accept invitation id = ' + $scope.clientId);
 
+        // call AcceptInvitation with record ID
         acceptInvitation($scope.clientId);  // If the accept/delete is successful, this call Insert Friend record
     }
 
-    // Delete invitation record from Azure Invitation Table
+    // Update invitation record from Azure Invitation Table
     // ---------------
     function acceptInvitation(record_id) {
         var foundIndex;
