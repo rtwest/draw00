@@ -4,6 +4,16 @@ R I G H T  N O W
 
 
 
+ TO DO
+-----------------------------
+- --- From Admin, Create an invitation (WITH KID NAME) and VIEW INVITATIONS and ACCEPT invitation. 
+- --- Pull new friends from client to update client
+- What is need for local DB?  
+- Need to check for web connection on load and alert
+- Need to restrict permissions on azure tables to authenticate users for admin and client(probably) 
+
+
+
 
 
 
@@ -12,8 +22,7 @@ P R O B L E M S
 - Had a problem in creating Azure push notifications.  I think I solved it by remove the Azure mobile web services JS file - which was redundant to the Azure cordova plugin.  I thought I needed the JS file for the NG Azure JS wrapper but all the Azure table CRUD ops work fine without it.
 - Insert JS on NODE for FRIEND INSERT.  Need registered clients to test if Push Notification works.
 - Registering for Push Notification seems to block other Azure calls when waiting for response
-- @@@@@@  DON'T CALL OUT TO AZURE AGAIN ON RETURN VISITS TO VIEWS.  IF THE LOCAL IS ARRAY IS THERE, DON'T NEED TO CALL AZURE AGAIN
-- @@@@@@  - NEED A REFRESH BUTTON INSTEAD
+- !!! Avoid calling Azure on the View load because you'll be making lots to external calls if the View is loaded frequently
 
 
 
@@ -55,21 +64,11 @@ CREATING A NEW INVITATION
 3. default to the display of the kid whose context you're creating the invitation in
 4. create new invitation record with the 4 corresponding IDs
 
-
  REGISTERING THE CLIENT DEVICE WITH PARENT DEVICE
- - On Parent device, create kid record with Display_Name. This creates a record with a generated Registration_Code and Status of "pending"
- - On Client device, after splash screen, enter kid Display_Name and matching Registration_Code.  When verified, change Status
+ 1. On Parent device, create kid record with Display_Name. This creates a record with a generated Registration_Code and Status of "pending"
+ 2. On Client device, after splash screen, enter kid Display_Name and matching Registration_Code.  When verified, change Status
 
 
-
-
- TO DO
------------------------------
-- --- From Admin, Create an invitation (WITH KID NAME) and VIEW INVITATIONS and ACCEPT invitation. 
-- --- Pull new friends from client to update client
-- What is need for local DB?  
-- Need to check for web connection on load and alert
-- Need to restrict permissions on azure tables to authenticate users for admin and client(probably) 
 
 
 
