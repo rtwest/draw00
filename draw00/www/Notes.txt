@@ -1,13 +1,13 @@
-R I G H T  N O W
+W O R K I N G   R I G H T   N O W
 -----------------------------
-- Update js on NODE for INVTATION UPDATE doesn't know about senders.  So, how do you pass more data in that function?
+- ????
+- Admin view of Client Properties? Friends list.  Event Log.
 
 
 
  TO DO
 -----------------------------
-- --- From Admin, Create an invitation (WITH KID NAME) and VIEW INVITATIONS and ACCEPT invitation. 
-- --- Pull new friends from client to update client
+- Pull new friends from client to update client
 - What is need for local DB?  
 - Need to check for web connection on load and alert
 - Need to restrict permissions on azure tables to authenticate users for admin and client(probably) 
@@ -31,7 +31,7 @@ S T O R A G E
 Azure Tables
 ------------
 PARENT RECORD: id, name, email
-KID RECORD: id, name, parent_id, profileimage, registration_code, reg_status
+KID RECORD: id, name, parent_id, registration_code, reg_status, avatar_id,
 FRIEND RECORD: id, kid1_id, kid2_id, kid1_name, kid2_name
 INVITATION RECORD: id, fromparent_id, toparent_id, fromkid (name), tokid (name), fromparent_name, toparent_name, fromkid_id, tokid_id.  - Status is implied as pending because its in the table.  Remove when accepted.
 EVENT RECORD: picture_id, from_kid_id, to_kid_id, comment_content, datetime
@@ -49,9 +49,9 @@ Other local client side needs
 - What user mode is this in? Look for "localStorage.getItem('RYB_userarray')"
 	- 'RYB_userarray' (id, usertype, name, email, first name, ..other_as_needed..)
 	- admin details (name, parent_id, reqs FB registration?)
-	- client details (name, kid_id) - if not, show client code input
-- for client, list of friends (name, kid_id) - FRIENDS ARRAY
-- for admin, list of clients (kid_id, name) - CLIENT ARRAY  // This is an array of arrays - [[...,...][...,...][...,...]]
+	- client details (name, kid_id, avatar_id) - if not, show client code input
+- for client, list of friends (name, kid_id, avatar_id,) - FRIENDS ARRAY
+- for admin, list of clients (kid_id, name, avatar_id,) - CLIENT ARRAY  // This is an array of arrays - [[...,...][...,...][...,...]]
 
 =======================================================================================
 

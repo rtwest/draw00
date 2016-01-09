@@ -120,9 +120,6 @@ cordovaNG.controller('invitationlistController', function ($scope, globalService
 
     // Insert new Friend record in Azure Friend Table
     // ---------------
-    // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@2
-    // How will this be pulled down by clients?  If just GUID, then i'll have to do another look up to the the name from the GUID>
-    // Do I store friends list on Admin local storage also -- or just pull down on the view?
     function InsertFriendRecord(kid1id, kid2id, kid1name, kid2name) {
         // Create on Azure
         // ---------------

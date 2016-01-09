@@ -33,6 +33,13 @@ cordovaNG.controller('admindashController', function ($scope, globalService, Azu
     // ==========================================
 
 
+    // ==========================================
+    $scope.randomAvatarID = function() {
+        $scope.avatarID = Math.floor((Math.random() * 10) + 1); // Random number between 1-10
+    };
+    // ==========================================
+
+
 
     // ==========================================
     //  Create new client.  Store locally and create on Azure
@@ -55,11 +62,12 @@ cordovaNG.controller('admindashController', function ($scope, globalService, Azu
 
         var guid = globalService.makeUniqueID();
 
-        // Store in localStorage
+        // Store new Client info in localStorage
         // ---------------
         var clientitemarray = [];
         clientitemarray[0] = guid;
         clientitemarray[1] = name;
+        clientitemarray[2] = $scope.avatarID;
         if ($scope.clientarray.length > 0) { // if it exists already (not the first one)
             var arraylength = $scope.clientarray.length; // 'length' is actually array+1 because of zero index
             $scope.clientarray[arraylength] = clientitemarray; //add new item to client array
@@ -83,7 +91,8 @@ cordovaNG.controller('admindashController', function ($scope, globalService, Azu
             name: name,
             parent_id: globalService.userarray[0],
             registration_code: makeRegistrationCode(),
-            reg_status: '0'
+            reg_status: '0',
+            avatar_id: $scope.avatarID
         })
         .then(function () {
             console.log('new client insert successful');
