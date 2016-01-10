@@ -158,8 +158,9 @@ cordovaNG.controller('admindashController', function ($scope, globalService, Azu
     // ------------------------------------------
     $scope.clientclick = function (clickEvent) {
         $scope.clickEvent = globalService.simpleKeys(clickEvent);
-        $scope.clientId = clickEvent.target.id;
-        alert('selected item = ' + $scope.clientId);
+        globalService.selectedClient = clickEvent.target.id; // Tracked the selected client in Global Var in Service
+        alert('selected item = ' + globalService.selectedClient);
+        globalService.changeView('/clientproperties');
 
     };
     // ==========================================

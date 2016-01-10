@@ -191,6 +191,9 @@ cordovaNG.config(function ($routeProvider) {
 cordovaNG.service('globalService', ['$location', function ($location) {
 
     var userarray = []; //user data
+    var selectedClient = '';// for passing between Admin view and Client Properties
+    var eventArray = []; // global var used to retrieve once from Azure and use for session
+    var friendArray = []; //user data
 
     // SETTING UP STORAGE.  
     // Open connection to the database using PouchDB.  @@@@@@@@ If adapter is not given, it defaults to IndexedDB, then fails over to WebSQL @@@@@@@@
@@ -227,7 +230,8 @@ cordovaNG.service('globalService', ['$location', function ($location) {
         // -----------------
         drawappDatabase: drawappDatabase, // return the Database
 
-        userarray: userarray, // return the user data
+        userarray: userarray, // return the glabal array for local user data
+        selectedClient: selectedClient,  // return the global var
 
         // Clever function to make a GUID compliant with standard format cast as type STRING
         // ----------------

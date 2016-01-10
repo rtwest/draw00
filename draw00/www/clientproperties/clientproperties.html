@@ -2,19 +2,76 @@
 
 <button type="button" class="btn btn-primary" style="box-shadow:none;" ng-click="gotoAdminView()">Back</button>
 
-<p>Admin view of client details - Friends, Prescriptions(later) - Client Event Log</p>
+<p>Admin view of client details</p>
 
 <div>client name, registration code, avatar</div>
-<div>Friend record</div>
+<div>{{clientName}}</div>
+<div>{{avatarID}}</div>
 
+
+<div> Activity over the last 2 weeks </div>
+
+<!--Event Log  Repeater-->
+<div>
+    <!--'For Each' loop using object 'clientlist' known to the $scope when defined in the controller -->
+    <!--'row' is a new local var created here then used in controllerJS-->
+    <!-- Can use 'arr.[x]' for array and 'ParamName/Colname' if JSON -->
+    <div ng-repeat="row in eventarray track by $index" ng-include="'repeaterTemplate.html'"></div>
+    <div ng-show="noEventFlag">No events</div>
+</div>
+<!-- This is one way to specify the repeater item template used above
+    Could also be in separate HTML file loaded with ng-include="'folder/repeaterTemplate.html'"
+    Have to have the element ID on everything because the obj id is passed where ever you click-->
+<script type="text/ng-template" id="repeaterTemplate.html">
+    <div id="{{row[0]}}" ng-click="clientclick($event)">
+        <div id="{{row[0]}}">
+            {{row[0]}}
+        </div>
+        <div id="{{row[0]}}">
+            {{row[1]}}
+        </div>
+    </div>
+</script>
+
+
+
+
+
+<div>Friend record</div>
 <div> Manage Friends </div>
 <div> - Add friend invitation record.  How do you add one?  Need parent email for ID and kid name</div>
 <div> - Remove friend</div>
 <div> - Accept friend invitation record</div>
 
+<!--Friend List Repeater-->
+<div>
+    <!--'For Each' loop using object 'clientlist' known to the $scope when defined in the controller -->
+    <!--'row' is a new local var created here then used in controllerJS-->
+    <!-- Can use 'arr.[x]' for array and 'ParamName/Colname' if JSON -->
+    <div ng-repeat="row in friendsarray" ng-include="'repeaterTemplate2.html'"></div>
+    <!--<div ng-repeat="row in friendsarray | filter:globalService.selectedClient" ng-include="'repeaterTemplate2.html'"></div>-->  <!--when there are multiple clients in the array-->
+    <div ng-show="noFriendFlag">No Friends added yet</div>
+</div>
+<!-- This is one way to specify the repeater item template used above
+    Could also be in separate HTML file loaded with ng-include="'folder/repeaterTemplate.html'"
+    Have to have the element ID on everything because the obj id is passed where ever you click-->
+<script type="text/ng-template" id="repeaterTemplate2.html">
+    <div id="{{row[0]}}">
+        <div id="{{row[0]}}">
+            {{row[0]}}
+        </div>
+        <div id="{{row[0]}}">
+            {{row[1]}}
+        </div>
+    </div>
+    <div id="{{row[0]}}" ng-click="deleteFriendClick($event)">Delete</div>
+</script>
+
+
+
+
+
 
 <button type="button" class="btn btn-primary" style="box-shadow:none;" ng-click="gotoView()">
     Button
 </button>
-
-<p>...notes...</p>

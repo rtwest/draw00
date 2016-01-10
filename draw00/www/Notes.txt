@@ -1,16 +1,15 @@
 W O R K I N G   R I G H T   N O W
 -----------------------------
-- ????
-- Admin view of Client Properties? Friends list.  Event Log.
+-  Client Properties - Event Log - friends list
+
 
 
 
  TO DO
 -----------------------------
 - Pull new friends from client to update client
-- What is need for local DB?  
 - Need to check for web connection on load and alert
-- Need to restrict permissions on azure tables to authenticate users for admin and client(probably) 
+- ??? Need to restrict permissions on azure tables to authenticate users for admin and client(probably) 
 
 
 
@@ -103,7 +102,7 @@ Azure Wrapper Examples
 - https://github.com/TerryMooreII/angular-azure-mobile-service
 // Query example where col = val
 ------------------------------
-Azureservice.read('parents', "$filter=email eq 'bogus@test.com'")
+Azureservice.read('parents', "$filter=email eq 'bogus@test.com' or name eq 'FirstName'")
   .then(function (items) {
       console.log(items)
       console.log(items.length)
