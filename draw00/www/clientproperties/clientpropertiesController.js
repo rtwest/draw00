@@ -6,10 +6,12 @@ cordovaNG.controller('clientpropertiesController', function ($scope, globalServi
     //$scope.message = "Nothing here yet";  //- TEST ONLY
 
     $scope.noFriendsFlag = false; // boolean for ng-show for 'no friends' message
+    $scope.noEventsFlag = false;  
 
 
+    // =======================================================
     // From the Client GUID, get the rest of Client Properties
-    // ------------------------
+    // =======================================================
     var client = [];
     var clientarray = [];
     clientarray = JSON.parse(localStorage.getItem('RYB_clientarray')); // get array from localstorage key pair and string
@@ -26,9 +28,9 @@ cordovaNG.controller('clientpropertiesController', function ($scope, globalServi
             break;
         };
     };
-
-    //$scope.clientName = client[1];
-    //$scope.avatarID = client[2];
+    $scope.clientName = client[1];
+    $scope.avatarID = client[2];
+    // =======================================================
 
 
 
@@ -73,11 +75,6 @@ cordovaNG.controller('clientpropertiesController', function ($scope, globalServi
     // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
     // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
-    // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-    // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-    // NEED TO RIP RECORD APART SO ITS JUST FRIENDS - NOT THIS CLIENT
-    // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-    // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
     // ==========================================
     //  Query Azure to get FRIENDS records based in GUID
@@ -91,8 +88,35 @@ cordovaNG.controller('clientpropertiesController', function ($scope, globalServi
                 console.log('no connections yet')
             }
             else { // if friend records found, add to friendsarray  // @@@@@@ MAYBE 'PUSH' INTO ARRAY FOR MULTIPLE CLIENTS?
-                globalService.friendsarray = items;  
+
+                $scope.friendArray = []
                 alert(JSON.stringify(items));
+
+                // Go through Friend items and reorder it 
+                // --------------------------------------
+                var len = items.length;
+                for (i = 0; i < len; i++) {
+                    if (items[i].kid1_id == globalService.selectedClient) {  // If the first kid is this client, using the 2nd
+                        var element = {  // make a new array element
+                            client_id: globalService.selectedClient,
+                            friend_id: items[i].kid2_id,
+                            friend_name: items[i].kid2_name,
+                        };
+                        $scope.friendArray.push(element); // add back to array
+                    }
+                    else { // else use the first kid
+                        var element = {  // make a new array element
+                            client_id: globalService.selectedClient,
+                            friend_id: items[i].kid1_id,
+                            friend_name: items[i].kid1_name,
+                        };
+                        $scope.friendArray.push(element); // add back to array
+                    };
+
+                    //$scope.friendArray = globalService.friendArray; // Have to use $scope for this view's data model not globalService var
+
+                };//end for
+
             };
         }).catch(function (error) {
             console.log(error); alert(error);

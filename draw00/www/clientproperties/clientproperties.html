@@ -48,7 +48,7 @@
     <!--'For Each' loop using object 'clientlist' known to the $scope when defined in the controller -->
     <!--'row' is a new local var created here then used in controllerJS-->
     <!-- Can use 'arr.[x]' for array and 'ParamName/Colname' if JSON -->
-    <div ng-repeat="row in friendsarray" ng-include="'repeaterTemplate2.html'"></div>
+    <div ng-repeat="row in friendArray track by $index" ng-include="'repeaterTemplate2.html'"></div>
     <!--<div ng-repeat="row in friendsarray | filter:globalService.selectedClient" ng-include="'repeaterTemplate2.html'"></div>-->  <!--when there are multiple clients in the array-->
     <div ng-show="noFriendFlag">No Friends added yet</div>
 </div>
@@ -56,15 +56,15 @@
     Could also be in separate HTML file loaded with ng-include="'folder/repeaterTemplate.html'"
     Have to have the element ID on everything because the obj id is passed where ever you click-->
 <script type="text/ng-template" id="repeaterTemplate2.html">
-    <div id="{{row[0]}}">
-        <div id="{{row[0]}}">
-            {{row[0]}}
+    <div>
+        <div> friend id
+            {{row.friend_id}}
         </div>
-        <div id="{{row[0]}}">
-            {{row[1]}}
+        <div> friend name
+            {{row.friend_name}}
         </div>
     </div>
-    <div id="{{row[0]}}" ng-click="deleteFriendClick($event)">Delete</div>
+    <!--<div id="{{row.id}}" ng-click="deleteFriendClick($event)">Delete</div>-->
 </script>
 
 
