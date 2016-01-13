@@ -23,14 +23,24 @@ cordovaNG.controller('clientpropertiesController', function ($scope, globalServi
         if (clientarray[i].indexOf(globalService.selectedClient) > -1) { // If GUID found in this subarray 
             foundIndex = i;
             client = clientarray[i];
-            alert(client);
-            alert(client[1]);
             break;
         };
     };
     $scope.clientName = client[1];
     $scope.avatarID = client[2];
     // =======================================================
+
+
+
+    // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+    // HOW TO AVOID UNCESSARY REPEAT AZURE CALL?  
+    // --- Need persistent store.  Need LastTimeChecked var
+    // --- set a scope var for last check time > 30min?
+    // --- have a localStorage array for lastClientChecks?
+    // --- use sessionStorage just for this session?
+    // --- @@@@@ test how long a scope var is good for?
+    // DIFFERENT CLIENTS TOO?
+    // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
 
 
@@ -46,38 +56,7 @@ cordovaNG.controller('clientpropertiesController', function ($scope, globalServi
 
 
     // ==========================================
-    //  Get friends from Azure.  Set to global scope var to avoid unecessary refresh
-    // ==========================================
-    //$scope.friendsarray = []; //create as an array
-    //var temparray = [];
-
-    //if (globalService.friendArray) {
-
-    //    // @@@ THIS HAS ALL FRINED RECORDS.  THE UI BINDING WILL FILTER THIS TO JUST THE CLIENT GUID
-    //    friendsarray = JSON.parse(localStorage.getItem('RYB_friendsarray')); // get array from localstorage key pair and string
-    //    // temparray = JSON.parse(localStorage.getItem('RYB_friendsarray'));
-
-    //    //$scope.friendsarray = $filter('filter')(temparray, { parameter: value })[0];
-
-    //}
-    //else { // if no friends, show special message for this case 
-    //    alert('no friends found')
-    //    $scope.noFriendsFlag = true;
-    //};
-
-
-    // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-    // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-    // HOW TO AVOID UNCESSARY REPEAT AZURE CALL?  
-    // --- set a scope var for last check time > 30min?
-    // --- @@@@@ test how long a scope var is good for?
-    // DIFFERENT CLIENTS TOO?
-    // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-    // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-
-
-    // ==========================================
-    //  Query Azure to get FRIENDS records based in GUID
+    //  Get friends from Azure based on Client GUID
     // ==========================================
 
     Azureservice.read('friends', "kid1_id=email eq '" + globalService.selectedClient + "' or kid2_id eq '" + globalService.selectedClient + "'")
@@ -89,8 +68,9 @@ cordovaNG.controller('clientpropertiesController', function ($scope, globalServi
             }
             else { // if friend records found, add to friendsarray  // @@@@@@ MAYBE 'PUSH' INTO ARRAY FOR MULTIPLE CLIENTS?
 
-                $scope.friendArray = []
-                alert(JSON.stringify(items));
+                $scope.friendArray = []  // @@@ Make a brand New Array (( Dumping any existing one ))
+                var tempArray = []
+                //alert(JSON.stringify(items));
 
                 // Go through Friend items and reorder it 
                 // --------------------------------------
@@ -101,26 +81,56 @@ cordovaNG.controller('clientpropertiesController', function ($scope, globalServi
                             client_id: globalService.selectedClient,
                             friend_id: items[i].kid2_id,
                             friend_name: items[i].kid2_name,
+                            friend_avatar: ' ', //empty placeholder
+                            friend_parentname: ' ',
+                            friend_parentemail:' ',
                         };
-                        $scope.friendArray.push(element); // add back to array
+                        tempArray.push(element); // add back to array
                     }
                     else { // else use the first kid
                         var element = {  // make a new array element
                             client_id: globalService.selectedClient,
                             friend_id: items[i].kid1_id,
                             friend_name: items[i].kid1_name,
+                            friend_avatar: ' ', //empty placeholder
+                            friend_parentname: ' ',
+                            friend_parentemail: ' ',
                         };
-                        $scope.friendArray.push(element); // add back to array
+                        tempArray.push(element); // add back to array
                     };
-
-                    //$scope.friendArray = globalService.friendArray; // Have to use $scope for this view's data model not globalService var
-
                 };//end for
+
+                //alert(tempArray[2].friend_id);
+
+                // @@@@@ CALL TO GET KID INFORMATION - AVATAR, PARENT INFO
+                // Go through Friend array and get addtional info Kid table in Azure 
+                // !!!!! LOTS OF CALL TO AZURE NOW @@@@@@@@@@@@@@@@@@@@@@@@@ 
+                // !!!!! BETTER TO HAVE A CUSTOM API IN NODE TO DO THIS JOINING
+                // --------------------------------------
+                for (i = 0; i < tempArray.length; i++) {
+                    Azureservice.getById('kid', tempArray[i].friend_id)
+                    .then(function (item) {
+
+                        alert(JSON.stringify(item));
+
+                        // @@@@@@@@@@@@@@@@DROP ALL CLIENT DATA AND START OVER WITH KIDS AND FRIENDS
+                        // -----
+                        //alert(JSON.stringify(tempArray[i]));
+
+                        //$scope.friendArray[i].friend_avatar = item.avatar_id;
+                        tempArray[i].friend_parentname = item.parent_name;
+                        tempArray[i].friend_parentemail = item.parent_email;
+                    }, function (err) {
+                        console.error('Azure Error: ' + err);
+                    });
+                }; //end for
+                $scope.friendArray = tempArray;
 
             };
         }).catch(function (error) {
             console.log(error); alert(error);
-        })
+        });
+
     // ==========================================
 
 

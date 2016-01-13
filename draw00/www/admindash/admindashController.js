@@ -92,7 +92,9 @@ cordovaNG.controller('admindashController', function ($scope, globalService, Azu
             parent_id: globalService.userarray[0],
             registration_code: makeRegistrationCode(),
             reg_status: '0',
-            avatar_id: $scope.avatarID
+            avatar_id: $scope.avatarID,
+            parent_name:globalService.userarray[4],
+            parent_email: globalService.userarray[3],
         })
         .then(function () {
             console.log('new client insert successful');

@@ -30,7 +30,7 @@ S T O R A G E
 Azure Tables
 ------------
 PARENT RECORD: id, name, email
-KID RECORD: id, name, parent_id, registration_code, reg_status, avatar_id,
+KID RECORD: id, name, parent_id, registration_code, reg_status, avatar_id, parent_name, parent_email
 FRIEND RECORD: id, kid1_id, kid2_id, kid1_name, kid2_name
 INVITATION RECORD: id, fromparent_id, toparent_id, fromkid (name), tokid (name), fromparent_name, toparent_name, fromkid_id, tokid_id.  - Status is implied as pending because its in the table.  Remove when accepted.
 EVENT RECORD: picture_id, from_kid_id, to_kid_id, comment_content, datetime
@@ -120,6 +120,15 @@ Azureservice.query('invitations',{
     .then(function(items) {
         console.log('Query successful');
         $scope.item = items;
+    }, function(err) {
+        console.error('Azure Error: ' + err);
+    });
+// Get a single item
+------------------------------
+Azureservice.getById('todoListTable', '5A25CD78-F2D9-413C-81CA-6EC090590AAF')
+    .then(function(item) {
+        console.log('Query successful');
+        $scope.item = item;
     }, function(err) {
         console.error('Azure Error: ' + err);
     });
