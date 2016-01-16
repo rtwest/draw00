@@ -59,6 +59,9 @@ cordovaNG.controller('clientpropertiesController', function ($scope, globalServi
     //  Get friends from Azure based on Client GUID
     // ==========================================
 
+    var tempArray = [];
+    var len, j;
+
     Azureservice.read('friends', "kid1_id=email eq '" + globalService.selectedClient + "' or kid2_id eq '" + globalService.selectedClient + "'")
         .then(function (items) {
             if (items.length == 0) { // if no Friend record found, then
@@ -69,8 +72,8 @@ cordovaNG.controller('clientpropertiesController', function ($scope, globalServi
             else { // if friend records found, add to friendsarray  // @@@@@@ MAYBE 'PUSH' INTO ARRAY FOR MULTIPLE CLIENTS?
 
                 $scope.friendArray = []  // @@@ Make a brand New Array (( Dumping any existing one ))
-                var tempArray = []
-                //alert(JSON.stringify(items));
+                //var tempArray = []
+                alert(JSON.stringify(items));
 
                 // Go through Friend items and reorder it 
                 // --------------------------------------
@@ -100,36 +103,46 @@ cordovaNG.controller('clientpropertiesController', function ($scope, globalServi
                     };
                 };//end for
 
-                //alert(tempArray[2].friend_id);
-
-                // @@@@@ CALL TO GET KID INFORMATION - AVATAR, PARENT INFO
-                // Go through Friend array and get addtional info Kid table in Azure 
-                // !!!!! LOTS OF CALL TO AZURE NOW @@@@@@@@@@@@@@@@@@@@@@@@@ 
-                // !!!!! BETTER TO HAVE A CUSTOM API IN NODE TO DO THIS JOINING
-                // --------------------------------------
-                for (i = 0; i < tempArray.length; i++) {
-                    Azureservice.getById('kid', tempArray[i].friend_id)
-                    .then(function (item) {
-
-                        alert(JSON.stringify(item));
-
-                        // @@@@@@@@@@@@@@@@DROP ALL CLIENT DATA AND START OVER WITH KIDS AND FRIENDS
-                        // -----
-                        //alert(JSON.stringify(tempArray[i]));
-
-                        //$scope.friendArray[i].friend_avatar = item.avatar_id;
-                        tempArray[i].friend_parentname = item.parent_name;
-                        tempArray[i].friend_parentemail = item.parent_email;
-                    }, function (err) {
-                        console.error('Azure Error: ' + err);
-                    });
-                }; //end for
-                $scope.friendArray = tempArray;
+                // Different way of setting up the loop 
+                j = 0;
+                len = tempArray.length;
+                getkiddetails(); // Call recursive Azure call
 
             };
         }).catch(function (error) {
             console.log(error); alert(error);
         });
+
+
+    // RECURSIVELY Go through Friend array and get addtional info Kid table in Azure 
+    // !!!!! LOTS OF CALL TO AZURE NOW  
+    // !!!!! BETTER TO HAVE A CUSTOM API IN NODE TO DO THIS JOINING
+    // --------------------------------------
+    function getkiddetails() {
+            alert(j);
+
+            Azureservice.getById('kid', tempArray[j].friend_id)
+            .then(function (item) {
+
+                // TRYING TO TAKE IT OUT OF THE OTHER AZURE CALL
+                // -----
+                tempArray.friend_avatar = item.avatar_id;
+                tempArray[j].friend_parentname = item.parent_name;
+                tempArray[j].friend_parentemail = item.parent_email;
+
+                $scope.friendArray = tempArray; // Set to $scope array
+
+                // RECUSIVE PART.  Regular FOR loop didn't work.
+                // ------
+                j++;
+                if (j < len) {
+                    getkiddetails();
+                };
+
+            }, function (err) {
+                console.error('Azure Error: ' + err);
+            });
+    };
 
     // ==========================================
 

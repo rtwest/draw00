@@ -190,8 +190,8 @@ cordovaNG.controller('admindashController', function ($scope, globalService, Azu
 
     // Choose Client (if needed)
     // ------------
-    FromKidID = '37469041-2c81-4f42-8973-0b82e18919b7' // FOR TESTING
-    FromKidName = 'Lani'
+    FromKidID = '108cd8d2-b5a3-4168-bbd3-734cc9a0784c' // FOR TESTING
+    FromKidName = 'Jason'
     // ------------
 
 
