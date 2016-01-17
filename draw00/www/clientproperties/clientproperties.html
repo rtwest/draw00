@@ -50,7 +50,7 @@
     <!-- Can use 'arr.[x]' for array and 'ParamName/Colname' if JSON -->
     <div ng-repeat="row in friendArray track by $index" ng-include="'repeaterTemplate2.html'"></div>
     <!--<div ng-repeat="row in friendsarray | filter:globalService.selectedClient" ng-include="'repeaterTemplate2.html'"></div>-->  <!--when there are multiple clients in the array-->
-    <div ng-show="noFriendFlag">No Friends added yet</div>
+    <div ng-show="noFriendsFlag">No Friends added yet</div>
 </div>
 <!-- This is one way to specify the repeater item template used above
     Could also be in separate HTML file loaded with ng-include="'folder/repeaterTemplate.html'"
@@ -60,6 +60,10 @@
         <div> friend id
             {{row.friend_id}}
         </div>
+        <div>
+            friend avatar
+            {{row.friend_avatar}}
+        </div>
         <div> friend name
             {{row.friend_name}}
         </div>
@@ -67,8 +71,17 @@
             parent name
             {{row.friend_parentname}}
         </div>
+        <div>
+            parent email
+            {{row.friend_parentemail}}
+        </div>
+        <div>
+            record id
+            {{row.record_id}}
+        </div>
+        <!--NEED TO GET THE FRIEND RECORD ID-->
+        <div id="{{row.record_id}}" ng-click="deleteFriendClick($event)">Delete</div>
     </div>
-    <!--<div id="{{row.id}}" ng-click="deleteFriendClick($event)">Delete</div>-->
 </script>
 
 

@@ -50,18 +50,14 @@ cordovaNG.controller('clientpropertiesController', function ($scope, globalServi
     // Click on picture image for full picture view in modal (LATER FEATURE)
 
     // Get friends lists (tab)
-    // - get from server.
-    // - with friend guid, look up parent data to show parent name, email
-    // - action: remove
+
 
 
     // ==========================================
     //  Get friends from Azure based on Client GUID
     // ==========================================
-
     var tempArray = [];
     var len, j;
-
     Azureservice.read('friends', "kid1_id=email eq '" + globalService.selectedClient + "' or kid2_id eq '" + globalService.selectedClient + "'")
         .then(function (items) {
             if (items.length == 0) { // if no Friend record found, then
@@ -69,11 +65,11 @@ cordovaNG.controller('clientpropertiesController', function ($scope, globalServi
                 $scope.noFriendsFlag = true;
                 console.log('no connections yet')
             }
-            else { // if friend records found, add to friendsarray  // @@@@@@ MAYBE 'PUSH' INTO ARRAY FOR MULTIPLE CLIENTS?
+            else { // if friend records found, add to friendsarray  // @@@@@@ MAYBE 'PUSH' INTO ARRAY FOR MULTIPLE CLIENTS TO AVOID LOTS OF AZURE CALLS
 
                 $scope.friendArray = []  // @@@ Make a brand New Array (( Dumping any existing one ))
-                //var tempArray = []
-                alert(JSON.stringify(items));
+
+                //alert(JSON.stringify(items));
 
                 // Go through Friend items and reorder it 
                 // --------------------------------------
@@ -82,6 +78,7 @@ cordovaNG.controller('clientpropertiesController', function ($scope, globalServi
                     if (items[i].kid1_id == globalService.selectedClient) {  // If the first kid is this client, using the 2nd
                         var element = {  // make a new array element
                             client_id: globalService.selectedClient,
+                            record_id:items[i].id,
                             friend_id: items[i].kid2_id,
                             friend_name: items[i].kid2_name,
                             friend_avatar: ' ', //empty placeholder
@@ -93,6 +90,7 @@ cordovaNG.controller('clientpropertiesController', function ($scope, globalServi
                     else { // else use the first kid
                         var element = {  // make a new array element
                             client_id: globalService.selectedClient,
+                            record_id: items[i].id,
                             friend_id: items[i].kid1_id,
                             friend_name: items[i].kid1_name,
                             friend_avatar: ' ', //empty placeholder
@@ -106,27 +104,26 @@ cordovaNG.controller('clientpropertiesController', function ($scope, globalServi
                 // Different way of setting up the loop 
                 j = 0;
                 len = tempArray.length;
-                getkiddetails(); // Call recursive Azure call
+                getkiddetails(); // @@@ Call recursive Azure call
 
             };
         }).catch(function (error) {
             console.log(error); alert(error);
         });
-
-
     // RECURSIVELY Go through Friend array and get addtional info Kid table in Azure 
-    // !!!!! LOTS OF CALL TO AZURE NOW  
-    // !!!!! BETTER TO HAVE A CUSTOM API IN NODE TO DO THIS JOINING
+    // !!!!! LOTS OF CALL TO AZURE NOW  // !!!!! BETTER TO HAVE A CUSTOM API IN NODE TO DO THIS JOINING
     // --------------------------------------
     function getkiddetails() {
-            alert(j);
+        //alert(j);
+
+        if (j < tempArray.length) { // Don't know why this is going over the array size but this is a hack to fix
 
             Azureservice.getById('kid', tempArray[j].friend_id)
             .then(function (item) {
 
                 // TRYING TO TAKE IT OUT OF THE OTHER AZURE CALL
                 // -----
-                tempArray.friend_avatar = item.avatar_id;
+                tempArray[j].friend_avatar = item.avatar_id;
                 tempArray[j].friend_parentname = item.parent_name;
                 tempArray[j].friend_parentemail = item.parent_email;
 
@@ -142,6 +139,7 @@ cordovaNG.controller('clientpropertiesController', function ($scope, globalServi
             }, function (err) {
                 console.error('Azure Error: ' + err);
             });
+        };
     };
 
     // ==========================================
@@ -158,7 +156,7 @@ cordovaNG.controller('clientpropertiesController', function ($scope, globalServi
     $scope.deleteFriendClick = function (clickEvent) {
         $scope.clickEvent = globalService.simpleKeys(clickEvent);
         $scope.clientId = clickEvent.target.id;
-        alert('delete item = ' + $scope.clientId);
+        //alert('delete item = ' + $scope.clientId);
 
         deleteFriendRecord($scope.clientId);
     }
@@ -170,9 +168,27 @@ cordovaNG.controller('clientpropertiesController', function ($scope, globalServi
         .then(function () {
             console.log('Delete successful');
             //alert('Delete successful')
+
+            // Remove from $scope.friendArray.  Its a pain to rebuild
+            // -----------
+            var foundIndex;
+            var len = $scope.friendArray.length;
+            for (i = 0; i < len; i++) {
+                //alert(JSON.stringify($scope.friendArray[i]));
+                if ($scope.friendArray[i].record_id == id) { // If found in this subarray 
+                    foundIndex = i;
+                    //alert('found at: ' + foundIndex);
+                    $scope.friendArray.splice(foundIndex, 1) // remove from this element at index number from 'clientarray'
+                    //alert($scope.friendArray);
+                    break;
+                };
+            };
+            if ($scope.friendArray.length == 0) {
+                $scope.noFriendsFlag = true; // UI flag
+            };
+
         }, function (err) {
-            //console.error('Azure Error: ' + err);
-            alert('Azure Error: ' + err);
+            console.error('Azure Error: ' + err);  //alert('Azure Error: ' + err);
         });
     }
 

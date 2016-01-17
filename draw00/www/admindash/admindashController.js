@@ -137,7 +137,10 @@ cordovaNG.controller('admindashController', function ($scope, globalService, Azu
                 })
                 .then(function () {
                     console.log('Delete successful');
-                    //alert('Delete successful')
+
+                    // @@@ Once the Client is deleted, have to delecte other records this client is in
+                    GetFriendRecordsAndDelete(id);
+
                 }, function (err) {
                     //console.error('Azure Error: ' + err);
                     alert('Azure Error: ' + err);
@@ -150,6 +153,69 @@ cordovaNG.controller('admindashController', function ($scope, globalService, Azu
 
     };
     // ==========================================
+
+    // ==========================================
+    //  Delete friends records from Azure based on Client GUID
+    // ==========================================
+    var len, j;
+
+    function GetFriendRecordsAndDelete(id) {
+
+    Azureservice.read('friends', "kid1_id=email eq '" + id + "' or kid2_id eq '" + id + "'")
+        .then(function (items) {
+            if (items.length == 0) { // if no Friend record found, then
+                console.log('no connections yet')
+            }
+            else { // if friend records found, Go through Items and Delete them  
+                alert(JSON.stringify(items));
+
+                // Different way of setting up the loop 
+                // ---
+                j = 0;
+                len = items.length;
+                DeleteFriendRecords(items); // @@@ Call recursive Azure call
+
+            };
+        }).catch(function (error) {
+            console.log(error); alert(error);
+        });
+    };
+
+    // RECURSIVELY Go through Friend array and delete each from Friends table in Azure 
+    // !!!!! LOTS OF CALL TO AZURE NOW  // !!!!! BETTER TO HAVE A CUSTOM API IN NODE TO DO THIS JOINING
+    // --------------------------------------
+    function DeleteFriendRecords(items) {
+        //alert(j);
+        // Delete on Azure
+        // ---------------
+        Azureservice.del('friends', {
+            id: items[j].id // ID for the row to delete    
+        })
+        .then(function () {
+            console.log('Delete successful');
+            // @@@ RECUSIVE PART.  Regular FOR loop didn't work.
+            // ------
+            j++;
+            if (j < len) {
+                DeleteFriendRecords(items);
+            };
+        }, function (err) {
+            //console.error('Azure Error: ' + err);
+            alert('Azure Error: ' + err);
+        });
+        // ---------------
+
+    };
+
+    // ==========================================
+
+
+
+
+
+
+
+
 
 
     // ==========================================
@@ -190,8 +256,8 @@ cordovaNG.controller('admindashController', function ($scope, globalService, Azu
 
     // Choose Client (if needed)
     // ------------
-    FromKidID = '108cd8d2-b5a3-4168-bbd3-734cc9a0784c' // FOR TESTING
-    FromKidName = 'Jason'
+    FromKidID = '08ba64e5-4271-412f-9fd1-c59738e4c4a5' // FOR TESTING
+    FromKidName = 'Berk'
     // ------------
 
 

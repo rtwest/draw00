@@ -1,8 +1,8 @@
 W O R K I N G   R I G H T   N O W
 -----------------------------
+-  !!!! The iteration on friends to go get details of each friend is still going over the count and errors
 -  Client Properties - friends list
 -  Client Properties - Event Log 
-- !!! IF YOU DELETE A CLIENT, YOU HAVE TO DELETE FREINDS RECORDS IT IS IN ALSO
 
 
  TO DO
@@ -22,8 +22,9 @@ P R O B L E M S
 - Insert JS on NODE for FRIEND INSERT.  Need registered clients to test if Push Notification works.
 - Registering for Push Notification seems to block other Azure calls when waiting for response
 - !!! Avoid calling Azure on the View load because you'll be making lots to external calls if the View is loaded frequently
-- On ClientProperties on the Admin side, have a client array locally, then query azure for client's friends, then query Azure recursively for those friends details.  Gets to be a lot.
-
+- !!! On ClientProperties on the Admin side, have a client array locally, then query azure for client's friends, then query Azure recursively for those friends details.  Gets to be a lot.
+- * Don't forget, if you delete a Client, you have to delete it from other records across all tables
+- The iteration on friends to go get details of each friend is still going over the count and errors.  Mitigated with an IF,THEN check
 
 
 
