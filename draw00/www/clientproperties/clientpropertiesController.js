@@ -41,7 +41,7 @@ cordovaNG.controller('clientpropertiesController', function ($scope, globalServi
     // --- @@@@@ test how long a scope var is good for?
     // DIFFERENT CLIENTS TOO?
     // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-
+    var tempArray = []; // This resets the local array (which $scope is set to later)
 
 
     // Get time line (tab)
@@ -49,16 +49,74 @@ cordovaNG.controller('clientpropertiesController', function ($scope, globalServi
 
     // Click on picture image for full picture view in modal (LATER FEATURE)
 
-    // Get friends lists (tab)
+
+
+    // ==========================================
+    //  Get the Event log based on Client GUID
+    // ==========================================
+    Azureservice.read('events', "filter=from_kid_id eq '" + globalService.selectedClient + "' or to_kid_id eq '" + globalService.selectedClient + "'")
+      .then(function (items) {
+
+          if (items.length == 0) { // if no Event record found, then
+              $scope.noEventsFlag = true;   // '...Flag' is a flag the UI uses to check for 'show/hide' msg div
+              console.log('no events in last 2 weeks')
+          }
+          else {
+
+              //$scope.eventarray = items;
+              alert(JSON.stringify(items))
+
+              // Go through Friend items and reorder it 
+              // --------------------------------------
+              var tempArray = [];
+              var len = items.length;
+              var today = new Date(); // today for comparison
+              var day, time; // @@@@@@@@@@@@@@ PLACEHOLDERS 
+
+              for (i = 0; i < len; i++) {
+
+                  var dateobj = new Date(items[i].datetime);
+                  alert(dateobj);
+
+                  var element = {  // make a new array element
+                      picture_id:items[i].picture_id,
+                      fromkid_id:items[i].fromkid_id,
+                      tokid_id:items[i].tokid_id,
+                      comment_content:items[i].comment_content, 
+                      day: day,
+                      datetime: time,  // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@2  WORKING HERE TO PARSE DATE TIME 
+                  };
+                  tempArray.push(element); // add back to array
+              }; //end for
+
+              $scope.eventarray = tempArray;
+              alert(JSON.stringify($scope.eventarray))
+
+          }; // end if
+
+
+      }).catch(function (error) {
+          console.log(error)
+    });
+
+
+
+
+    // ==========================================
+
+
+
+
+
+
 
 
 
     // ==========================================
     //  Get friends from Azure based on Client GUID
     // ==========================================
-    var tempArray = [];
     var len, j;
-    Azureservice.read('friends', "kid1_id=email eq '" + globalService.selectedClient + "' or kid2_id eq '" + globalService.selectedClient + "'")
+    Azureservice.read('friends', "filter=kid1_id eq '" + globalService.selectedClient + "' or kid2_id eq '" + globalService.selectedClient + "'")
         .then(function (items) {
             if (items.length == 0) { // if no Friend record found, then
                 // 'noFriendsFlag' is a flag the UI uses to check for 'show/hide' msg div

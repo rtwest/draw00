@@ -23,13 +23,22 @@
     Could also be in separate HTML file loaded with ng-include="'folder/repeaterTemplate.html'"
     Have to have the element ID on everything because the obj id is passed where ever you click-->
 <script type="text/ng-template" id="repeaterTemplate.html">
-    <div id="{{row[0]}}" ng-click="clientclick($event)">
-        <div id="{{row[0]}}">
-            {{row[0]}}
+    <div>
+        <div>from kid
+            {{row.fromkid_id}}
         </div>
-        <div id="{{row[0]}}">
-            {{row[1]}}
+        <div>to kid
+            {{row.tokid_id}}
         </div>
+        <div>Comment
+            {{row.comment_content}}
+        </div>
+        <div>datetime - Today; Yesterday, Tuesday, Jan 5;<br>
+        Might have to parse into nest array [today:{...,...}; yesterday:{...,...}]<br>
+        Might have to parse and rebuild the array.  CAn use conditional class and test with 'ng-show' or ng-class="{expression}"
+
+    {{row.datetime | date:"EEEE, MMM d"}}
+</div>
     </div>
 </script>
 
@@ -37,7 +46,7 @@
 
 
 
-<div>Friend record</div>
+<div>TAB FOR Friend record</div>
 <div> Manage Friends </div>
 <div> - Add friend invitation record.  How do you add one?  Need parent email for ID and kid name</div>
 <div> - Remove friend</div>

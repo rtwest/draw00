@@ -1,7 +1,6 @@
 W O R K I N G   R I G H T   N O W
 -----------------------------
--  !!!! The iteration on friends to go get details of each friend is still going over the count and errors
--  Client Properties - friends list
+-  !!!! HTML Security file source error on Blob Storage
 -  Client Properties - Event Log 
 
 
@@ -36,7 +35,7 @@ PARENT RECORD: id, name, email
 KID RECORD: id, name, parent_id, registration_code, reg_status, avatar_id, parent_name, parent_email
 FRIEND RECORD: id, kid1_id, kid2_id, kid1_name, kid2_name
 INVITATION RECORD: id, fromparent_id, toparent_id, fromkid (name), tokid (name), fromparent_name, toparent_name, fromkid_id, tokid_id.  - Status is implied as pending because its in the table.  Remove when accepted.
-EVENT RECORD: picture_id, from_kid_id, to_kid_id, comment_content, datetime
+EVENT RECORD: id, picture_id, fromkid_id, tokid_id, comment_content, datetime
 PICTURE RECORD: picture_blob, picture_id, kid_id, datetime
 
 Pouch DB Tables in "drawappDatabase" on client side for large storage
@@ -52,8 +51,8 @@ Other local client side needs
 	- 'RYB_userarray' (id, usertype, name, email, first name, ..other_as_needed..)
 	- admin details (name, parent_id, reqs FB registration?)
 	- client details (name, kid_id, avatar_id) - if not, show client code input
-- for client, list of friends (name, kid_id, avatar_id,) - FRIENDS ARRAY
-- for admin, list of clients (kid_id, name, avatar_id,) - CLIENT ARRAY  // This is an array of arrays - [[...,...][...,...][...,...]]
+- In CLIENT mode, list of friends (name, kid_id, avatar_id,) - FRIENDS ARRAY
+- In ADMIN mode, list of clients (kid_id, name, avatar_id,) - CLIENT ARRAY  // This is an array of arrays - [[...,...][...,...][...,...]]
 
 =======================================================================================
 
@@ -105,7 +104,7 @@ Azure Wrapper Examples
 - https://github.com/TerryMooreII/angular-azure-mobile-service
 // Query example where col = val
 ------------------------------
-Azureservice.read('parents', "$filter=email eq 'bogus@test.com' or name eq 'FirstName'")
+Azureservice.read('parents', "filter=email eq 'bogus@test.com' or name eq 'FirstName'")
   .then(function (items) {
       console.log(items)
       console.log(items.length)

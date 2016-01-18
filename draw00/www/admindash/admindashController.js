@@ -17,6 +17,45 @@ cordovaNG.controller('admindashController', function ($scope, globalService, Azu
     //alert(globalService.userarray);
     // alert(localStorage.getItem('RYB_clientarray'));  // the returned string is not a usable array.  Needs Json.Parse for that.
 
+    // FOR TESTING HERE ONLY
+    // FOR TESTING HERE ONLY
+    // FOR TESTING HERE ONLY
+    // FOR TESTING HERE ONLY
+    // ==========================================
+    //  Insert an Event in the Event log based on Client GUID
+    // ==========================================
+    //Azureservice.insert('events', {
+    //    //id: globalService.makeUniqueID(), // i don't need to track this so let Azure handle it
+    //    picture_id: 'picture',
+    //    tokid_id: '08ba64e5-4271-412f-9fd1-c59738e4c4a5',
+    //    fromkid_id: 'fa530f03-c3dc-4c10-9c0f-ce0ec2a5ff5e',
+    //    comment_content: '',
+    //    datetime: Date.now(),
+    //})
+    //.then(function () {
+    //    console.log('Insert successful');
+    //}, function (err) {
+    //    console.log('Azure Error: ' + err);
+    //});
+
+    //// ==========================================
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     // ==========================================
     //  Get local client array.   
     // ==========================================
