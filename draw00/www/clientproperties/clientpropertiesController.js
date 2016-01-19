@@ -64,7 +64,7 @@ cordovaNG.controller('clientpropertiesController', function ($scope, globalServi
           else {
 
               //$scope.eventarray = items;
-              alert(JSON.stringify(items))
+              //alert(JSON.stringify(items))
 
               // Go through Friend items and reorder it 
               // --------------------------------------
@@ -75,7 +75,7 @@ cordovaNG.controller('clientpropertiesController', function ($scope, globalServi
 
               for (i = 0; i < len; i++) {
 
-                  var dateobj = new Date(items[i].datetime);
+                  var dateobj = new Date(items[i].datetime); // convert datetime to number
                   alert(dateobj);
 
                   var element = {  // make a new array element
@@ -83,8 +83,8 @@ cordovaNG.controller('clientpropertiesController', function ($scope, globalServi
                       fromkid_id:items[i].fromkid_id,
                       tokid_id:items[i].tokid_id,
                       comment_content:items[i].comment_content, 
-                      day: day,
-                      datetime: time,  // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@2  WORKING HERE TO PARSE DATE TIME 
+                      day: dateobj.getDay(),
+                      datetime: items[i].datetime,  // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@2  WORKING HERE TO PARSE DATE TIME 
                   };
                   tempArray.push(element); // add back to array
               }; //end for
