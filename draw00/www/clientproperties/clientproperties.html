@@ -9,7 +9,7 @@
 <div>{{avatarID}}</div>
 
 
-<div> Activity over the last 2 weeks </div>
+<div> TABBED Activity over the last 2 weeks </div>
 
 <!--Event Log  Repeater-->
 <div>
@@ -24,6 +24,14 @@
     Have to have the element ID on everything because the obj id is passed where ever you click-->
 <script type="text/ng-template" id="repeaterTemplate.html">
     <div>
+        <div ng-show="row.day"><strong> day is {{row.day}}</strong></div>
+        <div>
+            <!--datetime - Today; Yesterday, Tuesday, Jan 5;<br>
+            Might have to parse into nest array [today:{...,...}; yesterday:{...,...}]<br>
+            Might have to parse and rebuild the array.  CAn use conditional class and test with 'ng-show' or ng-class="{expression}"-->
+            {{row.datetime | date:"EEEE, MMM d"}}
+            {{row.time}}
+        </div>
         <div>from kid
             {{row.fromkid_id}}
         </div>
@@ -33,12 +41,6 @@
         <div>Comment
             {{row.comment_content}}
         </div>
-        <div>datetime - Today; Yesterday, Tuesday, Jan 5;<br>
-        Might have to parse into nest array [today:{...,...}; yesterday:{...,...}]<br>
-        Might have to parse and rebuild the array.  CAn use conditional class and test with 'ng-show' or ng-class="{expression}"
-
-    {{row.datetime | date:"EEEE, MMM d"}}
-</div>
     </div>
 </script>
 

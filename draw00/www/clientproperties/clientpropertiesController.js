@@ -31,6 +31,8 @@ cordovaNG.controller('clientpropertiesController', function ($scope, globalServi
     // =======================================================
 
 
+    // Click on picture image for full picture view in modal (LATER FEATURE)
+
 
     // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
     // HOW TO AVOID UNCESSARY REPEAT AZURE CALL?  
@@ -43,14 +45,6 @@ cordovaNG.controller('clientpropertiesController', function ($scope, globalServi
     // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
     var tempArray = []; // This resets the local array (which $scope is set to later)
 
-
-    // Get time line (tab)
-    // - get from server (last 2 weeks only kept).  Has who, what, when.
-
-    // Click on picture image for full picture view in modal (LATER FEATURE)
-
-
-
     // ==========================================
     //  Get the Event log based on Client GUID
     // ==========================================
@@ -62,28 +56,56 @@ cordovaNG.controller('clientpropertiesController', function ($scope, globalServi
               console.log('no events in last 2 weeks')
           }
           else {
-
-              //$scope.eventarray = items;
-              //alert(JSON.stringify(items))
-
               // Go through Friend items and reorder it 
               // --------------------------------------
               var tempArray = [];
               var len = items.length;
               var today = new Date(); // today for comparison
               var day, time; // @@@@@@@@@@@@@@ PLACEHOLDERS 
+              thiseventday = new Date();
+              lasteventday = new Date();
+
+              items = items.reverse()
 
               for (i = 0; i < len; i++) {
 
-                  var dateobj = new Date(items[i].datetime); // convert datetime to number
-                  alert(dateobj);
+                  lasteventday = thiseventday;
+                  thiseventday = new Date(items[i].datetime); // convert datetime to number
+
+                  // @@@@@@@@@@@@@@@@@@@@@@@2222 CHECK FOR FIRST ITEM IN ARRAY --- IT HAS TO HAVE A HEADER
+
+                  // Compare Day and Month
+                  if (i > 0) { // If this is not first in array, check if you need it.
+                      if ((thiseventday.getDate() == lasteventday.getDate()) && (thiseventday.getMonth() == lasteventday.getMonth())) {
+                          day = null;
+                      }
+                      else if ((thiseventday.getDate() == today.getDate()) && (thiseventday.getMonth() == today.getMonth())) {
+                          day = 'Today';
+                      }
+                          // If Day is Today-1, Then its Yesterday
+                      else if ((thiseventday.getDate() == (today.getDate() - 1)) && (thiseventday.getMonth() == today.getMonth())) {
+                          day = 'Yesterday';
+                      }
+                      else { day = thiseventday }
+                  }
+                  else { // If this is first in array, choose the date header
+                      if ((thiseventday.getDate() == today.getDate()) && (thiseventday.getMonth() == today.getMonth())) {
+                          day = 'Today';
+                      }
+                          // If Day is Today-1, Then its Yesterday
+                      else if ((thiseventday.getDate() == (today.getDate() - 1)) && (thiseventday.getMonth() == today.getMonth())) {
+                          day = 'Yesterday';
+                      }
+                      else { day = thiseventday }
+                  }
 
                   var element = {  // make a new array element
                       picture_id:items[i].picture_id,
                       fromkid_id:items[i].fromkid_id,
                       tokid_id:items[i].tokid_id,
                       comment_content:items[i].comment_content, 
-                      day: dateobj.getDay(),
+                      day: day,
+                      time: thiseventday,
                       datetime: items[i].datetime,  // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@2  WORKING HERE TO PARSE DATE TIME 
                   };
                   tempArray.push(element); // add back to array
