@@ -24,11 +24,9 @@
     Have to have the element ID on everything because the obj id is passed where ever you click-->
 <script type="text/ng-template" id="repeaterTemplate.html">
     <div>
+        <!--If row.day is not Null, then show it-->
         <div ng-show="row.day"><strong> day is {{row.day}}</strong></div>
         <div>
-            <!--datetime - Today; Yesterday, Tuesday, Jan 5;<br>
-            Might have to parse into nest array [today:{...,...}; yesterday:{...,...}]<br>
-            Might have to parse and rebuild the array.  CAn use conditional class and test with 'ng-show' or ng-class="{expression}"-->
             {{row.datetime | date:"EEEE, MMM d"}}
             {{row.time}}
         </div>

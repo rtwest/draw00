@@ -43,11 +43,14 @@ cordovaNG.controller('clientpropertiesController', function ($scope, globalServi
     // --- @@@@@ test how long a scope var is good for?
     // DIFFERENT CLIENTS TOO?
     // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-    var tempArray = []; // This resets the local array (which $scope is set to later)
+
 
     // ==========================================
     //  Get the Event log based on Client GUID
     // ==========================================
+
+    var tempArray = []; // This resets the local array (which $scope is set to later)
+
     Azureservice.read('events', "filter=from_kid_id eq '" + globalService.selectedClient + "' or to_kid_id eq '" + globalService.selectedClient + "'")
       .then(function (items) {
 
@@ -61,24 +64,25 @@ cordovaNG.controller('clientpropertiesController', function ($scope, globalServi
               var tempArray = [];
               var len = items.length;
               var today = new Date(); // today for comparison
-              var day, time; // @@@@@@@@@@@@@@ PLACEHOLDERS 
+              var day, time;
               thiseventday = new Date();
               lasteventday = new Date();
+              montharray = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
-              items = items.reverse()
+              items = items.reverse()  // @@@@@@@ This puts them in newwest first order.  NEED TO CHECK FOR ORDER A FEW TIMES
 
               for (i = 0; i < len; i++) {
 
-                  lasteventday = thiseventday;
+                  lasteventday = thiseventday; // when i=0, this is useless and skipped over with coniditional below
                   thiseventday = new Date(items[i].datetime); // convert datetime to number
 
-                  // @@@@@@@@@@@@@@@@@@@@@@@2222 CHECK FOR FIRST ITEM IN ARRAY --- IT HAS TO HAVE A HEADER
-
-                  // Compare Day and Month
-                  if (i > 0) { // If this is not first in array, check if you need it.
+                  // Get Day - Compare Day and Month
+                  // ---------------------
+                  if (i > 0) { // If this is NOT first in array, check if you need to show it.
                       if ((thiseventday.getDate() == lasteventday.getDate()) && (thiseventday.getMonth() == lasteventday.getMonth())) {
-                          day = null;
+                          day = null; // then it's the same as the last one and don't need to repeat the date
                       }
+                          // may never have this case?
                       else if ((thiseventday.getDate() == today.getDate()) && (thiseventday.getMonth() == today.getMonth())) {
                           day = 'Today';
                       }
@@ -86,9 +90,9 @@ cordovaNG.controller('clientpropertiesController', function ($scope, globalServi
                       else if ((thiseventday.getDate() == (today.getDate() - 1)) && (thiseventday.getMonth() == today.getMonth())) {
                           day = 'Yesterday';
                       }
-                      else { day = thiseventday }
+                      else { day = montharray[thiseventday.getMonth()] + " " + thiseventday.getDate(); }
                   }
-                  else { // If this is first in array, choose the date header
+                  else { // If this IS first in array, they it has to have the date header
                       if ((thiseventday.getDate() == today.getDate()) && (thiseventday.getMonth() == today.getMonth())) {
                           day = 'Today';
                       }
@@ -96,17 +100,29 @@ cordovaNG.controller('clientpropertiesController', function ($scope, globalServi
                       else if ((thiseventday.getDate() == (today.getDate() - 1)) && (thiseventday.getMonth() == today.getMonth())) {
                           day = 'Yesterday';
                       }
-                      else { day = thiseventday }
+                      else { day = montharray[thiseventday.getMonth()] + " " + thiseventday.getDate(); }
                   }
 
+                  // Get time  // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ DEAL WITH TIME ZONES
+                  // --------
+                  var t = thiseventday.getHours();  //+1 to make up for 0 base
+                  if (t > 12) {
+                      time = Math.abs(12 - t) + ":" + thiseventday.getMinutes() + "pm";  // break down the 24h and use Am/pm
+                  }
+                  else {
+                      time = t + ":" + thiseventday.getMinutes() + "am";  // break down the 24h and use Am/pm
+                  }
+
+                  // Make array object
+                  // ------------------
                   var element = {  // make a new array element
                       picture_id:items[i].picture_id,
                       fromkid_id:items[i].fromkid_id,
                       tokid_id:items[i].tokid_id,
                       comment_content:items[i].comment_content, 
                       day: day,
-                      time: thiseventday,
-                      datetime: items[i].datetime,  // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@2  WORKING HERE TO PARSE DATE TIME 
+                      time: time,
+                      datetime: items[i].datetime,
                   };
                   tempArray.push(element); // add back to array
               }; //end for
