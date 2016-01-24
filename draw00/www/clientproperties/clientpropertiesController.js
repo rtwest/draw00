@@ -64,7 +64,7 @@ cordovaNG.controller('clientpropertiesController', function ($scope, globalServi
               var tempArray = [];
               var len = items.length;
               var today = new Date(); // today for comparison
-              var day, time;
+              var day, time, fromkid, tokid;
               thiseventday = new Date();
               lasteventday = new Date();
               montharray = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -103,7 +103,7 @@ cordovaNG.controller('clientpropertiesController', function ($scope, globalServi
                       else { day = montharray[thiseventday.getMonth()] + " " + thiseventday.getDate(); }
                   }
 
-                  // Get time  // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ DEAL WITH TIME ZONES
+                  // Get time  // @@@@@ DEAL WITH TIME ZONES??
                   // --------
                   var t = thiseventday.getHours();  //+1 to make up for 0 base
                   if (t > 12) {
@@ -115,20 +115,21 @@ cordovaNG.controller('clientpropertiesController', function ($scope, globalServi
 
                   // Make array object
                   // ------------------
-                  var element = {  // make a new array element
-                      picture_id:items[i].picture_id,
-                      fromkid_id:items[i].fromkid_id,
-                      tokid_id:items[i].tokid_id,
+                  var element = {  // make a new array element.  If items[i] is NULL, the HTML binding for ng-show will hide the HTML templating
+                      picture_url:items[i].picture_url,
+                      fromkid: items[i].fromkid_name,
+                      tokid: items[i].tokid_name,
+                      event_type: items[i].event_type,
                       comment_content:items[i].comment_content, 
                       day: day,
                       time: time,
-                      datetime: items[i].datetime,
+                      //datetime: items[i].datetime,
                   };
                   tempArray.push(element); // add back to array
               }; //end for
 
               $scope.eventarray = tempArray;
-              alert(JSON.stringify($scope.eventarray))
+             // alert(JSON.stringify($scope.eventarray))
 
           }; // end if
 

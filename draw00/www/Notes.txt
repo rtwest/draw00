@@ -1,11 +1,17 @@
 W O R K I N G   R I G H T   N O W
 -----------------------------
--  !!!! HTML Security file source error on Blob Storage
--  Client Properties - Event Log 
+
+- Make sure saved/shared pictures are on the local client PouchDB gallery
+
+- When uploading a picuture to share - Where is push notification sent from?  Event record - YES (also cleaned weekly already) ?  Picture record - NOT NEEDED
+- ALSO NEED TO CLEAN BLOB STORAGE WEEKLY
+- @@@ THINK THROUGH SHARING WORKFLOW
 
 
  TO DO
 -----------------------------
+-  !!!! HTML Security file source error on Blob Storage
+- Loaders and Progress indicators when awaiting on Azure response
 - Pull new friends from client to update client
 - Need to check for web connection on load and alert
 - ??? Need to restrict permissions on azure tables to authenticate users for admin and client(probably) 
@@ -19,12 +25,13 @@ P R O B L E M S
 -----------------------------
 - Had a problem in creating Azure push notifications.  I think I solved it by remove the Azure mobile web services JS file - which was redundant to the Azure cordova plugin.  I thought I needed the JS file for the NG Azure JS wrapper but all the Azure table CRUD ops work fine without it.
 - Insert JS on NODE for FRIEND INSERT.  Need registered clients to test if Push Notification works.
-- Registering for Push Notification seems to block other Azure calls when waiting for response
-- !!! Avoid calling Azure on the View load because you'll be making lots to external calls if the View is loaded frequently
-- !!! On ClientProperties on the Admin side, have a client array locally, then query azure for client's friends, then query Azure recursively for those friends details.  Gets to be a lot.
-- * Don't forget, if you delete a Client, you have to delete it from other records across all tables
+- !!! Registering for Push Notification seems to block other Azure calls when waiting for response
+- Avoid calling Azure on the View load because you'll be making lots to external calls if the View is loaded frequently
+- On ClientProperties on the Admin side, have a client array locally, then query azure for client's friends, then query Azure recursively for those friends details.  Gets to be a lot.
+- Don't forget, if you delete a Client, you have to delete it from other records across all tables
 - The iteration on friends to go get details of each friend is still going over the count and errors.  Mitigated with an IF,THEN check
-
+- Security Content Policy with PouchDB.  Added -- <meta http-equiv="Content-Security-Policy" connect-src * blob: data:; ... ...> which seems to work.
+- ***REGISTERING FOR PUSH SOMETIMES FAILS AND TAKE A WHILE TO - IT BLOCKS OTHER AZURE CALLS UNTIL IT FAILS
 
 
 S T O R A G E 
@@ -35,8 +42,8 @@ PARENT RECORD: id, name, email
 KID RECORD: id, name, parent_id, registration_code, reg_status, avatar_id, parent_name, parent_email
 FRIEND RECORD: id, kid1_id, kid2_id, kid1_name, kid2_name
 INVITATION RECORD: id, fromparent_id, toparent_id, fromkid (name), tokid (name), fromparent_name, toparent_name, fromkid_id, tokid_id.  - Status is implied as pending because its in the table.  Remove when accepted.
-EVENT RECORD: id, picture_id, fromkid_id, tokid_id, comment_content, datetime
-PICTURE RECORD: picture_blob, picture_id, kid_id, datetime
+EVENT RECORD: id, picture_url, fromkid_id, fromkid_name, tokid_id, tokid_name, event_type, comment_content, datetime
+PICTURE RECORD: id, picture_url, kid_id, datetime
 
 Pouch DB Tables in "drawappDatabase" on client side for large storage
 ------------------------------------

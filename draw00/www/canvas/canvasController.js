@@ -17,7 +17,7 @@
 
 
 
-cordovaNG.controller('canvasController', function ($scope, $http, globalService) {
+cordovaNG.controller('canvasController', function ($scope, $http, globalService, Azureservice) {
 
     // Scope is like the partial view datamodel.  'message' is defined in the partial html view
     //$scope.message = "Let's draw";
@@ -332,6 +332,14 @@ cordovaNG.controller('canvasController', function ($scope, $http, globalService)
 
 
 
+
+    // ==================================================================================================================================
+    // ==================================================================================================================================
+    // ==================================================================================================================================
+
+
+
+
     // Function to get picuture from camera and insert onto canvas
     // ------------------------------------------------------------------
     $scope.getPicture = function () {
@@ -368,6 +376,12 @@ cordovaNG.controller('canvasController', function ($scope, $http, globalService)
         console.log('Failed to load picture because: ' + message);
         $('#log').innerHTML += 'Failed to load picture because: ' + message;  // FOR TESTING ONLY
     }
+
+
+
+    // ==================================================================================================================================
+    // ==================================================================================================================================
+    // ==================================================================================================================================
 
 
 
@@ -419,6 +433,11 @@ cordovaNG.controller('canvasController', function ($scope, $http, globalService)
 
 
 
+    // ==================================================================================================================================
+    // ==================================================================================================================================
+    // ==================================================================================================================================
+
+
 
     // To upload file to Azure blob storage.  1. Call API to get a sasURL.  2. PUT the file using the sasURL 
     //  Upload call SaveImage and implicityly saves the canvas and and background to the 'photolibrary'
@@ -452,13 +471,20 @@ cordovaNG.controller('canvasController', function ($scope, $http, globalService)
                 headers: { 'X-ZUMO-APPLICATION': 'IfISqwqStqWVFuRgKbgJtedgtBjwrc24' } // need a custom header for Azure Mobile Service Application key for "service-poc"
             })
             response.success(function (data, status, headers, config) { // response will send json in the parts
+
                 sasUrl = data.sasUrl;
-                //photoId = data.photoId; Not using right now
+                picture_url = "https://rtwdevstorage.blob.core.windows.net/imagecontainer/" + data.photoId;  // photoID is image created on the Node side script
+
+                // Image URL is https://rtwdevstorage.blob.core.windows.net/imagecontainer/6364260670030.png  or http://rtwdevstorage.blob.core.windows.net:80/imagecontainer/6364260670030.png            
+
+                // @@@ Function to update the path with the real image AND make the Azure Picture record
+                // ------
                 updateFile(sasUrl);
-                //putFile(sasUrl);
+
             });
             response.error(function (data, status, headers, config) {
-                console.log(status); alert(status);
+                console.log("error - " + status);
+                //alert(status);
             });
         };
 
@@ -466,11 +492,49 @@ cordovaNG.controller('canvasController', function ($scope, $http, globalService)
         // ----------------------------------
         function updateFile(Url) {
             var xhr = new XMLHttpRequest();
+
+            // Look for response success
+            xhr.onreadystatechange = function () {
+
+                // @@@ If the SasBlobUrl is successful update with PNG, then made the Picture record
+                // ReadyState=4 means response ready.  Status 201 is custom sent from Azure Node when done.   Response = "Created" is success.
+                // ----------
+                if (xhr.readyState == 4 && xhr.status == 201) {
+
+                    // Insert into 'Pictures' the picture URL and Kid_id
+                    //------------------------------
+                    Azureservice.insert('pictures', {
+                        picture_url: picture_url,
+                        kid_id: globalService.userarray[0],
+                        datetime: Date.now(),
+                    })
+                    .then(function () {
+                        // When all done with URL creating, Image updating, and Record creation
+                        // --------------------------
+
+
+                        //  @@@@@@@@@@  WORKING HERE @@@@@@  NEED THE PUSH NOTIFICATION ON RECORD INSERT FOR PICTURE
+                        //  ??? IS THIS A PUSH NOTIFICATION ON A EVENT RECORD? OR PICTURE RECORD?
+                        alert("Picture uploaded");
+
+                        console.log('Insert successful');
+
+
+
+                    }, function (err) {
+                        console.error('Azure Error: ' + err);
+                    });
+                    // ------- 
+                }
+            }
             xhr.open('PUT', Url, true);
             xhr.setRequestHeader('Content-Type', 'image/png');
             xhr.setRequestHeader('x-ms-blob-type', 'BlockBlob');
             xhr.send(blob);
         }
+
+
+
 
         // Convert base64/URLEncoded data component to raw binary data held in a string
         // ------------------------------
@@ -498,6 +562,11 @@ cordovaNG.controller('canvasController', function ($scope, $http, globalService)
     $scope.goToGallery = function () {
         globalService.changeView('gallery');
     };
+
+
+
+
+
 
 
     // -----------------------------------------------------------------------

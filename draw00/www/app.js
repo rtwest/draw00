@@ -259,7 +259,7 @@ cordovaNG.service('globalService', ['$location', function ($location) {
 // ==================================================
 
 
-// NOT USED
+// ===============   NOT USED   =====================
 cordovaNG.controller('mainController', function ($scope, Azureservice) {
 
     // Scope is like the partial view datamodel.  'message' is defined in the paritial view
@@ -374,7 +374,14 @@ cordovaNG.controller('startupController', function ($scope, globalService, Azure
         }
         else if (globalService.userarray[1] == 'client') { // if user type is 'client', go to client home screen
             PushNotificationSetup(); // register for push notification after you know the user has an ID
-            globalService.changeView('clientstart');
+
+
+
+            // @@@@@@@@ WORKING HERE @@@@@@@@@@@@@@
+            // globalService.changeView('clientstart');
+            globalService.changeView('canvas');
+
+
             console.log('user is client');
         }
         else { //if neither, go to user type screen and start over
