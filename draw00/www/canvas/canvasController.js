@@ -414,7 +414,11 @@ cordovaNG.controller('canvasController', function ($scope, $http, globalService,
                     if (error) {
                         console.log(error);
                         return;
-                    } else if(response && response.ok) {
+                    } else if (response && response.ok) {
+                        // On successful filepath save to PouchDB
+                        // -----
+                        // @@@@@@@@@@@ NEED BETTER SAVED INDICATOR
+                        alert("Saved")
                         console.log(response)
                     }
                 });
@@ -501,28 +505,33 @@ cordovaNG.controller('canvasController', function ($scope, $http, globalService,
                 // ----------
                 if (xhr.readyState == 4 && xhr.status == 201) {
 
-                    // Insert into 'Pictures' the picture URL and Kid_id
+                    // Insert into 'events' table the sharing details  
                     //------------------------------
-                    Azureservice.insert('pictures', {
+                    Azureservice.insert('events', {
+                        //id: globalService.makeUniqueID(), // i don't need to track this so let Azure handle it
                         picture_url: picture_url,
-                        kid_id: globalService.userarray[0],
+                        fromkid_id: globalService.userarray[0],
+                        fromkid_name: globalService.userarray[0],
+                        event_type: "shared a picture with",
+                        tokid_id: 'fa530f03-c3dc-4c10-9c0f-ce0ec2a5ff5e',
+                        tokid_name:'Jason',
+                        //comment_content: 'this is a comment here',
                         datetime: Date.now(),
                     })
                     .then(function () {
-                        // When all done with URL creating, Image updating, and Record creation
+                        
+                        // When all chained functions are done with URL creating, Image updating, and Record creation
                         // --------------------------
 
-
+                        // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@2
                         //  @@@@@@@@@@  WORKING HERE @@@@@@  NEED THE PUSH NOTIFICATION ON RECORD INSERT FOR PICTURE
                         //  ??? IS THIS A PUSH NOTIFICATION ON A EVENT RECORD? OR PICTURE RECORD?
                         alert("Picture uploaded");
 
                         console.log('Insert successful');
 
-
-
                     }, function (err) {
-                        console.error('Azure Error: ' + err);
+                        console.log('Azure Error: ' + err);
                     });
                     // ------- 
                 }

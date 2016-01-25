@@ -1,16 +1,14 @@
 W O R K I N G   R I G H T   N O W
 -----------------------------
 
-- Make sure saved/shared pictures are on the local client PouchDB gallery
-
-- When uploading a picuture to share - Where is push notification sent from?  Event record - YES (also cleaned weekly already) ?  Picture record - NOT NEEDED
+-  SAVE and SHARE/UPLOAD are 2 different actions
+- Send Push Notifications on Insert Events.  ??? Can PN have <img>?
 - ALSO NEED TO CLEAN BLOB STORAGE WEEKLY
 - @@@ THINK THROUGH SHARING WORKFLOW
-
+- Need better Picture Save Indicator.  Need better Picuture Shared indicator
 
  TO DO
 -----------------------------
--  !!!! HTML Security file source error on Blob Storage
 - Loaders and Progress indicators when awaiting on Azure response
 - Pull new friends from client to update client
 - Need to check for web connection on load and alert
