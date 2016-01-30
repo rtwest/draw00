@@ -211,7 +211,7 @@ cordovaNG.controller('signinController', function ($scope, globalService, ngFB, 
                 globalService.userarray[0] = items[0].id; // GUID from Azure table
                 globalService.userarray[1] = "client"; //user role
                 globalService.userarray[2] = ""; //full name
-                globalService.userarray[3] = ""; //email
+                globalService.userarray[3] = items[0].avatar_id; //email for admin / avatar id for client.  default was created when Admin created the kid.
                 globalService.userarray[4] = items[0].name; //first name
                 localStorage["RYB_userarray"] = JSON.stringify(globalService.userarray);
 

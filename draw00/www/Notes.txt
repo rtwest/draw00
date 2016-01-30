@@ -1,19 +1,25 @@
 W O R K I N G   R I G H T   N O W
 -----------------------------
 
--  SAVE and SHARE/UPLOAD are 2 different actions
-- Send Push Notifications on Insert Events.  ??? Can PN have <img>?
-- ALSO NEED TO CLEAN BLOB STORAGE WEEKLY
+- Client Side - Timeline View // Friends Gallery
+- Client Side - Friend List
+- RESEARCH - ALSO NEED TO CLEAN BLOB STORAGE WEEKLY.  Maybe have to convert mobile services to app services.  Get scheduler.  Web Pages.  New Pricing?? 
 - @@@ THINK THROUGH SHARING WORKFLOW
-- Need better Picture Save Indicator.  Need better Picuture Shared indicator
+-  SAVE and SHARE/UPLOAD are 2 different actions
+
+
+- Client workflow
+	- >>>
+
 
  TO DO
 -----------------------------
+- Need better Picture Save Indicator.  Need better Picuture Shared indicator
 - Loaders and Progress indicators when awaiting on Azure response
 - Pull new friends from client to update client
 - Need to check for web connection on load and alert
 - ??? Need to restrict permissions on azure tables to authenticate users for admin and client(probably) 
-
+- Have Clients choose avatar on first run like on DoJo
 
 
 

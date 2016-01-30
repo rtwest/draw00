@@ -374,14 +374,7 @@ cordovaNG.controller('startupController', function ($scope, globalService, Azure
         }
         else if (globalService.userarray[1] == 'client') { // if user type is 'client', go to client home screen
             PushNotificationSetup(); // register for push notification after you know the user has an ID
-
-
-
-            // @@@@@@@@ WORKING HERE @@@@@@@@@@@@@@
-            // globalService.changeView('clientstart');
-            globalService.changeView('canvas');
-
-
+            globalService.changeView('clientstart');
             console.log('user is client');
         }
         else { //if neither, go to user type screen and start over

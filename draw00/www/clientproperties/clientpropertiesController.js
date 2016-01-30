@@ -152,7 +152,7 @@ cordovaNG.controller('clientpropertiesController', function ($scope, globalServi
 
 
     // ==========================================
-    //  Get friends from Azure based on Client GUID
+    //  Get friends from Azure based on Client GUID.  THIS CODE USED ON CLIENTPROPERTIESCONTROLLER.JS and CLIENTSTARTCONTROLLER.JS
     // ==========================================
     var len, j;
     Azureservice.read('friends', "filter=kid1_id eq '" + globalService.selectedClient + "' or kid2_id eq '" + globalService.selectedClient + "'")
@@ -224,7 +224,7 @@ cordovaNG.controller('clientpropertiesController', function ($scope, globalServi
                 tempArray[j].friend_parentname = item.parent_name;
                 tempArray[j].friend_parentemail = item.parent_email;
 
-                $scope.friendArray = tempArray; // Set to $scope array
+                $scope.friendArray = tempArray; // @@@ Set to $scope array
 
                 // RECUSIVE PART.  Regular FOR loop didn't work.
                 // ------

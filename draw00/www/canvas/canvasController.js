@@ -511,8 +511,8 @@ cordovaNG.controller('canvasController', function ($scope, $http, globalService,
                         //id: globalService.makeUniqueID(), // i don't need to track this so let Azure handle it
                         picture_url: picture_url,
                         fromkid_id: globalService.userarray[0],
-                        fromkid_name: globalService.userarray[0],
-                        event_type: "shared a picture with",
+                        fromkid_name: globalService.userarray[4],
+                        event_type: "sharepicture", // 
                         tokid_id: 'fa530f03-c3dc-4c10-9c0f-ce0ec2a5ff5e',
                         tokid_name:'Jason',
                         //comment_content: 'this is a comment here',
