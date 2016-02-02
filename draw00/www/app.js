@@ -194,6 +194,7 @@ cordovaNG.service('globalService', ['$location', function ($location) {
     var selectedClient = '';// for passing between Admin view and Client Properties
     var eventArray = []; // global var used to retrieve once from Azure and use for session
     var friendArray = []; //user data
+    var lastTimeChecked = Date.now() - 300001; // Timestamp for last Azure data pull.  Initially set for > 5 MIN ago so the data will be pulled again.
 
     // SETTING UP STORAGE.  
     // Open connection to the database using PouchDB.  @@@@@@@@ If adapter is not given, it defaults to IndexedDB, then fails over to WebSQL @@@@@@@@
@@ -232,6 +233,7 @@ cordovaNG.service('globalService', ['$location', function ($location) {
 
         userarray: userarray, // return the glabal array for local user data
         selectedClient: selectedClient,  // return the global var
+        lastTimeChecked: lastTimeChecked,
 
         // Clever function to make a GUID compliant with standard format cast as type STRING
         // ----------------

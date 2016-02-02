@@ -11,5 +11,30 @@
 <div>{{avatarID}}</div>
 
 
+<!--Event Log  Repeater. THIS CODE USED IN CLIENTSTART.HTML and  CLIENTPROPERTIES.HTML -->
+<div>
+    <!--'For Each' loop using object 'clientlist' known to the $scope when defined in the controller -->
+    <!--'row' is a new local var created here then used in controllerJS-->
+    <!-- Can use 'arr.[x]' for array and 'ParamName/Colname' if JSON -->
+    <div ng-repeat="row in eventarray track by $index" ng-include="'repeaterTemplate.html'"></div>
+    <div ng-show="noEventFlag">No events</div>
+</div>
+<!-- This is one way to specify the repeater item template used above
+    Could also be in separate HTML file loaded with ng-include="'folder/repeaterTemplate.html'"
+    Have to have the element ID on everything because the obj id is passed where ever you click-->
+<script type="text/ng-template" id="repeaterTemplate.html">
+    <div>
+        <!--If row.day is not Null, then show it-->
+        <div ng-show="row.day"><strong> day is {{row.day}}</strong></div>
+        <div>
+            <!--{{row.datetime | date:"EEEE, MMM d"}}-->
+            {{row.time}}
+        </div>
+        <div>{{row.fromkid}}</div>
+        <div>{{row.event_type}}</div>
+        <div>{{row.tokid}}</div>
+        <div ng-show="row.picture_url">Picture goes here: {{row.picture_url}}<img src="{{row.picture_url}}" alt="Shared drawing" /></div>
+        <div ng-show="row.comment_content">Comment: {{row.comment_content}}</div>
+    </div>
+</script>
 
-<p>...notes...</p>

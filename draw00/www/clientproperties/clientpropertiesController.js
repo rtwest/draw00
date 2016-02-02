@@ -46,7 +46,7 @@ cordovaNG.controller('clientpropertiesController', function ($scope, globalServi
 
 
     // ==========================================
-    //  Get the Event log based on Client GUID
+    //  Get the Event log based on Client GUID.   THIS CODE USED ON CLIENTPROPERTIESCONTROLLER.JS and CLIENTSTARTCONTROLLER.JS
     // ==========================================
 
     var tempArray = []; // This resets the local array (which $scope is set to later)
