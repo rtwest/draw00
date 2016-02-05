@@ -31,6 +31,9 @@ cordovaNG.controller('canvasController', function ($scope, $http, globalService,
     var x, y, lastx, lasty = 0;
     var backgroundImage = new Image();
     var isTouch
+    $scope.shareActionSheet = false;  // boolean for ng-show for UI toggle
+    $scope.shareSelectionArray = []; // array of friends to share with
+
 
     // Test for touch device - NOT USED
     // ---------------------
@@ -443,6 +446,57 @@ cordovaNG.controller('canvasController', function ($scope, $http, globalService,
 
 
 
+    // Function for making selection to share with
+    // ----------------------------------
+
+
+    // ###################################   WORKING HERE ######################################
+
+    $scope.toggleSelect = function (clickEvent) {
+        $scope.clickEvent = globalService.simpleKeys(clickEvent);
+        $scope.clientId = clickEvent.target.id;
+
+        alert('id = ' + $scope.clientId);
+
+        //if in array, then remove.  Else, add it.  // need Kid ID and Name
+        alert($scope.shareSelectionArray)
+        var index = $scope.shareSelectionArray.indexOf($scope.clientId)
+        if (index > -1) { //if FOUND, the remove
+            $scope.shareSelectionArray.splice(index, 1);
+        }
+        else { // if NOT found, then add
+            $scope.shareSelectionArray.push($scope.clientId);
+        };
+
+        alert($scope.shareSelectionArray)
+
+    };
+
+    //empty the array on cancel/close  //@@@@@ MAYBE JUST CLEAN THIS ON THE HTML ?????
+    // ----------------------------------
+    //$scope.clearSelectArray = function () {
+    //    $scope.shareSelectionArray = [];
+    //};
+
+
+    // Go through SelectionArray and share / upload images to users
+    // ----------------------------------
+    $scope.Share = function () {
+        alert($scope.shareSelectionArray);
+    };
+
+
+    // ###################################   WORKING HERE ######################################
+
+
+
+    // ==================================================================================================================================
+    // ==================================================================================================================================
+    // ==================================================================================================================================
+
+
+
+
     // To upload file to Azure blob storage.  1. Call API to get a sasURL.  2. PUT the file using the sasURL 
     //  Upload call SaveImage and implicityly saves the canvas and and background to the 'photolibrary'
     // ----------------------------------
@@ -564,6 +618,16 @@ cordovaNG.controller('canvasController', function ($scope, $http, globalService,
         }
 
     };
+
+
+
+
+    // ==================================================================================================================================
+    // ==================================================================================================================================
+    // ==================================================================================================================================
+
+
+
 
 
     // Function to nav to gallery view

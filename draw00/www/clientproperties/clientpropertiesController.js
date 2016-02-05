@@ -45,100 +45,117 @@ cordovaNG.controller('clientpropertiesController', function ($scope, globalServi
     // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
 
+
+    // Set the local data model here to the data in the global service between views
+    // -------
+    //$scope.eventarray = globalService.eventArray;
+
+    // if last data pull was over 5 MIN ago, then check again
+    // -------
+    //if (globalService.lastTimeChecked < (Date.now() - 300000)) { 
+    //    getEventLog();
+    //    globalService.lastTimeChecked = Date.now();
+    //};
+
+
+
+
     // ==========================================
     //  Get the Event log based on Client GUID.   THIS CODE USED ON CLIENTPROPERTIESCONTROLLER.JS and CLIENTSTARTCONTROLLER.JS
     // ==========================================
 
-    var tempArray = []; // This resets the local array (which $scope is set to later)
+    //function getEventLog() {
 
-    Azureservice.read('events', "filter=from_kid_id eq '" + globalService.selectedClient + "' or to_kid_id eq '" + globalService.selectedClient + "'")
-      .then(function (items) {
+        var tempArray = []; // This resets the local array (which $scope is set to later)
 
-          if (items.length == 0) { // if no Event record found, then
-              $scope.noEventsFlag = true;   // '...Flag' is a flag the UI uses to check for 'show/hide' msg div
-              console.log('no events in last 2 weeks')
-          }
-          else {
-              // Go through Friend items and reorder it 
-              // --------------------------------------
-              var tempArray = [];
-              var len = items.length;
-              var today = new Date(); // today for comparison
-              var day, time, fromkid, tokid;
-              thiseventday = new Date();
-              lasteventday = new Date();
-              montharray = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+        Azureservice.read('events', "filter=from_kid_id eq '" + globalService.selectedClient + "' or to_kid_id eq '" + globalService.selectedClient + "'")
+          .then(function (items) {
 
-              items = items.reverse()  // @@@@@@@ This puts them in newwest first order.  NEED TO CHECK FOR ORDER A FEW TIMES
+              if (items.length == 0) { // if no Event record found, then
+                  $scope.noEventsFlag = true;   // '...Flag' is a flag the UI uses to check for 'show/hide' msg div
+                  console.log('no events in last 2 weeks')
+              }
+              else {
+                  // Go through Friend items and reorder it 
+                  // --------------------------------------
+                  var tempArray = [];
+                  var len = items.length;
+                  var today = new Date(); // today for comparison
+                  var day, time, fromkid, tokid;
+                  thiseventday = new Date();
+                  lasteventday = new Date();
+                  montharray = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
-              for (i = 0; i < len; i++) {
+                  items = items.reverse()  // @@@@@@@ This puts them in newwest first order.  NEED TO CHECK FOR ORDER A FEW TIMES
 
-                  lasteventday = thiseventday; // when i=0, this is useless and skipped over with coniditional below
-                  thiseventday = new Date(items[i].datetime); // convert datetime to number
+                  for (i = 0; i < len; i++) {
 
-                  // Get Day - Compare Day and Month
-                  // ---------------------
-                  if (i > 0) { // If this is NOT first in array, check if you need to show it.
-                      if ((thiseventday.getDate() == lasteventday.getDate()) && (thiseventday.getMonth() == lasteventday.getMonth())) {
-                          day = null; // then it's the same as the last one and don't need to repeat the date
+                      lasteventday = thiseventday; // when i=0, this is useless and skipped over with coniditional below
+                      thiseventday = new Date(items[i].datetime); // convert datetime to number
+
+                      // Get Day - Compare Day and Month
+                      // ---------------------
+                      if (i > 0) { // If this is NOT first in array, check if you need to show it.
+                          if ((thiseventday.getDate() == lasteventday.getDate()) && (thiseventday.getMonth() == lasteventday.getMonth())) {
+                              day = null; // then it's the same as the last one and don't need to repeat the date
+                          }
+                              // may never have this case?
+                          else if ((thiseventday.getDate() == today.getDate()) && (thiseventday.getMonth() == today.getMonth())) {
+                              day = 'Today';
+                          }
+                              // If Day is Today-1, Then its Yesterday
+                          else if ((thiseventday.getDate() == (today.getDate() - 1)) && (thiseventday.getMonth() == today.getMonth())) {
+                              day = 'Yesterday';
+                          }
+                          else { day = montharray[thiseventday.getMonth()] + " " + thiseventday.getDate(); }
                       }
-                          // may never have this case?
-                      else if ((thiseventday.getDate() == today.getDate()) && (thiseventday.getMonth() == today.getMonth())) {
-                          day = 'Today';
+                      else { // If this IS first in array, they it has to have the date header
+                          if ((thiseventday.getDate() == today.getDate()) && (thiseventday.getMonth() == today.getMonth())) {
+                              day = 'Today';
+                          }
+                              // If Day is Today-1, Then its Yesterday
+                          else if ((thiseventday.getDate() == (today.getDate() - 1)) && (thiseventday.getMonth() == today.getMonth())) {
+                              day = 'Yesterday';
+                          }
+                          else { day = montharray[thiseventday.getMonth()] + " " + thiseventday.getDate(); }
                       }
-                          // If Day is Today-1, Then its Yesterday
-                      else if ((thiseventday.getDate() == (today.getDate() - 1)) && (thiseventday.getMonth() == today.getMonth())) {
-                          day = 'Yesterday';
+
+                      // Get time  // @@@@@ DEAL WITH TIME ZONES??
+                      // --------
+                      var t = thiseventday.getHours();  //+1 to make up for 0 base
+                      if (t > 12) {
+                          time = Math.abs(12 - t) + ":" + thiseventday.getMinutes() + "pm";  // break down the 24h and use Am/pm
                       }
-                      else { day = montharray[thiseventday.getMonth()] + " " + thiseventday.getDate(); }
-                  }
-                  else { // If this IS first in array, they it has to have the date header
-                      if ((thiseventday.getDate() == today.getDate()) && (thiseventday.getMonth() == today.getMonth())) {
-                          day = 'Today';
+                      else {
+                          time = t + ":" + thiseventday.getMinutes() + "am";  // break down the 24h and use Am/pm
                       }
-                          // If Day is Today-1, Then its Yesterday
-                      else if ((thiseventday.getDate() == (today.getDate() - 1)) && (thiseventday.getMonth() == today.getMonth())) {
-                          day = 'Yesterday';
-                      }
-                      else { day = montharray[thiseventday.getMonth()] + " " + thiseventday.getDate(); }
-                  }
 
-                  // Get time  // @@@@@ DEAL WITH TIME ZONES??
-                  // --------
-                  var t = thiseventday.getHours();  //+1 to make up for 0 base
-                  if (t > 12) {
-                      time = Math.abs(12 - t) + ":" + thiseventday.getMinutes() + "pm";  // break down the 24h and use Am/pm
-                  }
-                  else {
-                      time = t + ":" + thiseventday.getMinutes() + "am";  // break down the 24h and use Am/pm
-                  }
+                      // Make array object
+                      // ------------------
+                      var element = {  // make a new array element.  If items[i] is NULL, the HTML binding for ng-show will hide the HTML templating
+                          picture_url: items[i].picture_url,
+                          fromkid: items[i].fromkid_name,
+                          tokid: items[i].tokid_name,
+                          event_type: items[i].event_type,
+                          comment_content: items[i].comment_content,
+                          day: day,
+                          time: time,
+                          //datetime: items[i].datetime,
+                      };
+                      tempArray.push(element); // add back to array
+                  }; //end for
 
-                  // Make array object
-                  // ------------------
-                  var element = {  // make a new array element.  If items[i] is NULL, the HTML binding for ng-show will hide the HTML templating
-                      picture_url:items[i].picture_url,
-                      fromkid: items[i].fromkid_name,
-                      tokid: items[i].tokid_name,
-                      event_type: items[i].event_type,
-                      comment_content:items[i].comment_content, 
-                      day: day,
-                      time: time,
-                      //datetime: items[i].datetime,
-                  };
-                  tempArray.push(element); // add back to array
-              }; //end for
+                  $scope.eventarray = tempArray;
+                  // alert(JSON.stringify($scope.eventarray))
 
-              $scope.eventarray = tempArray;
-             // alert(JSON.stringify($scope.eventarray))
-
-          }; // end if
+              }; // end if
 
 
-      }).catch(function (error) {
-          console.log(error)
-    });
+          }).catch(function (error) {
+              console.log(error)
+          });
 
-
+    //}; // end func
 
 
     // ==========================================

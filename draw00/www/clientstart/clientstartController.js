@@ -16,6 +16,10 @@ cordovaNG.controller('clientstartController', function ($scope, globalService, A
 
     // ==========================================
 
+    // Set the local data model here to the data in the global service between views
+    $scope.eventarray = globalService.eventArray;
+    $scope.friendArray = globalService.friendArray;
+    //alert(globalService.lastTimeChecked);
 
     if (globalService.lastTimeChecked < (Date.now() - 300000)) { // if last data pull was over 5 MIN ago, then check again
         getEventLog();
@@ -103,7 +107,10 @@ cordovaNG.controller('clientstartController', function ($scope, globalService, A
                 //tempArray[j].friend_parentname = item.parent_name;
                 //tempArray[j].friend_parentemail = item.parent_email;
 
-                $scope.friendArray = tempArray; // @@@ Set to $scope array
+
+                globalService.friendArray = tempArray;
+                $scope.friendArray = globalService.friendArray; // @@@ Set to $scope array
+                //$scope.friendArray = tempArray; 
 
                 // RECUSIVE PART.  Regular FOR loop didn't work.
                 // ------
@@ -207,7 +214,10 @@ cordovaNG.controller('clientstartController', function ($scope, globalService, A
                       tempArray.push(element); // add back to array
                   }; //end for
 
-                  $scope.eventarray = tempArray;
+                  //$scope.eventarray = tempArray;
+                  globalService.eventArray = tempArray;
+                  $scope.eventarray = globalService.eventArray;
+
                   alert(JSON.stringify($scope.eventarray))
 
               }; // end if

@@ -19,7 +19,7 @@
             <button type="button" class="btn btn-default" style="box-shadow:none;" ng-click="goToGallery()">
                 <div class="svgicon gallery"></div>
             </button>
-            <button type="button" class="btn btn-default" style="box-shadow:none;" ng-click="uploadImage()">
+            <button type="button" class="btn btn-default" style="box-shadow:none;" ng-click="shareActionSheet=true">
                 <div class="svgicon share"></div>
             </button>
         </div>
@@ -86,3 +86,38 @@
     <img id="imagegoeshere" style="position:absolute;top:600px" />
 
 
+<!--Friend List Repeater-->
+
+- show / hide as action sheet
+- on click, toggle class for selection state
+- on click, add remove from array for sharing with
+
+<div ng-show="shareActionSheet">
+    <div ng-click="shareActionSheet=false;shareSelectionArray=[]">Close</div>
+    <!--'For Each' loop using object 'clientlist' known to the $scope when defined in the controller -->
+    <!--'row' is a new local var created here then used in controllerJS-->
+    <!-- Can use 'arr.[x]' for array and 'ParamName/Colname' if JSON -->
+    <div ng-repeat="row in friendArray track by $index" ng-include="'repeaterTemplate.html'"></div>
+    <div ng-show="noFriendsFlag">No Friends added yet</div>
+    <div ng-click="Share()">Share</div>
+</div>
+<!-- This is one way to specify the repeater item template used above
+    Could also be in separate HTML file loaded with ng-include="'folder/repeaterTemplate.html'"
+    Have to have the element ID on everything because the obj id is passed where ever you click-->
+<script type="text/ng-template" id="repeaterTemplate.html">
+    <div id="{{row.friend_id}},{{row.friend_name}}" ng-click="toggleSelect($event)">
+        <div>
+            friend id
+            {{row.friend_id}}
+        </div>
+        <div>
+            friend avatar
+            {{row.friend_avatar}}
+        </div>
+        <div>
+            friend name
+            {{row.friend_name}}
+        </div>
+        <div id="{{row.friend_id}},{{row.friend_name}}" ng-click="toggleSelect($event)">Select</div>
+    </div>
+</script>

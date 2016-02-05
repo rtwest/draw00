@@ -1,9 +1,9 @@
 W O R K I N G   R I G H T   N O W
 -----------------------------
+- Client Side - Friend sharing from Draw
 
 - On Invitation Accept, Insert into Event Record  /// @@@@@@  HAVE TO BE SIGNED IN AS ADMIN TO TEST THIS OUT.  Alternatively, do this from Admin side after invitation accept
-- Client Side - Timeline View // Friends Gallery
-- Client Side - Friend List
+- Client Side - Friends Gallery
 - RESEARCH - ALSO NEED TO CLEAN BLOB STORAGE WEEKLY.  Maybe have to convert mobile services to app services.  Get scheduler.  Web Pages.  New Pricing?? 
 - @@@ THINK THROUGH SHARING WORKFLOW
 -  SAVE and SHARE/UPLOAD are 2 different actions
@@ -21,7 +21,7 @@ W O R K I N G   R I G H T   N O W
 - Need to check for web connection on load and alert
 - ??? Need to restrict permissions on azure tables to authenticate users for admin and client(probably) 
 - Have Clients choose avatar on first run like on DoJo
-
+- Stop repeat azure call on admin side on the clientproperties view.  it pulls on very view load for different clients.
 
 
 
@@ -48,7 +48,7 @@ KID RECORD: id, name, parent_id, registration_code, reg_status, avatar_id, paren
 FRIEND RECORD: id, kid1_id, kid2_id, kid1_name, kid2_name
 INVITATION RECORD: id, fromparent_id, toparent_id, fromkid (name), tokid (name), fromparent_name, toparent_name, fromkid_id, tokid_id.  - Status is implied as pending because its in the table.  Remove when accepted.
 EVENT RECORD: id, picture_url, fromkid_id, fromkid_name, tokid_id, tokid_name, event_type, comment_content, datetime
-PICTURE RECORD: id, picture_url, kid_id, datetime
+NOT USED ### PICTURE RECORD: id, picture_url, kid_id, datetime
 
 Pouch DB Tables in "drawappDatabase" on client side for large storage
 ------------------------------------

@@ -234,6 +234,9 @@ cordovaNG.service('globalService', ['$location', function ($location) {
         userarray: userarray, // return the glabal array for local user data
         selectedClient: selectedClient,  // return the global var
         lastTimeChecked: lastTimeChecked,
+        friendArray: friendArray,
+        eventArray: eventArray,
+
 
         // Clever function to make a GUID compliant with standard format cast as type STRING
         // ----------------
