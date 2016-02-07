@@ -1,9 +1,10 @@
 W O R K I N G   R I G H T   N O W
 -----------------------------
-- Client Side - Friend sharing from Draw
+- Client Side - Friend sharing from Draw - toggle friend selection Class in UI
+- Client Side - Friends Gallery
+
 
 - On Invitation Accept, Insert into Event Record  /// @@@@@@  HAVE TO BE SIGNED IN AS ADMIN TO TEST THIS OUT.  Alternatively, do this from Admin side after invitation accept
-- Client Side - Friends Gallery
 - RESEARCH - ALSO NEED TO CLEAN BLOB STORAGE WEEKLY.  Maybe have to convert mobile services to app services.  Get scheduler.  Web Pages.  New Pricing?? 
 - @@@ THINK THROUGH SHARING WORKFLOW
 -  SAVE and SHARE/UPLOAD are 2 different actions

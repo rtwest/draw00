@@ -6,6 +6,94 @@ cordovaNG.controller('clientstartController', function ($scope, globalService, A
     //$scope.message = "Nothing here yet";  //- TEST ONLY
 
 
+    // FOR TESTING HERE ONLY
+    // FOR TESTING HERE ONLY
+    // FOR TESTING HERE ONLY
+    // FOR TESTING HERE ONLY
+    // ==========================================
+    //  Insert an Friend in the Event log based on Client GUID
+    // ==========================================
+
+    //var kid2_id = globalService.makeUniqueID();
+    //var kid3_id = globalService.makeUniqueID();
+    //var kid2_name = "Leo"
+    //var kid3_name = "Piper"
+    //var kid1_id = 'fa530f03-c3dc-4c10-9c0f-ce0ec2a5ff5e';
+    //var kid1_name = 'Jason'
+
+    //Azureservice.insert('kid', {
+    //    id: kid2_id,
+    //    name: kid2_name,
+    //    parent_id: 'abe24128-e508-4d04-a450-10f33d5a07a5',
+    //    registration_code: 'TEST',
+    //    reg_status: "1",
+    //    avatar_id: "1",
+    //    parent_name: "test",
+    //    parent_email: "test",
+    //})
+    //.then(function () {
+    //    console.log('Insert successful');
+    //}, function (err) {
+    //    console.log('Azure Error: ' + err);
+    //});
+    //Azureservice.insert('kid', {
+    //    id: kid3_id,
+    //    name: kid3_name,
+    //    parent_id: 'abe24128-e508-4d04-a450-10f33d5a07a5',
+    //    registration_code: 'TEST',
+    //    reg_status: "1",
+    //    avatar_id: "1",
+    //    parent_name: "test",
+    //    parent_email: "test",
+    //})
+    //.then(function () {
+    //    console.log('Insert successful');
+    //}, function (err) {
+    //    console.log('Azure Error: ' + err);
+    //});
+
+
+
+    //Azureservice.insert('friends', {
+    //    //id: globalService.makeUniqueID(), // i don't need to track this so let Azure handle it
+    //    kid1_id: kid1_id,
+    //    kid1_name: kid1_name,
+    //    kid2_id: kid2_id,
+    //    kid2_name: kid2_name,
+    //})
+    //.then(function () {
+    //    console.log('Insert successful');
+    //}, function (err) {
+    //    console.log('Azure Error: ' + err);
+    //});
+
+    //Azureservice.insert('friends', {
+    //    //id: globalService.makeUniqueID(), // i don't need to track this so let Azure handle it
+    //    kid1_id: kid1_id,
+    //    kid1_name: kid1_name,
+    //    kid2_id: kid3_id,
+    //    kid2_name: kid3_name,
+    //})
+    //.then(function () {
+    //    console.log('Insert successful');
+    //}, function (err) {
+    //    console.log('Azure Error: ' + err);
+    //});
+
+    // ==========================================
+
+
+
+
+
+
+
+
+
+
+
+    var tempArray = [];
+
     // ==========================================
     //  Get local user name, guid, and avatar
     // ==========================================
@@ -31,10 +119,10 @@ cordovaNG.controller('clientstartController', function ($scope, globalService, A
     // ==========================================
     //  Get friends from Azure based on Client GUID.  THIS CODE USED ON CLIENTPROPERTIESCONTROLLER.JS and CLIENTSTARTCONTROLLER.JS
     // ==========================================
+    var len, j;
 
     function getFriendsArray() {
 
-        var len, j;
         Azureservice.read('friends', "filter=kid1_id eq '" + clientGUID + "' or kid2_id eq '" + clientGUID + "'")
             .then(function (items) {
                 if (items.length == 0) { // if no Friend record found, then
@@ -46,11 +134,11 @@ cordovaNG.controller('clientstartController', function ($scope, globalService, A
 
                     $scope.friendArray = []  // @@@ Make a brand New Array (( Dumping any existing one ))
 
-                    //alert(JSON.stringify(items));
+                    alert(JSON.stringify(items));
 
                     // Go through Friend items and reorder it 
                     // --------------------------------------
-                    var len = items.length;
+                    len = items.length;
                     for (i = 0; i < len; i++) {
                         if (items[i].kid1_id == clientGUID) {  // If the first kid is this client, using the 2nd
                             var element = {  // make a new array element
@@ -81,6 +169,7 @@ cordovaNG.controller('clientstartController', function ($scope, globalService, A
                     // Different way of setting up the loop 
                     j = 0;
                     len = tempArray.length;
+                    //alert(len);
                     getkiddetails(); // @@@ Call recursive Azure call
 
                 };
@@ -94,7 +183,7 @@ cordovaNG.controller('clientstartController', function ($scope, globalService, A
     // !!!!! LOTS OF CALL TO AZURE NOW  // !!!!! BETTER TO HAVE A CUSTOM API IN NODE TO DO THIS JOINING
     // --------------------------------------
     function getkiddetails() {
-        //alert(j);
+        //alert(j); alert(len);
 
         if (j < tempArray.length) { // Don't know why this is going over the array size but this is a hack to fix
 

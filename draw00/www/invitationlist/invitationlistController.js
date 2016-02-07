@@ -109,6 +109,8 @@ cordovaNG.controller('invitationlistController', function ($scope, globalService
         .then(function () { // if success,
             console.log('Accept/Delete successful'); //alert('Accept/Delete successful')
             InsertFriendRecord(kid1id, kid2id, kid1name, kid2name); // @@@ On success, Insert new Friend record in Azure Friend Table
+            InsertEventRecord(kid1id, kid2id, kid1name, kid2name); // @@@ On success, Insert new Event record in Azure Event Table
+
             $scope.newInvitationArray.splice(foundIndex, 1) // remove from this element at index number from 'sentInvitationArray'
 
         }, function (err) {
@@ -142,6 +144,29 @@ cordovaNG.controller('invitationlistController', function ($scope, globalService
     };
     // ==========================================
 
+    // Insert new Event record in Azure Event Table
+    // ---------------
+    function InsertEventRecord(kid1id, kid2id, kid1name, kid2name) {
+        // Create on Azure
+        // ---------------
+        Azureservice.insert('events', {
+            //id: guid, // I'll let Azure handle this GUID since I don't need to track it locally        
+            fromkid_id: kid1id,
+            tokid_id: kid2id,
+            fromkid_name: kid1name,
+            tokid_name: kid2name,
+            datetime: Date.now(),
+            event_type: "friends",
+        })
+        .then(function () {
+            console.log('new event insert successful');
+        },
+        function (err) {
+            console.error('Azure Error: ' + err);
+        });
+
+    };
+    // ==========================================
 
 
 

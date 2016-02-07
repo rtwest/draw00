@@ -33,7 +33,8 @@ cordovaNG.controller('canvasController', function ($scope, $http, globalService,
     var isTouch
     $scope.shareActionSheet = false;  // boolean for ng-show for UI toggle
     $scope.shareSelectionArray = []; // array of friends to share with
-
+    $scope.toggleSelectArray = []; // array just for toggeling friend selection UI
+    $scope.friendArray = globalService.friendArray;
 
     // Test for touch device - NOT USED
     // ---------------------
@@ -446,20 +447,16 @@ cordovaNG.controller('canvasController', function ($scope, $http, globalService,
 
 
 
-    // Function for making selection to share with
+    // Function for toggling selection to share with
     // ----------------------------------
-
-
-    // ###################################   WORKING HERE ######################################
-
-    $scope.toggleSelect = function (clickEvent) {
+    $scope.toggleSelect = function (clickEvent, listindex) {
         $scope.clickEvent = globalService.simpleKeys(clickEvent);
         $scope.clientId = clickEvent.target.id;
+        //alert('id = ' + $scope.clientId);
 
-        alert('id = ' + $scope.clientId);
-
-        //if in array, then remove.  Else, add it.  // need Kid ID and Name
-        alert($scope.shareSelectionArray)
+        //if in Selection array, then remove.  Else, add it.  // need Kid ID and Name
+        // -------
+        //alert(JSON.stringify($scope.shareSelectionArray))
         var index = $scope.shareSelectionArray.indexOf($scope.clientId)
         if (index > -1) { //if FOUND, the remove
             $scope.shareSelectionArray.splice(index, 1);
@@ -467,28 +464,75 @@ cordovaNG.controller('canvasController', function ($scope, $http, globalService,
         else { // if NOT found, then add
             $scope.shareSelectionArray.push($scope.clientId);
         };
+        //alert(JSON.stringify($scope.shareSelectionArray))
 
-        alert($scope.shareSelectionArray)
+        // This is an array toggleSelectArray just for toggling UI selection ClassName with ng-class conditional
+        // ----------
+        var pos = $scope.toggleSelectArray.indexOf(listindex)
+        if (pos > -1) { //if FOUND, the remove
+            $scope.toggleSelectArray.splice(index, 1);
+        }
+        else { // if NOT found, then add
+            $scope.toggleSelectArray.push(listindex);
+        };
+        //alert(JSON.stringify($scope.toggleSelectArray))
 
     };
-
-    //empty the array on cancel/close  //@@@@@ MAYBE JUST CLEAN THIS ON THE HTML ?????
-    // ----------------------------------
-    //$scope.clearSelectArray = function () {
-    //    $scope.shareSelectionArray = [];
-    //};
-
 
     // Go through SelectionArray and share / upload images to users
     // ----------------------------------
+    var sharecount;
+    var sharearraylength;
+
+    // This is the function called on the UI button click.  It sets the initial variables.
+    // ----------------
     $scope.Share = function () {
-        alert($scope.shareSelectionArray);
+        // 1. Upload image once.  When done,
+        // 2. Then go through shareArray to make the Event per friend
+        sharecount = 0;
+        sharearraylength = $scope.shareSelectionArray.length;
+        $scope.uploadImage(); // @@@ When this is done, it will call shareOutToFriends to Insert Event records in Azure to Friends
     };
 
+    //  @@@ After image is uploaded, this is the loop to Share per friend
+    //  @@@ For Loop didn't work so this uses Recursion to go through the share selection array
+    //  ----------------------------------
+    function shareOutToFriends(picture_url) {
+        var friend = $scope.shareSelectionArray[sharecount]; // format of item is "id,name".  ShareCount is looping through array
+        var friendsplitarray = friend.split(","); // Split the string into an array by ","
+        var tokid_id = friendsplitarray[0];
+        var tokid_name = friendsplitarray[1];
+        alert(tokid_name + " - " + tokid_id);
 
-    // ###################################   WORKING HERE ######################################
+        Azureservice.insert('events', {
+            //id: globalService.makeUniqueID(), // i don't need to track this so let Azure handle it
+            picture_url: picture_url,
+            fromkid_id: globalService.userarray[0],
+            fromkid_name: globalService.userarray[4],
+            event_type: "sharepicture", // 
+            tokid_id: tokid_id,
+            tokid_name: tokid_name,
+            //comment_content: 'this is a comment here',
+            datetime: Date.now(),
+        })
+        .then(function () {
+            sharecount++;
+            if (sharecount < sharearraylength) {
+                shareOutToFriends(picture_url);  // @@@ Recursive part to go through selection array
+            }
+            else {
+                // When all chained functions are done with URL creating, Image updating, and Record creation
+                // --------------------------
+                // @@@@@@@@@@@@@@@@@@@@@@@@@@   NEED BETTER SUCCESS MESSAGE    @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@2
+                alert("Picture uploaded");
+                console.log('Insert successful');
+                $scope.shareSelectionArray = []; //empty the array
+            };
+        }, function (err) {
+            console.log('Azure Error: ' + err);
+        });
 
-
+    };
 
     // ==================================================================================================================================
     // ==================================================================================================================================
@@ -537,7 +581,7 @@ cordovaNG.controller('canvasController', function ($scope, $http, globalService,
 
                 // @@@ Function to update the path with the real image AND make the Azure Picture record
                 // ------
-                updateFile(sasUrl);
+                updateFile(sasUrl,picture_url);
 
             });
             response.error(function (data, status, headers, config) {
@@ -548,45 +592,54 @@ cordovaNG.controller('canvasController', function ($scope, $http, globalService,
 
         // Use SAS URL and PhotID to PUT the image into the Azure Blob Storage container in the SASUrl
         // ----------------------------------
-        function updateFile(Url) {
+        function updateFile(Url, picture_url) {
             var xhr = new XMLHttpRequest();
 
             // Look for response success
             xhr.onreadystatechange = function () {
 
-                // @@@ If the SasBlobUrl is successful update with PNG, then made the Picture record
+                // @@@ If the SasBlobUrl is successful update with PNG, then call Function to SHARE out to friends
                 // ReadyState=4 means response ready.  Status 201 is custom sent from Azure Node when done.   Response = "Created" is success.
                 // ----------
                 if (xhr.readyState == 4 && xhr.status == 201) {
 
-                    // Insert into 'events' table the sharing details  
-                    //------------------------------
-                    Azureservice.insert('events', {
-                        //id: globalService.makeUniqueID(), // i don't need to track this so let Azure handle it
-                        picture_url: picture_url,
-                        fromkid_id: globalService.userarray[0],
-                        fromkid_name: globalService.userarray[4],
-                        event_type: "sharepicture", // 
-                        tokid_id: 'fa530f03-c3dc-4c10-9c0f-ce0ec2a5ff5e',
-                        tokid_name:'Jason',
-                        //comment_content: 'this is a comment here',
-                        datetime: Date.now(),
-                    })
-                    .then(function () {
+                    // Call function for iterating the Share through the selected friends array
+                    shareOutToFriends(picture_url);
+
+                    ////// Insert into 'events' table the sharing details  
+                    //////  ##############################################################################################
+                    ////// @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@2
+                    ////// @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@2
+
+                    //////  THIS IS WHERE TO SHARE WITH DIFFERENT FRIENDS
+                    //////  ##############################################################################################
+                    ////// @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@2
+                    ////// @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@2
+
+                    //////------------------------------
+                    ////Azureservice.insert('events', {
+                    ////    //id: globalService.makeUniqueID(), // i don't need to track this so let Azure handle it
+                    ////    picture_url: picture_url,
+                    ////    fromkid_id: globalService.userarray[0],
+                    ////    fromkid_name: globalService.userarray[4],
+                    ////    event_type: "sharepicture", // 
+                    ////    tokid_id: tokid_id,
+                    ////    tokid_name: tokid_name,
+                    ////    //comment_content: 'this is a comment here',
+                    ////    datetime: Date.now(),
+                    ////})
+                    ////.then(function () {
                         
-                        // When all chained functions are done with URL creating, Image updating, and Record creation
-                        // --------------------------
+                    ////    // When all chained functions are done with URL creating, Image updating, and Record creation
+                    ////    // --------------------------
+                    ////    // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@2
+                    ////    alert("Picture uploaded");
+                    ////    console.log('Insert successful');
+                    ////    // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@2
 
-                        // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@2
-                        //  @@@@@@@@@@  WORKING HERE @@@@@@  NEED THE PUSH NOTIFICATION ON RECORD INSERT FOR PICTURE
-                        //  ??? IS THIS A PUSH NOTIFICATION ON A EVENT RECORD? OR PICTURE RECORD?
-                        alert("Picture uploaded");
-
-                        console.log('Insert successful');
-
-                    }, function (err) {
-                        console.log('Azure Error: ' + err);
-                    });
+                    ////}, function (err) {
+                    ////    console.log('Azure Error: ' + err);
+                    ////});
                     // ------- 
                 }
             }
