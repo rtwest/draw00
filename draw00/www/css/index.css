@@ -28,6 +28,9 @@ body{
     animation: slideOutLeft 0.5s both ease-in; z-index: 9999; 
 }
 
+
+/* ========================================================= */
+
 .svgicon {
     background-image: url('../images/kidstagramicons.svg');
     background-repeat: no-repeat;
@@ -144,9 +147,12 @@ body{
     height: 32px;
 }
 
-
 /*========================================*/
 
+.smallimage {
+    max-width: 33.33%;
+    height: auto;
+}
 
 /*.no-gutter > [class*='col-'] {
     padding-right:0;

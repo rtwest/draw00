@@ -1,7 +1,6 @@
 W O R K I N G   R I G H T   N O W
 -----------------------------
-- Client Side - Friend sharing from Draw - toggle friend selection Class in UI
-- Client Side - Friends Gallery
+- Client Side - image details from friend share in time line.  Gallery.  Admins side ClientProperties.
 
 
 - On Invitation Accept, Insert into Event Record  /// @@@@@@  HAVE TO BE SIGNED IN AS ADMIN TO TEST THIS OUT.  Alternatively, do this from Admin side after invitation accept
