@@ -171,6 +171,11 @@ cordovaNG.config(function ($routeProvider) {
             templateUrl: 'partials/home.html',
             controller: 'mainController'
         })
+        // route for the picture details view
+        .when('/picture', {
+            templateUrl: 'pictureview/pictureview.html',
+            controller: 'pictureviewController'
+        })
         // route for the managed users view
         .when('/', {
             templateUrl: 'partials/about.html',

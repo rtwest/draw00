@@ -135,7 +135,9 @@ cordovaNG.controller('clientpropertiesController', function ($scope, globalServi
                       var element = {  // make a new array element.  If items[i] is NULL, the HTML binding for ng-show will hide the HTML templating
                           picture_url: items[i].picture_url,
                           fromkid: items[i].fromkid_name,
+                          fromkidavatar: items[i].fromkid_avatar,
                           tokid: items[i].tokid_name,
+                          tokidavatar: items[i].tokid_avatar,
                           event_type: items[i].event_type,
                           comment_content: items[i].comment_content,
                           day: day,

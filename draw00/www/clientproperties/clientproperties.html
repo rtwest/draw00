@@ -30,9 +30,9 @@
             <!--{{row.datetime | date:"EEEE, MMM d"}}-->
             {{row.time}}
         </div>
-        <div>{{row.fromkid}}</div>
+        <div>{{row.fromkid}}</div><div>{{row.fromkidavatar}}</div>
         <div>{{row.event_type}}</div>
-        <div>{{row.tokid}}</div>
+        <div>{{row.tokid}}</div><div>{{row.tokidavatar}}</div>
         <div ng-show="row.picture_url">{{row.picture_url}}<img class="smallimage" src="{{row.picture_url}}" alt="Shared drawing" /></div>
         <div ng-show="row.comment_content">Comment: {{row.comment_content}}</div>
     </div>
