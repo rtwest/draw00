@@ -337,10 +337,16 @@ cordovaNG.controller('clientstartController', function ($scope, globalService, A
     $scope.gotoGalleryView = function () {
         globalService.changeView('/gallery');
     };
-    $scope.gotoPictureView = function (url, kidname, kidavatar) {
+    $scope.gotoPictureView = function (clickEvent) {
+        $scope.clickEvent = globalService.simpleKeys(clickEvent);
+        $scope.idParameters = clickEvent.target.id;  // div ID has 3 values shoved in it
 
-        // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ WORKING HERE.  Pass these to the next view.  Global Service?  How to keep from DL image again? @@@@@@@@@@@@@@@@@
+        var picturesplitarray = $scope.idParameters.split(","); // Split the string into an array by ","
+        globalService.kidAvatar = picturesplitarray[2];
+        globalService.kidName = picturesplitarray[1];
+        globalService.kidPictureUrl = picturesplitarray[0];
         globalService.changeView('/picture');
+
     };
 
 }); //controller end

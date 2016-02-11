@@ -199,6 +199,7 @@ cordovaNG.service('globalService', ['$location', function ($location) {
     var selectedClient = '';// for passing between Admin view and Client Properties
     var eventArray = []; // global var used to retrieve once from Azure and use for session
     var friendArray = []; //user data
+    var kidName, kidPictureUrl, kidAvatar; // used for Gallery view
     var lastTimeChecked = Date.now() - 300001; // Timestamp for last Azure data pull.  Initially set for > 5 MIN ago so the data will be pulled again.
 
     // SETTING UP STORAGE.  
@@ -236,12 +237,16 @@ cordovaNG.service('globalService', ['$location', function ($location) {
         // -----------------
         drawappDatabase: drawappDatabase, // return the Database
 
+        // Variables needs to pass between views 
+        // -----------------
         userarray: userarray, // return the glabal array for local user data
-        selectedClient: selectedClient,  // return the global var
-        lastTimeChecked: lastTimeChecked,
-        friendArray: friendArray,
-        eventArray: eventArray,
-
+        selectedClient: selectedClient,  // used in Admin view to view client details
+        lastTimeChecked: lastTimeChecked, // used to not repeated make Azure calls
+        friendArray: friendArray, // used to store a Clients related friends
+        eventArray: eventArray, // used to store all events with a Client
+        kidPictureUrl:kidPictureUrl, // Picture Detail view: used for pic url 
+        kidName: kidName, // Picture Detail view: used for name with pic 
+        kidAvatar: kidAvatar, // Picture Detail view: used for avatar with pic url 
 
         // Clever function to make a GUID compliant with standard format cast as type STRING
         // ----------------
@@ -254,7 +259,6 @@ cordovaNG.service('globalService', ['$location', function ($location) {
             });
             return uuid;
         },
-
 
     };//end global function defintion
 
