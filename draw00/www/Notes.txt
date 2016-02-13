@@ -1,44 +1,48 @@
 W O R K I N G   R I G H T   N O W
 -----------------------------
-- Client Side - image details from friend share in time line.  Gallery.  Admins side ClientProperties.
-- Client side - Share Overlay
-- Client Side - Gallery / back button / image details
-- Node/Azure side - ??? add Avatar ID to Event Log (not Friend Log)
+- Client Side - Time Line / needs to collapse shared image to a group - "You shared a picture with Leo and Piper"
+	- if it's the same Day:Hour:Min and same ImageURL, then collapse into array object
+
+- event need to say You if its the client on client side
+	- if it is you, the check to see if app can collapse the next event 
+
+- Need to figure out the Liking system - storage and retrieval
+	- Client Side - Time Line / Image Details /  from friend share in time line.  Add Comment/Like
+	- Client Side - Kids Gallery / Image Details / and who likes you Pic
 
 - On Invitation Accept, Insert into Event Record  /// @@@@@@  HAVE TO BE SIGNED IN AS ADMIN TO TEST THIS OUT.  Alternatively, do this from Admin side after invitation accept
 - RESEARCH - ALSO NEED TO CLEAN BLOB STORAGE WEEKLY.  Maybe have to convert mobile services to app services.  Get scheduler.  Web Pages.  New Pricing?? 
 - @@@ THINK THROUGH SHARING WORKFLOW
--  SAVE and SHARE/UPLOAD are 2 different actions
 
 
-- Client workflow
-	- >>>
 
 
  TO DO
 -----------------------------
+- Need to return to your Image in Draw view and not alway make a new Canvas
+- Client side - Share Overlay design
 - Need better Picture Save Indicator.  Need better Picuture Shared indicator
 - Loaders and Progress indicators when awaiting on Azure response
 - Pull new friends from client to update client
 - Need to check for web connection on load and alert
 - ??? Need to restrict permissions on azure tables to authenticate users for admin and client(probably) 
 - Have Clients choose avatar on first run like on DoJo
-- Stop repeat azure call on admin side on the clientproperties view.  it pulls on very view load for different clients.
-
+- Parents show up in Kids friends list ?? And can Draw and share with them.
 
 
 
 P R O B L E M S
 -----------------------------
+- ***REGISTERING FOR PUSH SOMETIMES FAILS AND TAKE A WHILE TO - IT BLOCKS OTHER AZURE CALLS UNTIL IT FAILS
+     - IIS error says it dones have permission for NTFS web.config file
 - Had a problem in creating Azure push notifications.  I think I solved it by remove the Azure mobile web services JS file - which was redundant to the Azure cordova plugin.  I thought I needed the JS file for the NG Azure JS wrapper but all the Azure table CRUD ops work fine without it.
 - Insert JS on NODE for FRIEND INSERT.  Need registered clients to test if Push Notification works.
-- !!! Registering for Push Notification seems to block other Azure calls when waiting for response
+- !!! Registering for Push Notification seems to block other Azure calls when waiting for response.  
 - Avoid calling Azure on the View load because you'll be making lots to external calls if the View is loaded frequently
 - On ClientProperties on the Admin side, have a client array locally, then query azure for client's friends, then query Azure recursively for those friends details.  Gets to be a lot.
 - Don't forget, if you delete a Client, you have to delete it from other records across all tables
 - The iteration on friends to go get details of each friend is still going over the count and errors.  Mitigated with an IF,THEN check
 - Security Content Policy with PouchDB.  Added -- <meta http-equiv="Content-Security-Policy" connect-src * blob: data:; ... ...> which seems to work.
-- ***REGISTERING FOR PUSH SOMETIMES FAILS AND TAKE A WHILE TO - IT BLOCKS OTHER AZURE CALLS UNTIL IT FAILS
 
 
 S T O R A G E 

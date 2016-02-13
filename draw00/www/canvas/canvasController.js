@@ -491,6 +491,7 @@ cordovaNG.controller('canvasController', function ($scope, $http, globalService,
         // 2. Then go through shareArray to make the Event per friend
         sharecount = 0;
         sharearraylength = $scope.shareSelectionArray.length;
+        $scope.saveImage() // When you are sharing the image, also save it to you Gallery
         $scope.uploadImage(); // @@@ When this is done, it will call shareOutToFriends to Insert Event records in Azure to Friends
     };
 
@@ -533,6 +534,8 @@ cordovaNG.controller('canvasController', function ($scope, $http, globalService,
         });
 
     };
+
+
 
     // ==================================================================================================================================
     // ==================================================================================================================================
