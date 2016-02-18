@@ -239,7 +239,7 @@ cordovaNG.controller('clientstartController', function ($scope, globalService, A
                   var tempArray = [];
                   var len = items.length;
                   var today = new Date(); // today for comparison
-                  var day, time, fromkid, tokid;
+                  var day, time, fromkid, tokid, lastimageurl;
                   thiseventday = new Date();
                   lasteventday = new Date();
                   montharray = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -267,7 +267,7 @@ cordovaNG.controller('clientstartController', function ($scope, globalService, A
                           }
                           else { day = montharray[thiseventday.getMonth()] + " " + thiseventday.getDate(); }
                       }
-                      else { // If this IS first in array, they it has to have the date header
+                      else { // If this IS first in array, then it has to have the date header
                           if ((thiseventday.getDate() == today.getDate()) && (thiseventday.getMonth() == today.getMonth())) {
                               day = 'Today';
                           }
@@ -288,28 +288,60 @@ cordovaNG.controller('clientstartController', function ($scope, globalService, A
                           time = t + ":" + thiseventday.getMinutes() + "am";  // break down the 24h and use Am/pm
                       }
 
-                      // Make array object
-                      // ------------------
-                      var element = {  // make a new array element.  If items[i] is NULL, the HTML binding for ng-show will hide the HTML templating
-                          picture_url: items[i].picture_url,
-                          fromkid: items[i].fromkid_name,
-                          fromkidavatar: items[i].fromkid_avatar,
-                          tokid: items[i].tokid_name,
-                          tokidavatar: items[i].tokid_avatar,
-                          event_type: items[i].event_type,
-                          comment_content: items[i].comment_content,
-                          day: day,
-                          time: time,
-                          //datetime: items[i].datetime,
-                      };
-                      tempArray.push(element); // add back to array
+
+                      // Checking for Image Share to multiple people to collapse as 1 event not several
+                      // =========================
+                      var timetest = lasteventday;
+                      timetest.setSeconds(timetest.getSeconds() + 10); // last event time + 10 sec
+                      // IF this imageURL is the same image URL as last one in the array
+                      // IF this has same name as Client
+                      // IF this event time is within 10 sec of last one
+                      if ((lastimageurl == items[i].picture_url) && (items[i].fromkid_name == $scope.clientName) && (thiseventday < timetest)) {
+                          // If this is same share event, modify LAST event arry item, DO NOT insert another
+                          // --------------
+                          //var arrayitem = tempArray[tempArray.length - 1]; // is a JSON format;
+                          var nameelement = { kidname: items[i].tokid_name };  // for JSON, have to make a new object
+                          //arrayitem.tokid.push(nameelement); // push the subobject into the right place
+                          tempArray[tempArray.length - 1].tokid.push(nameelement); // push the subobject into the right place
+
+                          //alert(JSON.stringify(arrayitem.tokid));
+
+                          //arrayitem.tokidavatar = arrayitem.tokidavatar + "," + items[i].tokid_avatar;
+                      }
+                      else { // IF NOT a repeated share item, make a new event item
+
+                          // Make array object
+                          // ------------------
+                          var element = {  // make a new array element.  If items[i] is NULL, the HTML binding for ng-show will hide the HTML templating
+                              picture_url: items[i].picture_url,
+                              fromkid: items[i].fromkid_name,
+                              fromkidavatar: items[i].fromkid_avatar,
+                              tokid: [{
+                                  kidname: items[i].tokid_name,
+                                }],
+                              tokidavatar: [{
+                                  kidavatar: items[i].tokid_avatar,
+                                }],
+                              event_type: items[i].event_type,
+                              comment_content: items[i].comment_content,
+                              day: day,
+                              time: time,
+                          };
+
+                          tempArray.push(element); // add back to array
+    
+                      }; // end make event array item
+                      // =========================
+
+                      lastimageurl = items[i].picture_url;
+
                   }; //end for
 
                   //$scope.eventarray = tempArray;
                   globalService.eventArray = tempArray;
                   $scope.eventarray = globalService.eventArray;
 
-                  alert(JSON.stringify($scope.eventarray))
+                  alert("Event array - "+JSON.stringify($scope.eventarray))
 
               }; // end if
 

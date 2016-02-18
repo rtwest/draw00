@@ -1,10 +1,9 @@
 W O R K I N G   R I G H T   N O W
 -----------------------------
-- Client Side - Time Line / needs to collapse shared image to a group - "You shared a picture with Leo and Piper"
-	- if it's the same Day:Hour:Min and same ImageURL, then collapse into array object
+- Collapsing repeat share event events
+	- THINK I'M GOING TO HAVE TO ADD KIDS SHARED WITH AS JSON OBJECTS IN THE EVENT ARRAY, THEN USE A NEST REPEATER FOR THEM
+	- NEED TO PUSH THIS CHANGE BACK TO THE ADMIN EVENT LOG VIEW FOR A CLIENT
 
-- event need to say You if its the client on client side
-	- if it is you, the check to see if app can collapse the next event 
 
 - Need to figure out the Liking system - storage and retrieval
 	- Client Side - Time Line / Image Details /  from friend share in time line.  Add Comment/Like
