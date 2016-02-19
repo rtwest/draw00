@@ -1,32 +1,32 @@
 W O R K I N G   R I G H T   N O W
 -----------------------------
-- Collapsing repeat share event events
-	- THINK I'M GOING TO HAVE TO ADD KIDS SHARED WITH AS JSON OBJECTS IN THE EVENT ARRAY, THEN USE A NEST REPEATER FOR THEM
-	- NEED TO PUSH THIS CHANGE BACK TO THE ADMIN EVENT LOG VIEW FOR A CLIENT
-
 
 - Need to figure out the Liking system - storage and retrieval
 	- Client Side - Time Line / Image Details /  from friend share in time line.  Add Comment/Like
 	- Client Side - Kids Gallery / Image Details / and who likes you Pic
 
+- Gallery View / Profile details / Picture details view / Likes / Actions - delete - sharing 
+
+- Collapsing repeat share event events	- /// @@@@@@  HAVE TO BE SIGNED IN AS ADMIN TO TEST THIS OUT.
 - On Invitation Accept, Insert into Event Record  /// @@@@@@  HAVE TO BE SIGNED IN AS ADMIN TO TEST THIS OUT.  Alternatively, do this from Admin side after invitation accept
+
 - RESEARCH - ALSO NEED TO CLEAN BLOB STORAGE WEEKLY.  Maybe have to convert mobile services to app services.  Get scheduler.  Web Pages.  New Pricing?? 
-- @@@ THINK THROUGH SHARING WORKFLOW
+
 
 
 
 
  TO DO
 -----------------------------
-- Need to return to your Image in Draw view and not alway make a new Canvas
-- Client side - Share Overlay design
-- Need better Picture Save Indicator.  Need better Picuture Shared indicator
-- Loaders and Progress indicators when awaiting on Azure response
-- Pull new friends from client to update client
+- * Need to return to your Image in Draw view and not alway make a new Canvas
+- * Loaders and Progress indicators when awaiting on Azure response
+- * Have Clients choose avatar on first run like on DoJo
+- * Parents show up in Kids friends list ?? And can Draw and share with them.
+- * Need better Picture Save Indicator.  Need better Picuture Shared indicator
 - Need to check for web connection on load and alert
+- Client side - Share Overlay design
+- Pull new friends from client to update client
 - ??? Need to restrict permissions on azure tables to authenticate users for admin and client(probably) 
-- Have Clients choose avatar on first run like on DoJo
-- Parents show up in Kids friends list ?? And can Draw and share with them.
 
 
 

@@ -244,7 +244,7 @@ cordovaNG.controller('clientstartController', function ($scope, globalService, A
                   lasteventday = new Date();
                   montharray = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
-                  items = items.reverse()  // @@@@@@@ This puts them in newwest first order.  NEED TO CHECK FOR ORDER A FEW TIMES
+                  items = items.reverse()  // @@@ This puts them in newwest first order. 
 
                   for (i = 0; i < len; i++) {
 
@@ -294,32 +294,28 @@ cordovaNG.controller('clientstartController', function ($scope, globalService, A
                       var timetest = lasteventday;
                       timetest.setSeconds(timetest.getSeconds() + 10); // last event time + 10 sec
                       // IF this imageURL is the same image URL as last one in the array
-                      // IF this has same name as Client
-                      // IF this event time is within 10 sec of last one
+                      //    AND IF this has same name as Client
+                      //    AND IF this event time is within 10 sec of last one
                       if ((lastimageurl == items[i].picture_url) && (items[i].fromkid_name == $scope.clientName) && (thiseventday < timetest)) {
                           // If this is same share event, modify LAST event arry item, DO NOT insert another
                           // --------------
-                          //var arrayitem = tempArray[tempArray.length - 1]; // is a JSON format;
                           var nameelement = { kidname: items[i].tokid_name };  // for JSON, have to make a new object
-                          //arrayitem.tokid.push(nameelement); // push the subobject into the right place
+                          var avatarelement = { kidname: items[i].tokid_name };  // for JSON, have to make a new object
                           tempArray[tempArray.length - 1].tokid.push(nameelement); // push the subobject into the right place
-
-                          //alert(JSON.stringify(arrayitem.tokid));
-
-                          //arrayitem.tokidavatar = arrayitem.tokidavatar + "," + items[i].tokid_avatar;
+                          tempArray[tempArray.length - 1].tokidavatar.push(avatarelement); // push the subobject into the right place
                       }
                       else { // IF NOT a repeated share item, make a new event item
 
                           // Make array object
                           // ------------------
-                          var element = {  // make a new array element.  If items[i] is NULL, the HTML binding for ng-show will hide the HTML templating
+                          var element = {  // make a new array object.  If items[i] is NULL, the HTML binding for ng-show will hide the HTML templating
                               picture_url: items[i].picture_url,
                               fromkid: items[i].fromkid_name,
                               fromkidavatar: items[i].fromkid_avatar,
-                              tokid: [{
+                              tokid: [{ // this is a notation for a nested object
                                   kidname: items[i].tokid_name,
                                 }],
-                              tokidavatar: [{
+                              tokidavatar: [{ // this is a notation for a nested object
                                   kidavatar: items[i].tokid_avatar,
                                 }],
                               event_type: items[i].event_type,
@@ -340,8 +336,7 @@ cordovaNG.controller('clientstartController', function ($scope, globalService, A
                   //$scope.eventarray = tempArray;
                   globalService.eventArray = tempArray;
                   $scope.eventarray = globalService.eventArray;
-
-                  alert("Event array - "+JSON.stringify($scope.eventarray))
+                  //alert("Event array - "+JSON.stringify($scope.eventarray))
 
               }; // end if
 

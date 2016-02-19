@@ -32,7 +32,11 @@
         </div>
         <div>{{row.fromkid}}</div><div>{{row.fromkidavatar}}</div>
         <div>{{row.event_type}}</div>
-        <div>{{row.tokid}}</div><div>{{row.tokidavatar}}</div>
+        
+        <!--Nested repeater within the first JSON array-->
+        <div ng-repeat="subarrayitem in row.tokid"><div style="color:red">{{subarrayitem.kidname}}</div></div>
+        <div ng-repeat="subarrayitem in row.tokidavatar"><div>{{subarrayitem.kidavatar}}</div></div>
+
         <div ng-show="row.picture_url">{{row.picture_url}}<img class="smallimage" src="{{row.picture_url}}" alt="Shared drawing" /></div>
         <div ng-show="row.comment_content">Comment: {{row.comment_content}}</div>
     </div>
