@@ -1,0 +1,33 @@
+﻿<!-- Gallery Picture view -->
+
+<p>Gallery picture view for you pictures</p>
+
+<button type="button" class="btn btn-primary" style="box-shadow:none;" ng-click="goBack()">Back </button>
+
+<div>{{clientname}}</div>
+<div>{{clientavatar}}</div>
+
+<img src="{{pictureFilePath}}" alt="Shared drawing" />
+
+<div ng-show="uiFlag">-- ui flag --</div>
+
+<p>Good Job!</p>
+<p>These friends like your picture!</p>
+
+<p>Comments and Likes Repeater Goes Here</p>
+
+
+<div ng-click="showDeleteOverlay=true">Delete</div>
+
+<div ng-click="showShareOverlay=true">Share</div>
+
+
+<!--Overlay dialogs-->
+
+<div ng-show="showShareOverlay">
+    Share
+</div>
+
+<div ng-show="showDeleteOverlay">
+    Delete
+</div>

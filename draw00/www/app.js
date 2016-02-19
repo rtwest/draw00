@@ -176,6 +176,11 @@ cordovaNG.config(function ($routeProvider) {
             templateUrl: 'pictureview/pictureview.html',
             controller: 'pictureviewController'
         })
+        // route for the gallery picture details view (used to view picture details from client gallery)
+        .when('/gallerypicture', {
+            templateUrl: 'gallerypicture/gallerypicture.html',
+            controller: 'gallerypictureController'
+        })
         // route for the managed users view
         .when('/', {
             templateUrl: 'partials/about.html',

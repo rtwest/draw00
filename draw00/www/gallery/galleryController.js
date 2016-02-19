@@ -1,9 +1,15 @@
 ﻿// galleryController
 
-cordovaNG.controller('galleryController', function ($scope, globalService) {
+cordovaNG.controller('galleryController', function ($scope, globalService, Azureservice) {
 
     // Scope is like the view datamodel.  'gallerymessage' is defined in the paritial view
     //$scope.gallerymessage = "Nothing here yet";  //- TEST ONLY
+
+    $scope.kidavatar = globalService.userarray[3];
+    $scope.kidname = globalService.userarray[4];
+
+
+
 
     //// ================================================
     //// Get all records (called 'docs' in PouchDB) from local storage (websql or indexeded)
@@ -30,8 +36,8 @@ cordovaNG.controller('galleryController', function ($scope, globalService) {
 
     // View changer.  Have to use $scope. to make available to the view
     // --------------
-    $scope.gotoCanvas = function () {
-        globalService.changeView('/');
+    $scope.goBack = function () {
+        globalService.changeView('/clientstart');
     };
 
 
@@ -39,9 +45,11 @@ cordovaNG.controller('galleryController', function ($scope, globalService) {
     // ----------------
     $scope.galleryImageClick = function (clickEvent) {
         $scope.clickEvent = globalService.simpleKeys(clickEvent);
-        $scope.image_ID = clickEvent.target.id; // DOM attribute
+        $scope.image_ID_Src = clickEvent.target.id; // DOM attribute
 
-        alert($scope.image_ID); // FOR TESTTING
+        alert($scope.image_ID_Src); // FOR TESTTING
+        globalService.kidPictureUrl = $scope.image_ID_Src; // put in global var to pass to the next view.  Should have Image ID and Image filepath data
+        globalService.changeView('/gallerypicture'); // Go to gallerypicture view
     };
 
 }); //controller end

@@ -7,6 +7,7 @@ cordovaNG.controller('pictureviewController', function ($scope, globalService, A
 
     $scope.uiFlag = false; // PLACEHOLDER FOR NOW
 
+    // These are global var passed to the view so you know who and what to show
     $scope.kidavatar = globalService.kidAvatar;
     $scope.kidname = globalService.kidName;
     $scope.pictureurl = globalService.kidPictureUrl;

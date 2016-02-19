@@ -5,7 +5,8 @@ W O R K I N G   R I G H T   N O W
 	- Client Side - Time Line / Image Details /  from friend share in time line.  Add Comment/Like
 	- Client Side - Kids Gallery / Image Details / and who likes you Pic
 
-- Gallery View / Profile details / Picture details view / Likes / Actions - delete - sharing 
+- Gallery View / Picture details view - ID, Src / Likes / Actions - delete - sharing 
+	- sharing from gallery is tricky because you might or might not have this stored on Azure already to share a link with.
 
 - Collapsing repeat share event events	- /// @@@@@@  HAVE TO BE SIGNED IN AS ADMIN TO TEST THIS OUT.
 - On Invitation Accept, Insert into Event Record  /// @@@@@@  HAVE TO BE SIGNED IN AS ADMIN TO TEST THIS OUT.  Alternatively, do this from Admin side after invitation accept
