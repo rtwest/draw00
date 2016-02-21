@@ -37,7 +37,7 @@ cordovaNG.controller('galleryController', function ($scope, globalService, Azure
     // View changer.  Have to use $scope. to make available to the view
     // --------------
     $scope.goBack = function () {
-        globalService.changeView('/clientstart');
+        globalService.changeView(globalService.lastView); // go back to Previous view
     };
 
 
@@ -47,7 +47,7 @@ cordovaNG.controller('galleryController', function ($scope, globalService, Azure
         $scope.clickEvent = globalService.simpleKeys(clickEvent);
         $scope.image_ID_Src = clickEvent.target.id; // DOM attribute
 
-        alert($scope.image_ID_Src); // FOR TESTTING
+        //alert($scope.image_ID_Src);  
         globalService.kidPictureUrl = $scope.image_ID_Src; // put in global var to pass to the next view.  Should have Image ID and Image filepath data
         globalService.changeView('/gallerypicture'); // Go to gallerypicture view
     };

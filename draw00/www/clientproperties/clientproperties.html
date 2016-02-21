@@ -37,7 +37,9 @@
         <div ng-repeat="subarrayitem in row.tokid"><div style="color:red">{{subarrayitem.kidname}}</div></div>
         <div ng-repeat="subarrayitem in row.tokidavatar"><div>{{subarrayitem.kidavatar}}</div></div>
 
-        <div ng-show="row.picture_url">{{row.picture_url}}<img class="smallimage" src="{{row.picture_url}}" alt="Shared drawing" /></div>
+        <div ng-show="row.picture_url">
+            <img id="{{row.picture_url}},{{row.fromkid}},{{row.fromkidavatar}}" class="smallimage" src="{{row.picture_url}}" alt="Shared drawing" ng-click="gotoPictureView($event)" />
+        </div>
         <div ng-show="row.comment_content">Comment: {{row.comment_content}}</div>
     </div>
 </script>

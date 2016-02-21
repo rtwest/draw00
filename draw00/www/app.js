@@ -204,8 +204,10 @@ cordovaNG.service('globalService', ['$location', function ($location) {
     var selectedClient = '';// for passing between Admin view and Client Properties
     var eventArray = []; // global var used to retrieve once from Azure and use for session
     var friendArray = []; //user data
-    var kidName, kidPictureUrl, kidAvatar; // used for Gallery view
+    //var kidName, kidPictureUrl, kidAvatar; // used for Gallery view
     var lastTimeChecked = Date.now() - 300001; // Timestamp for last Azure data pull.  Initially set for > 5 MIN ago so the data will be pulled again.
+    var pictureViewParams; // Picture Detail view string of paramters from div id
+    var lastView; // For knowing what view you came where and where the back button goes
 
     // SETTING UP STORAGE.  
     // Open connection to the database using PouchDB.  @@@@@@@@ If adapter is not given, it defaults to IndexedDB, then fails over to WebSQL @@@@@@@@
@@ -249,9 +251,11 @@ cordovaNG.service('globalService', ['$location', function ($location) {
         lastTimeChecked: lastTimeChecked, // used to not repeated make Azure calls
         friendArray: friendArray, // used to store a Clients related friends
         eventArray: eventArray, // used to store all events with a Client
-        kidPictureUrl:kidPictureUrl, // Picture Detail view: used for pic url 
-        kidName: kidName, // Picture Detail view: used for name with pic 
-        kidAvatar: kidAvatar, // Picture Detail view: used for avatar with pic url 
+        //kidPictureUrl:kidPictureUrl, // Picture Detail view: used for pic url 
+        //kidName: kidName, // Picture Detail view: used for name with pic 
+        //kidAvatar: kidAvatar, // Picture Detail view: used for avatar with pic url 
+        pictureViewParams: pictureViewParams, // Picture Detail view string of paramters from div id 
+        lastView: lastView, // For knowing what view you came where and where the back button goes
 
         // Clever function to make a GUID compliant with standard format cast as type STRING
         // ----------------

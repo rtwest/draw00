@@ -25,9 +25,10 @@
 <!--Overlay dialogs-->
 
 <div ng-show="showShareOverlay">
-    Share
+    <div></div>
 </div>
 
 <div ng-show="showDeleteOverlay">
-    Delete
+    <div ng-click="deleteClick();showDeleteOverlay=false">Delete</div>
+    <div ng-click="showDeleteOverlay=false">Cancel</div>
 </div>

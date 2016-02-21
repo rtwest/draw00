@@ -30,6 +30,7 @@ cordovaNG.controller('canvasController', function ($scope, $http, globalService,
     var tool = 'pen'
     var x, y, lastx, lasty = 0;
     var backgroundImage = new Image();
+    var UniquePictureID = globalService.makeUniqueID(); // Makes a GUID for a Picture for PouchDB and for uploading to Azure Blob Storage
     var isTouch
     $scope.shareActionSheet = false;  // boolean for ng-show for UI toggle
     $scope.shareSelectionArray = []; // array of friends to share with
@@ -410,9 +411,15 @@ cordovaNG.controller('canvasController', function ($scope, $http, globalService,
 
                 // Save filepath to PouchDB for gallery
                 // --------
-                var uid = globalService.makeUniqueID();
-                var record = { "_id": uid, "filepath": filepath, "datetime": Date.now() }; //JSON for unique id for picture, filepath to retrieve it, datetime in milliseconds
+                //var UniquePictureID = globalService.makeUniqueID(); 
+                //var uid = new Date().toJSON(); // make the ID a timestamp because PouchDB returns ordered ID (so now by datetime)
+
+                //alert(UniquePictureID);
+
+                var record = { "_id": UniquePictureID, "filepath": filepath, "datetime": Date.now() }; //JSON for unique id for picture, filepath to retrieve it, datetime in milliseconds
                 
+                //alert(record);
+
                 // Use .put for update or add new.  Use .post for just add new
                 globalService.drawappDatabase.put(record, function (error, response) { //record, onDBsuccess, onDBerror
                     if (error) {
@@ -573,16 +580,17 @@ cordovaNG.controller('canvasController', function ($scope, $http, globalService,
         // ----------------------------------------------------------------------------------------------------
         function getSasUrlandUpload() {
             var response = $http.get(requestUrl, {
-                headers: { 'X-ZUMO-APPLICATION': 'IfISqwqStqWVFuRgKbgJtedgtBjwrc24' } // need a custom header for Azure Mobile Service Application key for "service-poc"
+                //headers: { 'X-ZUMO-APPLICATION': 'IfISqwqStqWVFuRgKbgJtedgtBjwrc24' } // need a custom header for Azure Mobile Service Application key for "service-poc"
+                headers: { 'X-ZUMO-APPLICATION': 'IfISqwqStqWVFuRgKbgJtedgtBjwrc24', 'UniquePictureID': UniquePictureID } // need a custom header for Azure Mobile Service Application key for "service-poc"
             })
             response.success(function (data, status, headers, config) { // response will send json in the parts
 
                 sasUrl = data.sasUrl;
-                picture_url = "https://rtwdevstorage.blob.core.windows.net/imagecontainer/" + data.photoId;  // photoID is image created on the Node side script
+                picture_url = "https://rtwdevstorage.blob.core.windows.net/imagecontainer/" + data.photoId;  //  // photoID is image created on the Node side script
 
                 // Image URL is https://rtwdevstorage.blob.core.windows.net/imagecontainer/6364260670030.png  or http://rtwdevstorage.blob.core.windows.net:80/imagecontainer/6364260670030.png            
 
-                // @@@ Function to update the path with the real image AND make the Azure Picture record
+                // @@@ Function to update the path with the real image AND call function to Share Out to Friends loop
                 // ------
                 updateFile(sasUrl,picture_url);
 
@@ -606,44 +614,9 @@ cordovaNG.controller('canvasController', function ($scope, $http, globalService,
                 // ----------
                 if (xhr.readyState == 4 && xhr.status == 201) {
 
-                    // Call function for iterating the Share through the selected friends array
+                    // @@@@@@@@@@@   Call function for iterating the Share through the selected friends array
                     shareOutToFriends(picture_url);
 
-                    ////// Insert into 'events' table the sharing details  
-                    //////  ##############################################################################################
-                    ////// @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@2
-                    ////// @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@2
-
-                    //////  THIS IS WHERE TO SHARE WITH DIFFERENT FRIENDS
-                    //////  ##############################################################################################
-                    ////// @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@2
-                    ////// @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@2
-
-                    //////------------------------------
-                    ////Azureservice.insert('events', {
-                    ////    //id: globalService.makeUniqueID(), // i don't need to track this so let Azure handle it
-                    ////    picture_url: picture_url,
-                    ////    fromkid_id: globalService.userarray[0],
-                    ////    fromkid_name: globalService.userarray[4],
-                    ////    event_type: "sharepicture", // 
-                    ////    tokid_id: tokid_id,
-                    ////    tokid_name: tokid_name,
-                    ////    //comment_content: 'this is a comment here',
-                    ////    datetime: Date.now(),
-                    ////})
-                    ////.then(function () {
-                        
-                    ////    // When all chained functions are done with URL creating, Image updating, and Record creation
-                    ////    // --------------------------
-                    ////    // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@2
-                    ////    alert("Picture uploaded");
-                    ////    console.log('Insert successful');
-                    ////    // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@2
-
-                    ////}, function (err) {
-                    ////    console.log('Azure Error: ' + err);
-                    ////});
-                    // ------- 
                 }
             }
             xhr.open('PUT', Url, true);
@@ -689,7 +662,8 @@ cordovaNG.controller('canvasController', function ($scope, $http, globalService,
     // Function to nav to gallery view
     // ------------------------------------------------------------------
     $scope.goToGallery = function () {
-        globalService.changeView('gallery');
+        globalService.lastView = '/canvas';  // for knowing where to go with the back button
+        globalService.changeView('/gallery');
     };
 
 

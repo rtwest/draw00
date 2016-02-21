@@ -155,6 +155,7 @@ cordovaNG.controller('clientpropertiesController', function ($scope, globalServi
                               picture_url: items[i].picture_url,
                               fromkid: items[i].fromkid_name,
                               fromkidavatar: items[i].fromkid_avatar,
+                              //fromkidID: items[i].fromkid_id,  // Not needed in the Admin view?
                               tokid: [{ // this is a notation for a nested object
                                   kidname: items[i].tokid_name,
                               }],
@@ -367,5 +368,13 @@ cordovaNG.controller('clientpropertiesController', function ($scope, globalServi
     $scope.gotoAdminView = function () {
         globalService.changeView('/admindash');
     };
+    $scope.gotoPictureView = function (clickEvent) {
+        $scope.clickEvent = globalService.simpleKeys(clickEvent);
+        $scope.idParameters = clickEvent.target.id;  // div ID has 3 values shoved in it
+
+        globalService.pictureViewParams = $scope.idParameters;  // pass the 3 values as a string and split at the next view
+        globalService.lastView = '/clientproperties';  // for knowing where to go with the back button
+        globalService.changeView('/picture');
+    }
 
 }); //controller end

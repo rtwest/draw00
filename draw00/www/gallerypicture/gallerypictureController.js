@@ -33,10 +33,21 @@ cordovaNG.controller('gallerypictureController', function ($scope, globalService
     // Delete this picutre and return to Gallery View
     // ---------------
     $scope.deleteClick = function () {
+        // Delete record/doc from PouchDB database - delete is an update
+        //----
+        globalService.drawappDatabase.get($scope.pictureID).then(function (Found_Record) {
+            return globalService.drawappDatabase.remove(Found_Record);
+        }).then(function (result) {
+            console.log(result);//alert(JSON.stringify(result));
+            $scope.goBack();  //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ Not firing here for some reason
+        }).catch(function (err) {
+            console.log(err);//alert(JSON.stringify(err));
+        });
 
-        // -- REMOVE FROM LOCAL STORAGE GOES HERE
+        // @@@ When you nav back like this, the Gallery $scope isn't updated and still shows deleted picture.
+        //$scope.goBack(); // Navigate back
+        //setTimeout(function () { $scope.goBack() }, 1000);
 
-        $scope.goBack();
     };
 
 

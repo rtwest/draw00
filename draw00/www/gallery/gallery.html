@@ -22,7 +22,7 @@
 <div class="row">
     <!--'For Each' loop using object 'galleryItems' known to the $scope when defined in the controller (look for $scope.galleryItems) -->
     <!--'picture' is a new local var here for looping -- picture.'name' is working through JSON keys-->
-    <div ng-repeat="picture in galleryItems" ng-include="'repeaterTemplate.html'"></div>
+    <div ng-repeat="picture in galleryItems | orderBy : 'datetime'" ng-include="'repeaterTemplate.html'"></div>
  </div> 
 <!-- This is one way to specify the repeater item template used above
     Could also be in separate HTML file loaded with ng-include="'folder/repeaterTemplate.html'"

@@ -294,9 +294,8 @@ cordovaNG.controller('clientstartController', function ($scope, globalService, A
                       var timetest = lasteventday;
                       timetest.setSeconds(timetest.getSeconds() + 10); // last event time + 10 sec
                       // IF this imageURL is the same image URL as last one in the array
-                      //    AND IF this has same name as Client
                       //    AND IF this event time is within 10 sec of last one
-                      if ((lastimageurl == items[i].picture_url) && (items[i].fromkid_name == $scope.clientName) && (thiseventday < timetest)) {
+                      if ((lastimageurl == items[i].picture_url) && (thiseventday < timetest)) {
                           // If this is same share event, modify LAST event arry item, DO NOT insert another
                           // --------------
                           var nameelement = { kidname: items[i].tokid_name };  // for JSON, have to make a new object
@@ -306,13 +305,21 @@ cordovaNG.controller('clientstartController', function ($scope, globalService, A
                       }
                       else { // IF NOT a repeated share item, make a new event item
 
+                          // Small check to personalize the event details if it is YOU
+                          // ------------------
+                          var from_check;
+                          if ((items[i].fromkid_id == clientGUID)) {
+                              from_check = "You";
+                          }
+                          else { from_check = items[i].fromkid_name };
+
                           // Make array object
                           // ------------------
                           var element = {  // make a new array object.  If items[i] is NULL, the HTML binding for ng-show will hide the HTML templating
                               picture_url: items[i].picture_url,
-                              fromkid: items[i].fromkid_name,
+                              fromkid: from_check,
                               fromkidavatar: items[i].fromkid_avatar,
-                              tokid: [{ // this is a notation for a nested object
+                              tokid: [{ // this is a notation for a nested object.  If someone sent to YOU, this has just your name in it
                                   kidname: items[i].tokid_name,
                                 }],
                               tokidavatar: [{ // this is a notation for a nested object
@@ -362,16 +369,15 @@ cordovaNG.controller('clientstartController', function ($scope, globalService, A
         globalService.changeView('/canvas');
     };
     $scope.gotoGalleryView = function () {
+        globalService.lastView = '/clientstart';  // for knowing where to go with the back button
         globalService.changeView('/gallery');
     };
     $scope.gotoPictureView = function (clickEvent) {
         $scope.clickEvent = globalService.simpleKeys(clickEvent);
         $scope.idParameters = clickEvent.target.id;  // div ID has 3 values shoved in it
 
-        var picturesplitarray = $scope.idParameters.split(","); // Split the string into an array by ","
-        globalService.kidAvatar = picturesplitarray[2];
-        globalService.kidName = picturesplitarray[1];
-        globalService.kidPictureUrl = picturesplitarray[0];
+        globalService.pictureViewParams = $scope.idParameters;  // pass the 3 values as a string and split at the next view
+        globalService.lastView = '/clientstart';  // for knowing where to go with the back button
         globalService.changeView('/picture');
 
     };

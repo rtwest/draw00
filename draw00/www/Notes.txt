@@ -1,16 +1,20 @@
 W O R K I N G   R I G H T   N O W
 -----------------------------
 
-- Need to figure out the Liking system - storage and retrieval
-	- Client Side - Time Line / Image Details /  from friend share in time line.  Add Comment/Like
-	- Client Side - Kids Gallery / Image Details / and who likes you Pic
+- NEED TO MAKE SURE THE SAVED AND SHARED IMAGE GUID IS THE SAME.
 
-- Gallery View / Picture details view - ID, Src / Likes / Actions - delete - sharing 
+- Need to figure out the Liking system - storage and retrieval
+	- Client Side - Client Start events / Picture views /  Add Comment/Like
+	- need to get updates pushed when event log insert.
+	- need to see in the event log
+	- need to STORE the likes on the client side - in the PouchDB with the picture
+
+
+- Gallery View / Picture details view - Likes / Actions - delete ((WON'T NAV AFTER DELETE)) - sharing 
 	- sharing from gallery is tricky because you might or might not have this stored on Azure already to share a link with.
 
 - Collapsing repeat share event events	- /// @@@@@@  HAVE TO BE SIGNED IN AS ADMIN TO TEST THIS OUT.
 - On Invitation Accept, Insert into Event Record  /// @@@@@@  HAVE TO BE SIGNED IN AS ADMIN TO TEST THIS OUT.  Alternatively, do this from Admin side after invitation accept
-
 - RESEARCH - ALSO NEED TO CLEAN BLOB STORAGE WEEKLY.  Maybe have to convert mobile services to app services.  Get scheduler.  Web Pages.  New Pricing?? 
 
 
@@ -22,13 +26,14 @@ W O R K I N G   R I G H T   N O W
 - * Need to return to your Image in Draw view and not alway make a new Canvas
 - * Loaders and Progress indicators when awaiting on Azure response
 - * Have Clients choose avatar on first run like on DoJo
-- * Parents show up in Kids friends list ?? And can Draw and share with them.
+- ** Parents show up in Kids friends list ?? And can Draw and share with them.
+- ** Need to have seed picture templates to trace - simple characters - kitten, lion cub, pony, 
 - * Need better Picture Save Indicator.  Need better Picuture Shared indicator
 - Need to check for web connection on load and alert
 - Client side - Share Overlay design
 - Pull new friends from client to update client
 - ??? Need to restrict permissions on azure tables to authenticate users for admin and client(probably) 
-
+- ** Kid Design Like Nintendo 3DS - 
 
 
 P R O B L E M S
@@ -54,7 +59,7 @@ KID RECORD: id, name, parent_id, registration_code, reg_status, avatar_id, paren
 FRIEND RECORD: id, kid1_id, kid2_id, kid1_name, kid2_name
 INVITATION RECORD: id, fromparent_id, toparent_id, fromkid (name), tokid (name), fromparent_name, toparent_name, fromkid_id, tokid_id.  - Status is implied as pending because its in the table.  Remove when accepted.
 EVENT RECORD: id, picture_url, fromkid_id, fromkid_name, tokid_id, tokid_name, event_type, comment_content, datetime
-NOT USED ### PICTURE RECORD: id, picture_url, kid_id, datetime
+Picture is in Blob storage with BLOB RECORD: Name/ID, URL, DateTime
 
 Pouch DB Tables in "drawappDatabase" on client side for large storage
 ------------------------------------
@@ -110,12 +115,65 @@ View
 
 
 
+PouchDB Examples http://pouchdb.com/guides/documents.html
+==============================
+// New local database
+------------------------------
+var drawappDatabase = new PouchDB("drawappDatabase", { adapter: 'websql' }); //If adapter is not given, it defaults to IndexedDB, then fails over to WebSQL
+
+// Insert record/doc into database
+------------------------------
+var uid = new Date().toJSON(); // make the ID a timestamp because PouchDB returns ordered ID (so now by datetime)
+var record = { "_id": uid, "filepath": filepath, "datetime": Date.now() }; //JSON for record               
+// Use .put for update or add new.  Use .post for just add new
+globalService.drawappDatabase.put(record, function (error, response) { //record, onDBsuccess, onDBerror
+    if (error) {
+        console.log(error);
+        return;
+    } else if (response && response.ok) {  // On successful filepath save to PouchDB
+        console.log(response)
+    }
+});
+// Retrieve record/doc WHERE from database
+------------------------------
+globalService.drawappDatabase.get(Record_ID).then(function (Found_Record) {
+    alert(JSON.stringify(Found_Record))
+});
+// Get all records (called 'docs' in PouchDB) from local storage (websql or indexeded)
+------------------------------
+// include_docs:true is need to get the whole record
+globalService.drawappDatabase.allDocs({include_docs: true}).then(function (result) {
+    // Split the JSON collection into an Array of JSON
+    // Each PouchDB row has a .doc object.  To split into array of just these rows, map the array to contain just the .doc objects.
+    records = result.rows.map(function (row) { // this iterates through the JSON
+        //row.doc.Date = new Date(row.doc.Date);  // you can change data on the way as you iterate through
+        return row.doc;  // return just the 'doc' parts in the JSON
+    });
+    //alert(JSON.stringify(records));
+    $scope.galleryItems = records; // Put the array of records into this view's scope
+    $scope.$apply(); // @@@ CRITICAL: To get view to update after $scope datamodel has updated -- but no UI action triggered it, use .$apply() @@@
+    // ---
+}).catch(function (err) {
+    console.log(err);  
+});
+// Delete record/doc from database - delete is an update
+------------------------------
+globalService.drawappDatabase.get(Record_ID).then(function(Found_Record) {
+  return globalService.drawappDatabase.remove(Found_Record);
+}).then(function (result) {
+  console.log(result); 
+}).catch(function (err) {
+  console.log(err);
+});
+
+
+
 
 
 
 
 Azure Wrapper Examples
------------------------
+==============================
 - Uses JSON obj
 - You can use custom row IDs when inserting
 - When updating, specify the row ID and values to update

@@ -2,17 +2,41 @@
 
 <p>Picture view</p>
 
-<p>Need to know if this is your picutre or someone else </p>
-
 <button type="button" class="btn btn-primary" style="box-shadow:none;" ng-click="goBack()">Back </button>
 
 <div>{{kidname}}</div>
 <div>{{kidavatar}}</div>
+
 <img src="{{pictureurl}}" alt="Shared drawing"/>
 
-<div ng-show="uiFlag">-- ui flag --</div>
+
+<!-- ========== UI If this is Friend's picture ========== -->
+
+<div ng-show="uiFlagFriendPicture">
+
+    <p>Share a Comment or Like the Picture</p>
+    <div ng-click="likeClick()">Like Button</div>
+
+</div>
+
+<!-- ========== UI if this is your picture ========== -->
+
+<div ng-show="uiFlagClientPicture">
+
+    <p>Good Job!</p>
+    <p>These friends like your picture!</p>
+
+    <p> -- Comments and Likes Repeater Goes Here --</p>
+
+    <!-- Deleteing and Sharing not possible from the event log view -->
+    <!--<div ng-click="showDeleteOverlay=true">Delete</div>-->
+    <!--<div ng-click="showShareOverlay=true">Share</div>-->
+</div>
 
 
-<p>Share a Comment or Like the Picture</p>
-<div ng-click="likeClick()">Like Button</div>
+
+
+
+
+
 
