@@ -1,17 +1,27 @@
 W O R K I N G   R I G H T   N O W
 -----------------------------
 
-- NEED TO MAKE SURE THE SAVED AND SHARED IMAGE GUID IS THE SAME.
-
 - Need to figure out the Liking system - storage and retrieval
 	- Client Side - Client Start events / Picture views /  Add Comment/Like
-	- need to get updates pushed when event log insert.
-	- need to see in the event log
-	- need to STORE the likes on the client side - in the PouchDB with the picture
+	- Like/Comment event is insert into Event Table.
+	- ****** Event Table sends Push Notification for Like/Comment event
+
+- //Client checks Event Log
+- //Client parses event log for Event of type Like/Comment where ToKid is client
+- // Look up in PouchDB with UID from the end of Image URL
+- need to STORE the likes on the client side - in the PouchDB with the picture
+	- @@@@@@ FAIL: Like/Comment JSON object had eventy_type "sharepicture" and not "like".  Don't know what that happend
+	- @@@@@@ FAIL: Repeater logic in UI controler is combining Like events from Leo to Jason and adding one with Leo?
+
+
+
+
 
 
 - Gallery View / Picture details view - Likes / Actions - delete ((WON'T NAV AFTER DELETE)) - sharing 
 	- sharing from gallery is tricky because you might or might not have this stored on Azure already to share a link with.
+	- @@@ IF saved after a Share, the put the Share URL into PouchDB with the Image ID.
+	- Now you know if the Image has a URL for Sharing or if you have to Upload it - then update the PouchDB record/doc
 
 - Collapsing repeat share event events	- /// @@@@@@  HAVE TO BE SIGNED IN AS ADMIN TO TEST THIS OUT.
 - On Invitation Accept, Insert into Event Record  /// @@@@@@  HAVE TO BE SIGNED IN AS ADMIN TO TEST THIS OUT.  Alternatively, do this from Admin side after invitation accept
@@ -63,7 +73,7 @@ Picture is in Blob storage with BLOB RECORD: Name/ID, URL, DateTime
 
 Pouch DB Tables in "drawappDatabase" on client side for large storage
 ------------------------------------
-IMAGE RECORD: _id, filepath on device, datetime
+IMAGE RECORD: _id, filepath on device, datetime, commentarray
 
 Array on client side for small storage  
 ----------------------------------

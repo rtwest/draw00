@@ -80,6 +80,41 @@ cordovaNG.controller('clientstartController', function ($scope, globalService, A
     //    console.log('Azure Error: ' + err);
     //});
 
+    //Azureservice.insert('events', {
+    //    fromkid_id: '9f0ed518-f388-4519-a2e5-6c0dc01308a4',
+    //    tokid_id: 'fa530f03-c3dc-4c10-9c0f-ce0ec2a5ff5e',
+    //    fromkid_name: 'Leo',
+    //    tokid_name: 'Jason',
+    //    event_type: 'like',
+    //    picture_url: 'https://rtwdevstorage.blob.core.windows.net/imagecontainer/162460e7-7e67-4df7-a947-91b947b63e7d.png',
+    //    fromkid_avatar: 1,
+    //    tokid_avatar: 2,
+    //    datetime: Date.now(),
+    //    comment_content:'',
+    //})
+    //.then(function () {
+    //    console.log('Insert successful');
+    //}, function (err) {
+    //    console.log('Azure Error: ' + err);
+    //});
+
+    //Azureservice.insert('events', {
+    //    fromkid_id: '9f0ed518-f388-4519-a2e5-6c0dc01308a4',
+    //    tokid_id: 'fa530f03-c3dc-4c10-9c0f-ce0ec2a5ff5e',
+    //    fromkid_name: 'Leo',
+    //    tokid_name: 'Jason',
+    //    event_type: 'like',
+    //    picture_url: 'https://rtwdevstorage.blob.core.windows.net/imagecontainer/162460e7-7e67-4df7-a947-91b947b63e7d.png',
+    //    fromkid_avatar: 1,
+    //    tokid_avatar: 2,
+    //    datetime: Date.now(),
+    //    comment_content: '',
+    //})
+    //.then(function () {
+    //    console.log('Insert successful');
+    //}, function (err) {
+    //    console.log('Azure Error: ' + err);
+    //});
     // ==========================================
 
 
@@ -244,14 +279,58 @@ cordovaNG.controller('clientstartController', function ($scope, globalService, A
                   lasteventday = new Date();
                   montharray = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
-                  items = items.reverse()  // @@@ This puts them in newwest first order. 
+                  items = items.reverse()  // @@@ This puts them in newest first order. 
 
                   for (i = 0; i < len; i++) {
 
                       lasteventday = thiseventday; // when i=0, this is useless and skipped over with coniditional below
                       thiseventday = new Date(items[i].datetime); // convert datetime to number
 
-                      // Get Day - Compare Day and Month
+                      // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@  WORKING HERE @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+                      // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@  WORKING HERE @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+                      // @@@ Check for Like Events for this Client
+                      // ---------------------
+                      if ((items[i].tokid_id == clientGUID) && (items[i].event_type == 'like')) {
+
+                          // Get Image ID from Picture URL.  It's the last part.
+                          var imageID = items[i].picture_url.replace('https://rtwdevstorage.blob.core.windows.net/imagecontainer/',''); 
+                          imageID = imageID.replace('.png', ''); // Cut off the .png at the end
+
+                          // Look up in PouchDB
+                          globalService.drawappDatabase.get(imageID).then(function (Found_Record) { // imageID is the index ID
+
+                              alert("found in PouchDB - " + JSON.stringify(Found_Record))
+
+                              // Add FromKid_name & FromKid_avatar to record/doc
+                              var event = items[i].event_type;
+                              var name = items[i].fromkid_name;
+                              var avatar = items[i].fromkid_avatar;
+                              var comment_element = { event_type: event, name: name, avatar: avatar };
+                              Found_Record.commentarray.push(comment_element);
+                              alert("2 found in PouchDB - " + JSON.stringify(Found_Record))
+
+                              // Update PouchDB. Use .put for update or add new
+                              globalService.drawappDatabase.put(Found_Record, function (error, response) { //record, onDBsuccess, onDBerror
+                                  if (error) {
+                                      console.log(error);
+                                      return;
+                                  } else if (response && response.ok) {
+                                      // On successful update to PouchDB
+                                      alert("Updated")
+                                      console.log(response)
+                                  }
+                              });
+
+                          });
+                      };
+                      // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@  WORKING HERE @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+                      // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@  WORKING HERE @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+
+
+
+                      // @@@ Get Day - Compare Day and Month
                       // ---------------------
                       if (i > 0) { // If this is NOT first in array, check if you need to show it.
                           if ((thiseventday.getDate() == lasteventday.getDate()) && (thiseventday.getMonth() == lasteventday.getMonth())) {
@@ -259,26 +338,22 @@ cordovaNG.controller('clientstartController', function ($scope, globalService, A
                           }
                               // may never have this case?
                           else if ((thiseventday.getDate() == today.getDate()) && (thiseventday.getMonth() == today.getMonth())) {
-                              day = 'Today';
-                          }
+                              day = 'Today';}
                               // If Day is Today-1, Then its Yesterday
                           else if ((thiseventday.getDate() == (today.getDate() - 1)) && (thiseventday.getMonth() == today.getMonth())) {
-                              day = 'Yesterday';
-                          }
+                              day = 'Yesterday';}
                           else { day = montharray[thiseventday.getMonth()] + " " + thiseventday.getDate(); }
                       }
                       else { // If this IS first in array, then it has to have the date header
                           if ((thiseventday.getDate() == today.getDate()) && (thiseventday.getMonth() == today.getMonth())) {
-                              day = 'Today';
-                          }
+                              day = 'Today';}
                               // If Day is Today-1, Then its Yesterday
                           else if ((thiseventday.getDate() == (today.getDate() - 1)) && (thiseventday.getMonth() == today.getMonth())) {
-                              day = 'Yesterday';
-                          }
+                              day = 'Yesterday';}
                           else { day = montharray[thiseventday.getMonth()] + " " + thiseventday.getDate(); }
                       }
 
-                      // Get time  // @@@@@ DEAL WITH TIME ZONES??
+                      // Get time 
                       // --------
                       var t = thiseventday.getHours();  //+1 to make up for 0 base
                       if (t > 12) {
@@ -289,7 +364,7 @@ cordovaNG.controller('clientstartController', function ($scope, globalService, A
                       }
 
 
-                      // Checking for Image Share to multiple people to collapse as 1 event not several
+                      // @@@ Checking for Image Share to multiple people to collapse as 1 event not several
                       // =========================
                       var timetest = lasteventday;
                       timetest.setSeconds(timetest.getSeconds() + 10); // last event time + 10 sec
@@ -305,16 +380,16 @@ cordovaNG.controller('clientstartController', function ($scope, globalService, A
                       }
                       else { // IF NOT a repeated share item, make a new event item
 
-                          // Small check to personalize the event details if it is YOU
+                          // @@@ Small check to personalize the event details if it is YOU
                           // ------------------
                           var from_check;
-                          if ((items[i].fromkid_id == clientGUID)) {
+                          if (items[i].fromkid_id == clientGUID) {
                               from_check = "You";
                           }
                           else { from_check = items[i].fromkid_name };
 
-                          // Make array object
-                          // ------------------
+                          // @@@@@ Make array object for UI @@@@@
+                          // ==============================
                           var element = {  // make a new array object.  If items[i] is NULL, the HTML binding for ng-show will hide the HTML templating
                               picture_url: items[i].picture_url,
                               fromkid: from_check,
@@ -338,9 +413,8 @@ cordovaNG.controller('clientstartController', function ($scope, globalService, A
 
                       lastimageurl = items[i].picture_url;
 
-                  }; //end for
+                  }; // ------ end for
 
-                  //$scope.eventarray = tempArray;
                   globalService.eventArray = tempArray;
                   $scope.eventarray = globalService.eventArray;
                   //alert("Event array - "+JSON.stringify($scope.eventarray))

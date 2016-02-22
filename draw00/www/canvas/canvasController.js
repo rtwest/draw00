@@ -411,14 +411,16 @@ cordovaNG.controller('canvasController', function ($scope, $http, globalService,
 
                 // Save filepath to PouchDB for gallery
                 // --------
-                //var UniquePictureID = globalService.makeUniqueID(); 
                 //var uid = new Date().toJSON(); // make the ID a timestamp because PouchDB returns ordered ID (so now by datetime)
 
-                //alert(UniquePictureID);
 
-                var record = { "_id": UniquePictureID, "filepath": filepath, "datetime": Date.now() }; //JSON for unique id for picture, filepath to retrieve it, datetime in milliseconds
-                
-                //alert(record);
+                // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@  WORKING HERE @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+                var record = { "_id": UniquePictureID, "filepath": filepath, "datetime": Date.now(), "commentarray": []}; //JSON for unique id for picture, filepath to retrieve it, datetime in milliseconds, array of comments
+
+                alert(JSON.stringify(record));
+                alert(UniquePictureID + " == " + filepath);
+                // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@  WORKING HERE @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
 
                 // Use .put for update or add new.  Use .post for just add new
                 globalService.drawappDatabase.put(record, function (error, response) { //record, onDBsuccess, onDBerror
