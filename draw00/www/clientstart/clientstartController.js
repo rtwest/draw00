@@ -86,7 +86,7 @@ cordovaNG.controller('clientstartController', function ($scope, globalService, A
     //    fromkid_name: 'Leo',
     //    tokid_name: 'Jason',
     //    event_type: 'like',
-    //    picture_url: 'https://rtwdevstorage.blob.core.windows.net/imagecontainer/162460e7-7e67-4df7-a947-91b947b63e7d.png',
+    //    picture_url: 'https://rtwdevstorage.blob.core.windows.net/imagecontainer/684380c0-ea8b-44e3-80b9-1108eef1b65c.png',
     //    fromkid_avatar: 1,
     //    tokid_avatar: 2,
     //    datetime: Date.now(),
@@ -104,7 +104,7 @@ cordovaNG.controller('clientstartController', function ($scope, globalService, A
     //    fromkid_name: 'Leo',
     //    tokid_name: 'Jason',
     //    event_type: 'like',
-    //    picture_url: 'https://rtwdevstorage.blob.core.windows.net/imagecontainer/162460e7-7e67-4df7-a947-91b947b63e7d.png',
+    //    picture_url: 'https://rtwdevstorage.blob.core.windows.net/imagecontainer/8b81549b-f12b-41cf-befc-4b6627bb7c65.png',
     //    fromkid_avatar: 1,
     //    tokid_avatar: 2,
     //    datetime: Date.now(),
@@ -169,7 +169,7 @@ cordovaNG.controller('clientstartController', function ($scope, globalService, A
 
                     $scope.friendArray = []  // @@@ Make a brand New Array (( Dumping any existing one ))
 
-                    alert(JSON.stringify(items));
+                    //alert(JSON.stringify(items));
 
                     // Go through Friend items and reorder it 
                     // --------------------------------------
@@ -231,10 +231,8 @@ cordovaNG.controller('clientstartController', function ($scope, globalService, A
                 //tempArray[j].friend_parentname = item.parent_name;
                 //tempArray[j].friend_parentemail = item.parent_email;
 
-
                 globalService.friendArray = tempArray;
                 $scope.friendArray = globalService.friendArray; // @@@ Set to $scope array
-                //$scope.friendArray = tempArray; 
 
                 // RECUSIVE PART.  Regular FOR loop didn't work.
                 // ------
@@ -258,6 +256,60 @@ cordovaNG.controller('clientstartController', function ($scope, globalService, A
     // ==========================================
 
     function getEventLog() {
+
+
+        // %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+        // Before getting the event log from Azure, take PouchDB allDocs and make a local array of ['ImageID; UserID',] so its easy to check against
+        // ---------------
+        var likesArray = [];
+        globalService.drawappDatabase.allDocs({ include_docs: true }).then(function (result) {
+            // --- Split the JSON collection into an Array of JSON
+            // Each PouchDB row has a .doc object.  To split into array of just these rows, map the array to contain just the .doc objects.
+            records = result.rows.map(function (row) { // this iterates through the JSON
+                //row.doc.Date = new Date(row.doc.Date);  // you can change data on the way as you iterate through
+                //return row.doc;  // return just the 'doc' parts in the JSON
+                var el = {ImageID:row.doc._id, CommentArr:row.doc.commentarray}; // Get just the ImageID and Likes subarray
+                alert(JSON.stringify(el));
+                likesArray = el; // put string into array
+            });
+            alert(JSON.stringify(likesArray));
+            alert(JSON.stringify(likesArray[0].CommentArr[0].name));  // @@@ Error say can't read property of undefined
+
+            // Take likesArray and iterate through CommentArr to flatten this out
+            // ---------------
+            //var likesArraySimpler = [];
+            alert(likesArray.length)
+            for (x = 0; x < likesArray.length; x++) {
+
+                alert(likesArray[x].CommentArr.length)
+                for (j = 0; j < likesArray[x].CommentArr.length; j++) {
+
+                    alert(JSON.stringify(likesArray[x].ImageID) + " - " + JSON.stringify(likesArray[x].CommentArr[j].name))
+                };
+
+            }; //end for
+
+        }).catch(function (err) {
+            console.log(err); //alert(err);
+        });
+
+        //// Take likesArray and iterate through CommentArr to flatten this out
+        //// ---------------
+        ////var likesArraySimpler = [];
+        //alert(likesArray.length)
+        //for (x = 0; x < likesArray.length; x++) {
+            
+        //    alert(likesArray[x].CommentArr.length)
+        //    for (j = 0; j < likesArray[x].CommentArr.length; j++) {
+
+        //        alert(JSON.stringify(likesArray[x].ImageID) + " - " + JSON.stringify(likesArray[x].CommentArr[j].name))
+        //    };
+
+
+        //}; //end for
+        // %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 
         var tempArray = []; // This resets the local array (which $scope is set to later)
 
@@ -297,33 +349,39 @@ cordovaNG.controller('clientstartController', function ($scope, globalService, A
                           var imageID = items[i].picture_url.replace('https://rtwdevstorage.blob.core.windows.net/imagecontainer/',''); 
                           imageID = imageID.replace('.png', ''); // Cut off the .png at the end
 
-                          // Look up in PouchDB
-                          globalService.drawappDatabase.get(imageID).then(function (Found_Record) { // imageID is the index ID
+                          // Compare to see if this Like (ImageID, UserID) is already saved
+                          // ------------------
 
-                              alert("found in PouchDB - " + JSON.stringify(Found_Record))
 
-                              // Add FromKid_name & FromKid_avatar to record/doc
-                              var event = items[i].event_type;
-                              var name = items[i].fromkid_name;
-                              var avatar = items[i].fromkid_avatar;
-                              var comment_element = { event_type: event, name: name, avatar: avatar };
-                              Found_Record.commentarray.push(comment_element);
-                              alert("2 found in PouchDB - " + JSON.stringify(Found_Record))
 
-                              // Update PouchDB. Use .put for update or add new
-                              globalService.drawappDatabase.put(Found_Record, function (error, response) { //record, onDBsuccess, onDBerror
-                                  if (error) {
-                                      console.log(error);
-                                      return;
-                                  } else if (response && response.ok) {
-                                      // On successful update to PouchDB
-                                      alert("Updated")
-                                      console.log(response)
-                                  }
-                              });
+                          // ------------------
 
-                          });
-                      };
+
+                          // Make new JSON element with the Like event details
+                          var Updated_commentarray;
+                          var event = items[i].event_type;
+                          var name = items[i].fromkid_name;
+                          var avatar = items[i].fromkid_avatar;
+                          var comment_element = { event_type: event, name: name, avatar: avatar }; // New object
+
+                          //// Update the record/doc using PouchDB
+                          //globalService.drawappDatabase.upsert(imageID, function (doc) {
+                          //    // Have to do this extra step for pushing into array
+                          //    var tempobject = new Object();
+                          //    tempobject = doc.commentarray; //alert(doc.commentarray);
+                          //    tempobject.push(comment_element); //alert(tempobject);
+                          //    // The actual update part 
+                          //    doc.commentarray = tempobject;
+                          //    return doc;
+                          //}).then(function (response) {
+                          //    console.log(response); //alert(JSON.stringify(response));
+                          //}).catch(function (err) {
+                          //    console.log(err); //alert(JSON.stringify(err));
+                          //});
+
+
+
+                       };
                       // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@  WORKING HERE @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
                       // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@  WORKING HERE @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
@@ -370,7 +428,8 @@ cordovaNG.controller('clientstartController', function ($scope, globalService, A
                       timetest.setSeconds(timetest.getSeconds() + 10); // last event time + 10 sec
                       // IF this imageURL is the same image URL as last one in the array
                       //    AND IF this event time is within 10 sec of last one
-                      if ((lastimageurl == items[i].picture_url) && (thiseventday < timetest)) {
+                      //    AND IF from the client
+                      if ((lastimageurl == items[i].picture_url) && (thiseventday < timetest) && (items[i].fromkid_id == clientGUID)) {
                           // If this is same share event, modify LAST event arry item, DO NOT insert another
                           // --------------
                           var nameelement = { kidname: items[i].tokid_name };  // for JSON, have to make a new object
@@ -417,7 +476,7 @@ cordovaNG.controller('clientstartController', function ($scope, globalService, A
 
                   globalService.eventArray = tempArray;
                   $scope.eventarray = globalService.eventArray;
-                  //alert("Event array - "+JSON.stringify($scope.eventarray))
+                  alert("Event array - "+JSON.stringify($scope.eventarray))
 
               }; // end if
 

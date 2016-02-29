@@ -32,6 +32,14 @@
         <!--only this div's id works - need to have this ID on anything clicked-->
         <div class="col-xs-6 col-sm-4">
             <img id="{{picture._id}},{{picture.filepath}}" ng-click="galleryImageClick($event)" src="{{picture.filepath}}" alt="Saved drawing" class="galleryimage" />
+            
+            <!--Nested repeater within the first JSON array-->
+            <div ng-repeat="subarrayitem in picture.commentarray">
+                <div style="color:red">{{subarrayitem.name}}</div>
+                <div style="color:red">{{subarrayitem.avatar}}</div>
+                <div style="color:red">{{subarrayitem.event_type}}</div>
+            </div>
+
         </div>
     <!--end repeater template-->
 </script>

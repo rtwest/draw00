@@ -415,7 +415,7 @@ cordovaNG.controller('canvasController', function ($scope, $http, globalService,
 
 
                 // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@  WORKING HERE @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-                var record = { "_id": UniquePictureID, "filepath": filepath, "datetime": Date.now(), "commentarray": []}; //JSON for unique id for picture, filepath to retrieve it, datetime in milliseconds, array of comments
+                var record = { _id: UniquePictureID, filepath: filepath, datetime: Date.now(), commentarray: []}; //JSON for unique id for picture, filepath to retrieve it, datetime in milliseconds, array of comments
 
                 alert(JSON.stringify(record));
                 alert(UniquePictureID + " == " + filepath);

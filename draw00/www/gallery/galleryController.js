@@ -22,8 +22,8 @@ cordovaNG.controller('galleryController', function ($scope, globalService, Azure
             //row.doc.Date = new Date(row.doc.Date);  // you can change data on the way as you iterate through
             return row.doc;  // return just the 'doc' parts in the JSON
         });
-        //alert(JSON.stringify(records));
         $scope.galleryItems = records; // Put the array of records into this view's scope
+        alert(JSON.stringify($scope.galleryItems));
         $scope.$apply(); // @@@ CRITICAL: To get view to update after $scope datamodel has updated -- but no UI action triggered it, use .$apply() @@@
         // ---
     }).catch(function (err) {

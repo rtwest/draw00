@@ -1,23 +1,19 @@
 W O R K I N G   R I G H T   N O W
 -----------------------------
 
-- Need to figure out the Liking system - storage and retrieval
-	- Client Side - Client Start events / Picture views /  Add Comment/Like
-	- Like/Comment event is insert into Event Table.
-	- ****** Event Table sends Push Notification for Like/Comment event
+- event log check - need to check Pouch ID to make sure id doesn't have ImageID, CommentArray, User
+	- from PouchDB get(ImageID)
+	- get CommentArray of objects and see if UserID is in it.
+- need to show likes on gallery (summary) and gallerypictureview (details)
+- need to send likes from picture view.  Need to track what other pictures was Liked - means another client side array to track with ImageID as toggle
+- need Azure Event Table sends Push Notification for Like/Comment event
 
-- //Client checks Event Log
-- //Client parses event log for Event of type Like/Comment where ToKid is client
-- // Look up in PouchDB with UID from the end of Image URL
-- need to STORE the likes on the client side - in the PouchDB with the picture
-	- @@@@@@ FAIL: Like/Comment JSON object had eventy_type "sharepicture" and not "like".  Don't know what that happend
-	- @@@@@@ FAIL: Repeater logic in UI controler is combining Like events from Leo to Jason and adding one with Leo?
+- 
+- @@@@@@ FAIL: Inserting into Event Log for Likes was wrong.  Drop the share event and inserted 2 people for "ToKid".  Repeater is display correctly.
 
 
 
-
-
-
+// SHARING FROM GALLERY
 - Gallery View / Picture details view - Likes / Actions - delete ((WON'T NAV AFTER DELETE)) - sharing 
 	- sharing from gallery is tricky because you might or might not have this stored on Azure already to share a link with.
 	- @@@ IF saved after a Share, the put the Share URL into PouchDB with the Image ID.
@@ -134,7 +130,7 @@ var drawappDatabase = new PouchDB("drawappDatabase", { adapter: 'websql' }); //I
 // Insert record/doc into database
 ------------------------------
 var uid = new Date().toJSON(); // make the ID a timestamp because PouchDB returns ordered ID (so now by datetime)
-var record = { "_id": uid, "filepath": filepath, "datetime": Date.now() }; //JSON for record               
+var record = { "_id": uid, "filepath": filepath, "datetime": Date.now() }; //JSON for record.  Update has to include all fields               
 // Use .put for update or add new.  Use .post for just add new
 globalService.drawappDatabase.put(record, function (error, response) { //record, onDBsuccess, onDBerror
     if (error) {
