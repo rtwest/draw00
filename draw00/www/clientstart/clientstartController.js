@@ -81,12 +81,12 @@ cordovaNG.controller('clientstartController', function ($scope, globalService, A
     //});
 
     //Azureservice.insert('events', {
-    //    fromkid_id: '9f0ed518-f388-4519-a2e5-6c0dc01308a4',
+    //    fromkid_id: '7adfe169-3113-4b51-95ad-6e3c48e0a14e',
     //    tokid_id: 'fa530f03-c3dc-4c10-9c0f-ce0ec2a5ff5e',
-    //    fromkid_name: 'Leo',
+    //    fromkid_name: 'Piper',
     //    tokid_name: 'Jason',
     //    event_type: 'like',
-    //    picture_url: 'https://rtwdevstorage.blob.core.windows.net/imagecontainer/684380c0-ea8b-44e3-80b9-1108eef1b65c.png',
+    //    picture_url: 'https://rtwdevstorage.blob.core.windows.net/imagecontainer/5dae719d-7cff-434a-84ac-0208d377853b.png',
     //    fromkid_avatar: 1,
     //    tokid_avatar: 2,
     //    datetime: Date.now(),
@@ -104,7 +104,7 @@ cordovaNG.controller('clientstartController', function ($scope, globalService, A
     //    fromkid_name: 'Leo',
     //    tokid_name: 'Jason',
     //    event_type: 'like',
-    //    picture_url: 'https://rtwdevstorage.blob.core.windows.net/imagecontainer/8b81549b-f12b-41cf-befc-4b6627bb7c65.png',
+    //    picture_url: 'https://rtwdevstorage.blob.core.windows.net/imagecontainer/5dae719d-7cff-434a-84ac-0208d377853b.png',
     //    fromkid_avatar: 1,
     //    tokid_avatar: 2,
     //    datetime: Date.now(),
@@ -257,12 +257,10 @@ cordovaNG.controller('clientstartController', function ($scope, globalService, A
 
     function getEventLog() {
 
-
-        // %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
         // Before getting the event log from Azure, take PouchDB allDocs and make a local array of ['ImageID; UserID',] so its easy to check against
         // ---------------
         var likesArray = [];
+        var likesArrayFlattened = [];
         globalService.drawappDatabase.allDocs({ include_docs: true }).then(function (result) {
             // --- Split the JSON collection into an Array of JSON
             // Each PouchDB row has a .doc object.  To split into array of just these rows, map the array to contain just the .doc objects.
@@ -270,49 +268,27 @@ cordovaNG.controller('clientstartController', function ($scope, globalService, A
                 //row.doc.Date = new Date(row.doc.Date);  // you can change data on the way as you iterate through
                 //return row.doc;  // return just the 'doc' parts in the JSON
                 var el = {ImageID:row.doc._id, CommentArr:row.doc.commentarray}; // Get just the ImageID and Likes subarray
-                alert(JSON.stringify(el));
-                likesArray = el; // put string into array
+                likesArray.push(el); // put string into array
             });
-            alert(JSON.stringify(likesArray));
-            alert(JSON.stringify(likesArray[0].CommentArr[0].name));  // @@@ Error say can't read property of undefined
-
+            //alert(JSON.stringify(likesArray));
             // Take likesArray and iterate through CommentArr to flatten this out
             // ---------------
-            //var likesArraySimpler = [];
-            alert(likesArray.length)
             for (x = 0; x < likesArray.length; x++) {
-
-                alert(likesArray[x].CommentArr.length)
-                for (j = 0; j < likesArray[x].CommentArr.length; j++) {
-
-                    alert(JSON.stringify(likesArray[x].ImageID) + " - " + JSON.stringify(likesArray[x].CommentArr[j].name))
+                for (y = 0; y < likesArray[x].CommentArr.length; j++) {
+                    var el = likesArray[x].ImageID + likesArray[x].CommentArr[y].kid_id;
+                    likesArrayFlattened.push(el);
                 };
-
             }; //end for
-
+            alert(likesArrayFlattened);
         }).catch(function (err) {
             console.log(err); //alert(err);
         });
 
-        //// Take likesArray and iterate through CommentArr to flatten this out
-        //// ---------------
-        ////var likesArraySimpler = [];
-        //alert(likesArray.length)
-        //for (x = 0; x < likesArray.length; x++) {
-            
-        //    alert(likesArray[x].CommentArr.length)
-        //    for (j = 0; j < likesArray[x].CommentArr.length; j++) {
-
-        //        alert(JSON.stringify(likesArray[x].ImageID) + " - " + JSON.stringify(likesArray[x].CommentArr[j].name))
-        //    };
-
-
-        //}; //end for
-        // %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
         var tempArray = []; // This resets the local array (which $scope is set to later)
-
+        // Read Event Log from Azure
+        // ------------------------
         Azureservice.read('events', "filter=from_kid_id eq '" + clientGUID + "' or to_kid_id eq '" + clientGUID + "'")
           .then(function (items) {
 
@@ -349,36 +325,38 @@ cordovaNG.controller('clientstartController', function ($scope, globalService, A
                           var imageID = items[i].picture_url.replace('https://rtwdevstorage.blob.core.windows.net/imagecontainer/',''); 
                           imageID = imageID.replace('.png', ''); // Cut off the .png at the end
 
-                          // Compare to see if this Like (ImageID, UserID) is already saved
+                          // Check to see if this Like (ImageID, UserID) is in the quick check array.  IF NOT, then add to PouchDB
                           // ------------------
+                          //alert(imageID + items[i].fromkid_id)
+                          //alert(likesArrayFlattened.indexOf(imageID + items[i].fromkid_id))
+                          if (likesArrayFlattened.indexOf(imageID + items[i].fromkid_id) == -1) {  // Not found in array
+                              alert("adding new like");
+                          
+                              // Make new JSON element with the Like event details
+                              var Updated_commentarray;
+                              var event = items[i].event_type;
+                              var name = items[i].fromkid_name;
+                              var avatar = items[i].fromkid_avatar;
+                              var kid_id = items[i].fromkid_id;
+                              var comment_element = { event_type: event, name: name, avatar: avatar, kid_id: kid_id }; // New object
 
+                              // Update the record/doc using PouchDB
+                              globalService.drawappDatabase.upsert(imageID, function (doc) {
+                                  // Have to do this extra step for pushing into array
+                                  var tempobject = new Object();
+                                  tempobject = doc.commentarray; //alert(doc.commentarray);
+                                  tempobject.push(comment_element); //alert(tempobject);
+                                  // The actual update part 
+                                  doc.commentarray = tempobject;
+                                  return doc;
+                              }).then(function (response) {
+                                  console.log(response); //alert(JSON.stringify(response));
+                              }).catch(function (err) {
+                                  console.log(err); //alert(JSON.stringify(err));
+                              });
 
-
+                          };
                           // ------------------
-
-
-                          // Make new JSON element with the Like event details
-                          var Updated_commentarray;
-                          var event = items[i].event_type;
-                          var name = items[i].fromkid_name;
-                          var avatar = items[i].fromkid_avatar;
-                          var comment_element = { event_type: event, name: name, avatar: avatar }; // New object
-
-                          //// Update the record/doc using PouchDB
-                          //globalService.drawappDatabase.upsert(imageID, function (doc) {
-                          //    // Have to do this extra step for pushing into array
-                          //    var tempobject = new Object();
-                          //    tempobject = doc.commentarray; //alert(doc.commentarray);
-                          //    tempobject.push(comment_element); //alert(tempobject);
-                          //    // The actual update part 
-                          //    doc.commentarray = tempobject;
-                          //    return doc;
-                          //}).then(function (response) {
-                          //    console.log(response); //alert(JSON.stringify(response));
-                          //}).catch(function (err) {
-                          //    console.log(err); //alert(JSON.stringify(err));
-                          //});
-
 
 
                        };
