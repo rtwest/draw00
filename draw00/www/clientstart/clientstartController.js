@@ -261,28 +261,29 @@ cordovaNG.controller('clientstartController', function ($scope, globalService, A
         // ---------------
         var likesArray = [];
         var likesArrayFlattened = [];
-        globalService.drawappDatabase.allDocs({ include_docs: true }).then(function (result) {
-            // --- Split the JSON collection into an Array of JSON
-            // Each PouchDB row has a .doc object.  To split into array of just these rows, map the array to contain just the .doc objects.
-            records = result.rows.map(function (row) { // this iterates through the JSON
-                //row.doc.Date = new Date(row.doc.Date);  // you can change data on the way as you iterate through
-                //return row.doc;  // return just the 'doc' parts in the JSON
-                var el = {ImageID:row.doc._id, CommentArr:row.doc.commentarray}; // Get just the ImageID and Likes subarray
-                likesArray.push(el); // put string into array
-            });
-            //alert(JSON.stringify(likesArray));
-            // Take likesArray and iterate through CommentArr to flatten this out
-            // ---------------
-            for (x = 0; x < likesArray.length; x++) {
-                for (y = 0; y < likesArray[x].CommentArr.length; j++) {
-                    var el = likesArray[x].ImageID + likesArray[x].CommentArr[y].kid_id;
-                    likesArrayFlattened.push(el);
-                };
-            }; //end for
-            alert(likesArrayFlattened);
-        }).catch(function (err) {
-            console.log(err); //alert(err);
-        });
+        //  XXXXX REMOVING POUCHDB
+        ////globalService.drawappDatabase.allDocs({ include_docs: true }).then(function (result) {
+        ////    // --- Split the JSON collection into an Array of JSON
+        ////    // Each PouchDB row has a .doc object.  To split into array of just these rows, map the array to contain just the .doc objects.
+        ////    records = result.rows.map(function (row) { // this iterates through the JSON
+        ////        //row.doc.Date = new Date(row.doc.Date);  // you can change data on the way as you iterate through
+        ////        //return row.doc;  // return just the 'doc' parts in the JSON
+        ////        var el = {ImageID:row.doc._id, CommentArr:row.doc.commentarray}; // Get just the ImageID and Likes subarray
+        ////        likesArray.push(el); // put string into array
+        ////    });
+        ////    //alert(JSON.stringify(likesArray));
+        ////    // Take likesArray and iterate through CommentArr to flatten this out
+        ////    // ---------------
+        ////    for (x = 0; x < likesArray.length; x++) {
+        ////        for (y = 0; y < likesArray[x].CommentArr.length; j++) {
+        ////            var el = likesArray[x].ImageID + likesArray[x].CommentArr[y].kid_id;
+        ////            likesArrayFlattened.push(el);
+        ////        };
+        ////    }; //end for
+        ////    alert(likesArrayFlattened);
+        ////}).catch(function (err) {
+        ////    console.log(err); //alert(err);
+        ////});
 
 
 

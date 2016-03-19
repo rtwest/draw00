@@ -10,27 +10,37 @@ cordovaNG.controller('galleryController', function ($scope, globalService, Azure
 
 
 
-
+    // @@@@@@@@@@@@@@@@@@@@@@@@ WORKING HERE @@@@@@@@@@@@@@@@@@@
+    if (localStorage.getItem('RYB_imagepropertiesarray')) {
+        alert(localStorage.getItem('RYB_imagepropertiesarray'))
+        var imagepropertiesarray = JSON.parse(localStorage.getItem('RYB_imagepropertiesarray')); // get array from localstorage key pair and string
+        $scope.galleryItems = imagepropertiesarray; // Put the array of records into this view's scope
+        alert(JSON.stringify($scope.galleryItems));
+    };
+    // XXXXXXXXXXXXXXXXXXXXXXX REPLACING POUCHDB
     //// ================================================
     //// Get all records (called 'docs' in PouchDB) from local storage (websql or indexeded)
     //// ================================================
-    // include_docs:true is need to get the whole record
-    globalService.drawappDatabase.allDocs({include_docs: true}).then(function (result) {
-        // --- Split the JSON collection into an Array of JSON
-        // Each PouchDB row has a .doc object.  To split into array of just these rows, map the array to contain just the .doc objects.
-        records = result.rows.map(function (row) { // this iterates through the JSON
-            //row.doc.Date = new Date(row.doc.Date);  // you can change data on the way as you iterate through
-            return row.doc;  // return just the 'doc' parts in the JSON
-        });
-        $scope.galleryItems = records; // Put the array of records into this view's scope
-        alert(JSON.stringify($scope.galleryItems));
-        $scope.$apply(); // @@@ CRITICAL: To get view to update after $scope datamodel has updated -- but no UI action triggered it, use .$apply() @@@
-        // ---
-    }).catch(function (err) {
-        console.log(err); //alert(err);
-    });
+    //// include_docs:true is need to get the whole record
+    //globalService.drawappDatabase.allDocs({include_docs: true}).then(function (result) {
+    //    // --- Split the JSON collection into an Array of JSON
+    //    // Each PouchDB row has a .doc object.  To split into array of just these rows, map the array to contain just the .doc objects.
+    //    records = result.rows.map(function (row) { // this iterates through the JSON
+    //        //row.doc.Date = new Date(row.doc.Date);  // you can change data on the way as you iterate through
+    //        return row.doc;  // return just the 'doc' parts in the JSON
+    //    });
+    //    $scope.galleryItems = records; // Put the array of records into this view's scope
+    //    alert(JSON.stringify($scope.galleryItems));
+    //    $scope.$apply(); // @@@ CRITICAL: To get view to update after $scope datamodel has updated -- but no UI action triggered it, use .$apply() @@@
+    //    // ---
+    //}).catch(function (err) {
+    //    console.log(err); //alert(err);
+    //});
     //// ================================================
     //// ================================================
+
+
+
 
 
 

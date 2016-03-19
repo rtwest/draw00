@@ -84,8 +84,11 @@ Other local client side needs
 	- 'RYB_userarray' (id, usertype, name, email, first name, ..other_as_needed..)
 	- admin details (name, parent_id, reqs FB registration?)
 	- client details (name, kid_id, avatar_id) - if not, show client code input
-- In CLIENT mode, list of friends (name, kid_id, avatar_id,) - FRIENDS ARRAY
-- In ADMIN mode, list of clients (kid_id, name, avatar_id,) - CLIENT ARRAY  // This is an array of arrays - [[...,...][...,...][...,...]]
+- In CLIENT mode
+	- FRIENDS ARRAY - list of friends (name, kid_id, avatar_id,) 
+	- 'imagepropertiesarray' - replacement of PouchDB, this is a list of images (id, filepath, datetime,commentarray)  // This is an array of objects - [{...,...}{...,...}{...,...}]
+- In ADMIN mode, list of clients (kid_id, name, avatar_id,)   // This is an array of arrays - [[...,...][...,...][...,...]]
+	- 'RYB_clientarray'
 
 =======================================================================================
 
