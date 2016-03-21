@@ -86,7 +86,9 @@ Other local client side needs
 	- client details (name, kid_id, avatar_id) - if not, show client code input
 - In CLIENT mode
 	- FRIENDS ARRAY - list of friends (name, kid_id, avatar_id,) 
-	- 'imagepropertiesarray' - replacement of PouchDB, this is a list of images (id, filepath, datetime,commentarray)  // This is an array of objects - [{...,...}{...,...}{...,...}]
+	- 'RYB_imagepropertiesarray' - replacement of PouchDB, this is a list of images (id, filepath, datetime,commentarray)  // This is an array of objects - [{...,...}{...,...}{...,...}]
+							 - { id: UniquePictureID, filepath: filepath, datetime: Date.now(), commentarray: [] };
+							 - comment_element = { event_type: event, name: name, avatar: avatar, kid_id: kid_id }
 - In ADMIN mode, list of clients (kid_id, name, avatar_id,)   // This is an array of arrays - [[...,...][...,...][...,...]]
 	- 'RYB_clientarray'
 

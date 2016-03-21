@@ -86,7 +86,7 @@ cordovaNG.controller('clientstartController', function ($scope, globalService, A
     //    fromkid_name: 'Piper',
     //    tokid_name: 'Jason',
     //    event_type: 'like',
-    //    picture_url: 'https://rtwdevstorage.blob.core.windows.net/imagecontainer/5dae719d-7cff-434a-84ac-0208d377853b.png',
+    //    picture_url: 'https://rtwdevstorage.blob.core.windows.net/imagecontainer/aeb62c31-a951-4b04-bfe7-e7d9d939f0f8.png',
     //    fromkid_avatar: 1,
     //    tokid_avatar: 2,
     //    datetime: Date.now(),
@@ -259,8 +259,17 @@ cordovaNG.controller('clientstartController', function ($scope, globalService, A
 
         // Before getting the event log from Azure, take PouchDB allDocs and make a local array of ['ImageID; UserID',] so its easy to check against
         // ---------------
-        var likesArray = [];
         var likesArrayFlattened = [];
+        var imagepropertiesarray = [];
+        imagepropertiesarray = JSON.parse(localStorage.getItem('RYB_imagepropertiesarray')); // get array from localstorage key pair and string
+        for (x = 0; x < imagepropertiesarray.length; x++) { // Loop through to array for ImageID
+            for (y = 0; y < imagepropertiesarray[x].commentarray.length; y++) {  // Loop through subarray for comments
+                var el = imagepropertiesarray[x].id + imagepropertiesarray[x].commentarray[y].kid_id;
+                likesArrayFlattened.push(el);
+            };
+        }; //end for
+        alert("likes array is = " + likesArrayFlattened);
+
         //  XXXXX REMOVING POUCHDB
         ////globalService.drawappDatabase.allDocs({ include_docs: true }).then(function (result) {
         ////    // --- Split the JSON collection into an Array of JSON
@@ -315,8 +324,6 @@ cordovaNG.controller('clientstartController', function ($scope, globalService, A
                       lasteventday = thiseventday; // when i=0, this is useless and skipped over with coniditional below
                       thiseventday = new Date(items[i].datetime); // convert datetime to number
 
-                      // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@  WORKING HERE @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-                      // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@  WORKING HERE @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
                       // @@@ Check for Like Events for this Client
                       // ---------------------
@@ -334,35 +341,44 @@ cordovaNG.controller('clientstartController', function ($scope, globalService, A
                               alert("adding new like");
                           
                               // Make new JSON element with the Like event details
-                              var Updated_commentarray;
                               var event = items[i].event_type;
                               var name = items[i].fromkid_name;
                               var avatar = items[i].fromkid_avatar;
                               var kid_id = items[i].fromkid_id;
                               var comment_element = { event_type: event, name: name, avatar: avatar, kid_id: kid_id }; // New object
 
-                              // Update the record/doc using PouchDB
-                              globalService.drawappDatabase.upsert(imageID, function (doc) {
-                                  // Have to do this extra step for pushing into array
-                                  var tempobject = new Object();
-                                  tempobject = doc.commentarray; //alert(doc.commentarray);
-                                  tempobject.push(comment_element); //alert(tempobject);
-                                  // The actual update part 
-                                  doc.commentarray = tempobject;
-                                  return doc;
-                              }).then(function (response) {
-                                  console.log(response); //alert(JSON.stringify(response));
-                              }).catch(function (err) {
-                                  console.log(err); //alert(JSON.stringify(err));
-                              });
+                              // Update 'RYB_imagepropertiesarray' in LocalStorage
+                              var imagepropertiesarray = [];
+                              imagepropertiesarray = JSON.parse(localStorage.getItem('RYB_imagepropertiesarray')); // get array from localstorage key pair and string
+                              for (x = 0; x < imagepropertiesarray.length; x++) { // Loop through to array for ImageID
+                                  if (imagepropertiesarray[x].id == imageID) {
+                                      imagepropertiesarray[x].commentarray.push(comment_element);
+                                  };
+                              }; //end for
+                              localStorage["RYB_imagepropertiesarray"] = JSON.stringify(imagepropertiesarray); //push back to localStorage
+                              alert("update image array with like comment" + JSON.stringify(imagepropertiesarray))
+
+                              // XXXXX REMOVED POUCHBD
+                              //// Update the record/doc using PouchDB
+                              //globalService.drawappDatabase.upsert(imageID, function (doc) {
+                              //    // Have to do this extra step for pushing into array
+                              //    var tempobject = new Object();
+                              //    tempobject = doc.commentarray; //alert(doc.commentarray);
+                              //    tempobject.push(comment_element); //alert(tempobject);
+                              //    // The actual update part 
+                              //    doc.commentarray = tempobject;
+                              //    return doc;
+                              //}).then(function (response) {
+                              //    console.log(response); //alert(JSON.stringify(response));
+                              //}).catch(function (err) {
+                              //    console.log(err); //alert(JSON.stringify(err));
+                              //});
 
                           };
                           // ------------------
 
 
                        };
-                      // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@  WORKING HERE @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-                      // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@  WORKING HERE @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
 
 

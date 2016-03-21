@@ -414,14 +414,9 @@ cordovaNG.controller('canvasController', function ($scope, $http, globalService,
                 //var uid = new Date().toJSON(); // make the ID a timestamp because PouchDB returns ordered ID (so now by datetime)
 
 
-                // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@  WORKING HERE @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
                 // XXXXXXXXXXXXX REMOVED POUCHDB 
+                // --------
                 //var record = { _id: UniquePictureID, filepath: filepath, datetime: Date.now(), commentarray: []}; //JSON for unique id for picture, filepath to retrieve it, datetime in milliseconds, array of comments
-
-                //alert(JSON.stringify(record));
-                //alert(UniquePictureID + " == " + filepath);
-
-                // XXXXXXXXXXXXX REMOVED POUCHDB 
                 //// Use .put for update or add new.  Use .post for just add new
                 //globalService.drawappDatabase.put(record, function (error, response) { //record, onDBsuccess, onDBerror
                 //    if (error) {
@@ -430,32 +425,28 @@ cordovaNG.controller('canvasController', function ($scope, $http, globalService,
                 //    } else if (response && response.ok) {
                 //        // On successful filepath save to PouchDB
                 //        // -----
-                //        // @@@@@@@@@@@ NEED BETTER SAVED INDICATOR
+                //        // NEED BETTER SAVED INDICATOR
                 //        alert("Saved")
                 //        console.log(response)
                 //    }
                 //});
-
-                // Put the image properties into localstorage
-                var record = { "id": UniquePictureID, "filepath": filepath, "datetime": Date.now(), "commentarray": [] }; //JSON for unique id for picture, filepath to retrieve it, datetime in milliseconds, array of comments
-                var imagepropertiesarray = [];
-                // @@@@@@@@@@@@@@@  the problem is in here
-                // if it exists already, retrieve it.
-                //if (localStorage.getItem('RYB_imagepropertiesarray')) {
-                //    imagepropertiesarray = JSON.parse(localStorage.getItem('RYB_imagepropertiesarray')); // get array from localstorage key pair and string
-                //    alert("image array: " + JSON.stringify(imagepropertiesarray));
-                //}
-                imagepropertiesarray.push(record);
-                localStorage["RYB_imagepropertiesarray"] = JSON.stringify(imagepropertiesarray); //push back to localStorage
-                alert("updated image array: " + JSON.stringify(imagepropertiesarray));
-
-                // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@  WORKING HERE @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-
-
                 //globalService.drawappDatabase.get(uid).then(function (doc) {
                 //    alert(JSON.stringify(doc.filepath))
                 //});
                 // --------
+
+                // @@@ Put the image properties into localstorage
+                var record = { id: UniquePictureID, filepath: filepath, datetime: Date.now(), commentarray: [] }; //JSON for unique id for picture, filepath to retrieve it, datetime in milliseconds, array of comments
+                var imagepropertiesarray = [];
+                // if it exists already, retrieve it.
+                if (localStorage.getItem('RYB_imagepropertiesarray')) {
+                    imagepropertiesarray = JSON.parse(localStorage.getItem('RYB_imagepropertiesarray')); // get array from localstorage key pair and string
+                }
+                imagepropertiesarray.push(record);
+                localStorage["RYB_imagepropertiesarray"] = JSON.stringify(imagepropertiesarray); //push back to localStorage
+                // @@@@ NEED BETTER SAVED INDICATOR
+                alert("Saved")
+
             },
             function (err) {console.log(err);},
             document.getElementById('canvas') // This names the element that is the Canvas.  Other params can follow here with commas...format, quality,etc... ",'.jpg', 80," 

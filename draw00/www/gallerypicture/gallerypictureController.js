@@ -33,21 +33,33 @@ cordovaNG.controller('gallerypictureController', function ($scope, globalService
     // Delete this picutre and return to Gallery View
     // ---------------
     $scope.deleteClick = function () {
-        // Delete record/doc from PouchDB database - delete is an update
-        //----
-        globalService.drawappDatabase.get($scope.pictureID).then(function (Found_Record) {
-            return globalService.drawappDatabase.remove(Found_Record);
-        }).then(function (result) {
-            console.log(result);//alert(JSON.stringify(result));
-            $scope.goBack();  //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ Not firing here for some reason
-        }).catch(function (err) {
-            console.log(err);//alert(JSON.stringify(err));
-        });
 
-        // @@@ When you nav back like this, the Gallery $scope isn't updated and still shows deleted picture.
-        //$scope.goBack(); // Navigate back
-        //setTimeout(function () { $scope.goBack() }, 1000);
+        // Update 'RYB_imagepropertiesarray' in LocalStorage
+        var imagepropertiesarray = [];
+        imagepropertiesarray = JSON.parse(localStorage.getItem('RYB_imagepropertiesarray')); // get array from localstorage key pair and string
+        for (x = 0; x < imagepropertiesarray.length; x++) { // Loop through to array for ImageID
+            if (imagepropertiesarray[x].id == $scope.pictureID) {
+                imagepropertiesarray.splice(x, 1) // remove from this element at index number from 'clientarray'
+                localStorage["RYB_imagepropertiesarray"] = JSON.stringify(imagepropertiesarray); //push back to localStorage
+                break;
+            };
+        }; //end for
+        //localStorage["RYB_imagepropertiesarray"] = JSON.stringify(imagepropertiesarray); //push back to localStorage
+        
 
+        globalService.changeView('/gallery');  // Back location using the captured previous view's name
+
+        // XXXXX REMOVING POUCHDB
+        //// Delete record/doc from PouchDB database - delete is an update
+        ////----
+        //globalService.drawappDatabase.get($scope.pictureID).then(function (Found_Record) {
+        //    return globalService.drawappDatabase.remove(Found_Record);
+        //}).then(function (result) {
+        //    console.log(result);//alert(JSON.stringify(result));
+        //    $scope.goBack();  //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ Not firing here for some reason
+        //}).catch(function (err) {
+        //    console.log(err);//alert(JSON.stringify(err));
+        //});
     };
 
 
