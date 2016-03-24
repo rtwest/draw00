@@ -44,10 +44,9 @@ cordovaNG.controller('gallerypictureController', function ($scope, globalService
                 break;
             };
         }; //end for
-        //localStorage["RYB_imagepropertiesarray"] = JSON.stringify(imagepropertiesarray); //push back to localStorage
-        
 
         globalService.changeView('/gallery');  // Back location using the captured previous view's name
+
 
         // XXXXX REMOVING POUCHDB
         //// Delete record/doc from PouchDB database - delete is an update

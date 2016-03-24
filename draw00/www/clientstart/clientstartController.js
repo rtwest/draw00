@@ -98,23 +98,6 @@ cordovaNG.controller('clientstartController', function ($scope, globalService, A
     //    console.log('Azure Error: ' + err);
     //});
 
-    //Azureservice.insert('events', {
-    //    fromkid_id: '9f0ed518-f388-4519-a2e5-6c0dc01308a4',
-    //    tokid_id: 'fa530f03-c3dc-4c10-9c0f-ce0ec2a5ff5e',
-    //    fromkid_name: 'Leo',
-    //    tokid_name: 'Jason',
-    //    event_type: 'like',
-    //    picture_url: 'https://rtwdevstorage.blob.core.windows.net/imagecontainer/5dae719d-7cff-434a-84ac-0208d377853b.png',
-    //    fromkid_avatar: 1,
-    //    tokid_avatar: 2,
-    //    datetime: Date.now(),
-    //    comment_content: '',
-    //})
-    //.then(function () {
-    //    console.log('Insert successful');
-    //}, function (err) {
-    //    console.log('Azure Error: ' + err);
-    //});
     // ==========================================
 
 
@@ -257,7 +240,7 @@ cordovaNG.controller('clientstartController', function ($scope, globalService, A
 
     function getEventLog() {
 
-        // Before getting the event log from Azure, take PouchDB allDocs and make a local array of ['ImageID; UserID',] so its easy to check against
+        // Before getting the event log from Azure, take Imagepropertiesarray and make a new local array of ['ImageID; UserID',] so its easy to check against
         // ---------------
         var likesArrayFlattened = [];
         var imagepropertiesarray = [];
@@ -312,7 +295,7 @@ cordovaNG.controller('clientstartController', function ($scope, globalService, A
                   var tempArray = [];
                   var len = items.length;
                   var today = new Date(); // today for comparison
-                  var day, time, fromkid, tokid, lastimageurl;
+                  var day, time, fromkid, tokid, lastimageurl, lasteventtype;
                   thiseventday = new Date();
                   lasteventday = new Date();
                   montharray = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -325,7 +308,7 @@ cordovaNG.controller('clientstartController', function ($scope, globalService, A
                       thiseventday = new Date(items[i].datetime); // convert datetime to number
 
 
-                      // @@@ Check for Like Events for this Client
+                      // @@@ Check for Like Events for this Client and put into ImagePropertiesArray
                       // ---------------------
                       if ((items[i].tokid_id == clientGUID) && (items[i].event_type == 'like')) {
 
@@ -424,11 +407,16 @@ cordovaNG.controller('clientstartController', function ($scope, globalService, A
                       // IF this imageURL is the same image URL as last one in the array
                       //    AND IF this event time is within 10 sec of last one
                       //    AND IF from the client
-                      if ((lastimageurl == items[i].picture_url) && (thiseventday < timetest) && (items[i].fromkid_id == clientGUID)) {
+                      //    AND IF a ShareEvent
+                      //    AND IF last event also a ShareEvent
+
+                      // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ WORKING HERE : THIS IS GETTING PUSHED INTO THE LAST LIKE EVENT @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+                      if ((lastimageurl == items[i].picture_url) && (thiseventday < timetest) && (items[i].fromkid_id == clientGUID) && (items[i].event_type == 'sharepicture') && (lasteventtype == 'sharepicture')) {
                           // If this is same share event, modify LAST event arry item, DO NOT insert another
                           // --------------
                           var nameelement = { kidname: items[i].tokid_name };  // for JSON, have to make a new object
-                          var avatarelement = { kidname: items[i].tokid_name };  // for JSON, have to make a new object
+                          var avatarelement = { kidavatar: items[i].tokid_avatar };  // for JSON, have to make a new object
                           tempArray[tempArray.length - 1].tokid.push(nameelement); // push the subobject into the right place
                           tempArray[tempArray.length - 1].tokidavatar.push(avatarelement); // push the subobject into the right place
                       }
@@ -466,6 +454,7 @@ cordovaNG.controller('clientstartController', function ($scope, globalService, A
                       // =========================
 
                       lastimageurl = items[i].picture_url;
+                      lasteventtype = items[i].event_type;
 
                   }; // ------ end for
 

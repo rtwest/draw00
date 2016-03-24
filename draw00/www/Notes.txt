@@ -1,24 +1,11 @@
 W O R K I N G   R I G H T   N O W
 -----------------------------
 
-- @@@@@@@ Don't need PouchDB.  It's too much overhead.  Get rid of it and replace with Local
-- @@@@@@@ is PouchDB crashing it?  Seems to freeze if you get a Like Event when there is no Image Gallery.  Freezes trying to serailly write to PouchDB?
-		  Freezing where you pull event log and have already pull Likes out of it
-
-- event log check - need to check Pouch ID to make sure id doesn't have ImageID, CommentArray, User
-	- from PouchDB get(ImageID)
-	- get CommentArray of objects and see if UserID is in it.
-- need to show likes on gallery (summary) and gallerypictureview (details)
+- need to show likes on gallerypictureview (details)
 - need to send likes from picture view.  Need to track what other pictures was Liked - means another client side array to track with ImageID as toggle
-- 
-
-- 
-- @@@@@@ FAIL: Inserting into Event Log for Likes was wrong.  Drop the share event and inserted 2 people for "ToKid".  Repeater is display correctly.
-
-
 
 // SHARING FROM GALLERY
-- Gallery View / Picture details view - Likes / Actions - delete ((WON'T NAV AFTER DELETE)) - sharing 
+- Gallery View / Picture details view - Likes / Actions - sharing 
 	- sharing from gallery is tricky because you might or might not have this stored on Azure already to share a link with.
 	- @@@ IF saved after a Share, the put the Share URL into PouchDB with the Image ID.
 	- Now you know if the Image has a URL for Sharing or if you have to Upload it - then update the PouchDB record/doc
