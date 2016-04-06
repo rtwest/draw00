@@ -16,6 +16,17 @@ cordovaNG.controller('gallerypictureController', function ($scope, globalService
     $scope.pictureID = picturesplitarray[0];
     $scope.pictureFilePath = picturesplitarray[1];
 
+    //Get Comments on this picture by looking up picture details in the local storage array
+    // ---
+    var imagepropertiesarray = [];
+    imagepropertiesarray = JSON.parse(localStorage.getItem('RYB_imagepropertiesarray')); // get array from localstorage key pair and string
+    for (x = 0; x < imagepropertiesarray.length; x++) { // Loop through to array for ImageID
+        if (imagepropertiesarray[x].id == $scope.pictureID) {
+            //alert(JSON.stringify(imagepropertiesarray[x].commentarray));
+            $scope.commentarray = imagepropertiesarray[x].commentarray;
+            break;
+        };
+    }; //end for
 
     //// Trying to work on a dynamic Back button  
     //// Not working.  It might need to reside in App.Run section say StackExchange

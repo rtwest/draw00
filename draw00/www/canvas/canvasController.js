@@ -5,12 +5,11 @@
 //  -------
 //  iOS
 //  -------
-//  ANDROID - KINDLE
+//  ANDROID
 //  -------
 //
 //  TODO
 //  - BE MINIMAL
-//  - AUTO SAVE AS YOU GO
 //
 //
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -49,25 +48,6 @@ cordovaNG.controller('canvasController', function ($scope, $http, globalService,
         //alert('Not a Touch Device');
     }
 
-
-    // Function to setup a new canvas for drawing
-    // ------------------------------------------
-    $scope.newCanvas = function () {
-        //define, resize, and insert canvas
-        document.getElementById("content").style.height = window.innerHeight - 200;
-        var canvas = '<canvas id="canvas" width="' + window.innerWidth + '" height="' + (window.innerHeight - 200) + '"></canvas>';
-        document.getElementById("content").innerHTML = canvas;
-        // setup canvas
-        ctx = document.getElementById("canvas").getContext("2d");
-        ctx.lineCap = "round";
-        ctx.lineJoin = 'round';
-        ctx.strokeStyle = color;
-        ctx.lineWidth = line_Width;
-        // setup to trigger drawing on mouse or touch
-        drawTouch();
-        resetdrawingtoolbar();
-        $('#penicon1').addClass('pen1select');
-    };
 
     // For choosing the drawing tools
     // ------------------------------------------
@@ -175,18 +155,25 @@ cordovaNG.controller('canvasController', function ($scope, $http, globalService,
         //};
     };
 
-    // For choosing the brush size
+
+    // Function to setup a new canvas for drawing. Called on button click.
     // ------------------------------------------
-    //$scope.selectSize = function (clickEvent) {
-    //    $scope.clickEvent = globalService.simpleKeys(clickEvent); // helper function suggested by somebody
+    $scope.newCanvas = function () {
+        //define, resize, and insert canvas
+        document.getElementById("content").style.height = window.innerHeight - 200;
+        var canvas = '<canvas id="canvas" width="' + window.innerWidth + '" height="' + (window.innerHeight - 200) + '"></canvas>';
+        document.getElementById("content").innerHTML = canvas;
 
-    //    $(".palette2").removeClass('selected');  //remove from all instances of .pensize
-    //    clickEvent.target.className += ' selected';
+        // setup canvas
+        ctx = document.getElementById("canvas").getContext("2d");
+        ctx.lineCap = "round";
+        ctx.lineJoin = 'round';
+        ctx.strokeStyle = color;
 
-    //    size = clickEvent.target.id;  // !! This is the important part
-    //    ctx.beginPath(); // start a new line
-    //    ctx.lineWidth = size; // set the new line size
-    //};
+        $scope.choosePen1();
+
+    };
+
 
 
     resetdrawingtoolbar = function () {
@@ -238,6 +225,7 @@ cordovaNG.controller('canvasController', function ($scope, $http, globalService,
 
     function eraseTouch() {
         ctx.lineWidth = 18;
+        size = 18;
         var starteraser = function (e) {
             x = e.originalEvent.changedTouches[0].pageX;
             y = e.originalEvent.changedTouches[0].pageY - 130;
@@ -693,12 +681,8 @@ cordovaNG.controller('canvasController', function ($scope, $http, globalService,
         ctx.lineCap = "round";
         ctx.lineJoin = 'round';
         ctx.strokeStyle = color;
-        ctx.lineWidth = line_Width;
-    // setup to trigger drawing on mouse or touch
-        drawTouch();
-        $('#penicon1').addClass('pen1select');
-        $('.black').css("borderColor", "transparent");
+        $('.black').css("borderColor", "transparent"); //show black as selected color
 
-
+        $scope.choosePen1();
 
     });

@@ -1,7 +1,7 @@
 W O R K I N G   R I G H T   N O W
 -----------------------------
 
-- need to show likes on gallerypictureview (details)
+- * Need to return to your Image in Draw view and not alway make a new Canvas.  
 - need to send likes from picture view.  Need to track what other pictures was Liked - means another client side array to track with ImageID as toggle
 
 // SHARING FROM GALLERY
@@ -20,7 +20,6 @@ W O R K I N G   R I G H T   N O W
 
  TO DO
 -----------------------------
-- * Need to return to your Image in Draw view and not alway make a new Canvas
 - * Loaders and Progress indicators when awaiting on Azure response
 - * Have Clients choose avatar on first run like on DoJo
 - ** Parents show up in Kids friends list ?? And can Draw and share with them.

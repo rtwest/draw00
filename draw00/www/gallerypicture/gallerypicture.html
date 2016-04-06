@@ -15,7 +15,12 @@
 <p>These friends like your picture!</p>
 
 <p>Comments and Likes Repeater Goes Here</p>
-
+<!-- repeater looping object in $scope.commentarray-->
+<div ng-repeat="object in commentarray">
+    <div style="color:red">{{object.name}}</div>
+    <div style="color:red">{{object.avatar}}</div>
+    <div style="color:red">{{object.event_type}}</div>
+</div>
 
 <div ng-click="showDeleteOverlay=true">Delete</div>
 
