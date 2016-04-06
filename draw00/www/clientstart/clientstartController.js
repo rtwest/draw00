@@ -98,6 +98,25 @@ cordovaNG.controller('clientstartController', function ($scope, globalService, A
     //    console.log('Azure Error: ' + err);
     //});
 
+    //Azureservice.insert('events', {
+    //    //id: globalService.makeUniqueID(), // i don't need to track this so let Azure handle it
+    //    picture_url: 'https://rtwdevstorage.blob.core.windows.net/imagecontainer/aeb62c31-a951-4b04-bfe7-e7d9d939f0f8.png',
+    //    fromkid_id: '7adfe169-3113-4b51-95ad-6e3c48e0a14e',
+    //    fromkid_name: 'Piper',
+    //    event_type: "sharepicture", // 
+    //    tokid_id: 'fa530f03-c3dc-4c10-9c0f-ce0ec2a5ff5e',
+    //    tokid_name: 'Jason',
+    //    fromkid_avatar: 1,
+    //    tokid_avatar: 2,
+    //    //comment_content: 'this is a comment here',
+    //    datetime: Date.now(),
+    //})
+    //.then(function () {
+    //    console.log('Insert successful');
+    //}, function (err) {
+    //    console.log('Azure Error: ' + err);
+    //});
+
     // ==========================================
 
 
@@ -436,6 +455,7 @@ cordovaNG.controller('clientstartController', function ($scope, globalService, A
                               picture_url: items[i].picture_url,
                               fromkid: from_check,
                               fromkidavatar: items[i].fromkid_avatar,
+                              fromkid_id: items[i].fromkid_id,
                               tokid: [{ // this is a notation for a nested object.  If someone sent to YOU, this has just your name in it
                                   kidname: items[i].tokid_name,
                                 }],

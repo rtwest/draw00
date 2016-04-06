@@ -507,7 +507,8 @@ cordovaNG.controller('canvasController', function ($scope, $http, globalService,
         var friendsplitarray = friend.split(","); // Split the string into an array by ","
         var tokid_id = friendsplitarray[0];
         var tokid_name = friendsplitarray[1];
-        alert(tokid_name + " - " + tokid_id);
+        var tokid_avatar = friendsplitarray[2];   
+        alert(tokid_name + " - " + tokid_id + " - " + tokid_avatar);
 
         Azureservice.insert('events', {
             //id: globalService.makeUniqueID(), // i don't need to track this so let Azure handle it
@@ -517,6 +518,8 @@ cordovaNG.controller('canvasController', function ($scope, $http, globalService,
             event_type: "sharepicture", // 
             tokid_id: tokid_id,
             tokid_name: tokid_name,
+            fromkid_avatar: globalService.userarray[3],
+            tokid_avatar: tokid_avatar,
             //comment_content: 'this is a comment here',
             datetime: Date.now(),
         })

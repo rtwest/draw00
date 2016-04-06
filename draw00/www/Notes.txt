@@ -1,8 +1,12 @@
 W O R K I N G   R I G H T   N O W
 -----------------------------
 
-- * Need to return to your Image in Draw view and not alway make a new Canvas.  
-- need to send likes from picture view.  Need to track what other pictures was Liked - means another client side array to track with ImageID as toggle
+- need to check the event log for picture view for if the picture is from you or friend.  
+- send to pictureview or gallerypictureview depending.  MISMATCH IN DATA THESE LOOK FOR !!!!!
+- need to prevent from click on image where you sent a LIKE. Don't go to Picture view in this case.
+
+
+
 
 // SHARING FROM GALLERY
 - Gallery View / Picture details view - Likes / Actions - sharing 
@@ -10,7 +14,10 @@ W O R K I N G   R I G H T   N O W
 	- @@@ IF saved after a Share, the put the Share URL into PouchDB with the Image ID.
 	- Now you know if the Image has a URL for Sharing or if you have to Upload it - then update the PouchDB record/doc
 
-- Collapsing repeat share event events	- /// @@@@@@  HAVE TO BE SIGNED IN AS ADMIN TO TEST THIS OUT.
+// ** Parents show up in Kids friends list ?? And can Draw and share with them.
+// ** Clients create Avatar
+
+- Collapsing repeat share event events, when looking at a client sharing to several people at once	- /// @@@@@@  HAVE TO BE SIGNED IN AS ADMIN TO TEST THIS OUT.
 - On Invitation Accept, Insert into Event Record  /// @@@@@@  HAVE TO BE SIGNED IN AS ADMIN TO TEST THIS OUT.  Alternatively, do this from Admin side after invitation accept
 - RESEARCH - ALSO NEED TO CLEAN BLOB STORAGE WEEKLY.  Maybe have to convert mobile services to app services.  Get scheduler.  Web Pages.  New Pricing?? 
 
@@ -20,16 +27,15 @@ W O R K I N G   R I G H T   N O W
 
  TO DO
 -----------------------------
-- * Loaders and Progress indicators when awaiting on Azure response
-- * Have Clients choose avatar on first run like on DoJo
-- ** Parents show up in Kids friends list ?? And can Draw and share with them.
 - ** Need to have seed picture templates to trace - simple characters - kitten, lion cub, pony, 
+- * Loaders and Progress indicators when awaiting on Azure response
 - * Need better Picture Save Indicator.  Need better Picuture Shared indicator
 - Need to check for web connection on load and alert
 - Client side - Share Overlay design
 - Pull new friends from client to update client
 - ??? Need to restrict permissions on azure tables to authenticate users for admin and client(probably) 
-- ** Kid Design Like Nintendo 3DS - 
+- ** Kid Design Like Nintendo 3DS - Class DoJo - sticker like white borders and box shadows
+- Need to return to your Image in Draw view and not alway make a new Canvas.  
 
 
 P R O B L E M S

@@ -12,7 +12,7 @@ cordovaNG.controller('gallerypictureController', function ($scope, globalService
     $scope.showShareOverlay = false;
     $scope.showDeleteOverlay = false;
 
-    var picturesplitarray = globalService.kidPictureUrl.split(","); // Global var passed to the view. The div ID had 2 values shoved in. Split string into array by ","
+    var picturesplitarray = globalService.pictureViewParams.split(","); // Global var passed to the view. The div ID had 2 values shoved in. Split string into array by ","
     $scope.pictureID = picturesplitarray[0];
     $scope.pictureFilePath = picturesplitarray[1];
 
@@ -27,6 +27,7 @@ cordovaNG.controller('gallerypictureController', function ($scope, globalService
             break;
         };
     }; //end for
+
 
     //// Trying to work on a dynamic Back button  
     //// Not working.  It might need to reside in App.Run section say StackExchange

@@ -39,7 +39,7 @@
         <div ng-repeat="subarrayitem in row.tokidavatar"><div>{{subarrayitem.kidavatar}}</div></div>
 
         <div ng-show="row.picture_url">
-            <img id="{{row.picture_url}},{{row.fromkid}},{{row.fromkidavatar}}" class="smallimage" src="{{row.picture_url}}" alt="Shared drawing" ng-click="gotoPictureView($event)" />
+            <img id="{{row.picture_url}},{{row.fromkid}},{{row.fromkidavatar}},{{row.fromkid_id}}" class="smallimage" src="{{row.picture_url}}" alt="Shared drawing" ng-click="gotoPictureView($event)" />
         </div>
         <div ng-show="row.comment_content">Comment: {{row.comment_content}}</div>
     </div>

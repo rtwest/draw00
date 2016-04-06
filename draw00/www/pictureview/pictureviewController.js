@@ -5,66 +5,68 @@ cordovaNG.controller('pictureviewController', function ($scope, globalService, A
     // Scope is like the view datamodel.  'message' is defined in the paritial view html {{message}}
     //$scope.message = "Nothing here yet";  //- TEST ONLY
 
-    $scope.uiFlagClientPicture = false;  // show/hide 
-    $scope.uiFlagFriendPicture = false;
+    var clientavatar = globalService.userarray[3];
+    var clientname = globalService.userarray[4];
+    var clientID = globalService.userarray[0];
 
     // These are global var passed to the view so you know who and what to show
     var picturesplitarray = globalService.pictureViewParams.split(","); // Split the string into an array by ","
+    $scope.kidname = picturesplitarray[1];
     $scope.kidavatar = picturesplitarray[2];
+    var kidID = picturesplitarray[3];
     $scope.pictureurl = picturesplitarray[0];
+    // trim down URL to just the image file name
+    var pictureID = $scope.pictureurl.replace('https://rtwdevstorage.blob.core.windows.net/imagecontainer/','');
+    pictureID = pictureID.replace('.png','');
+    alert(pictureID);
 
-    // Check if this is Client/You and replace 'You' with real name from local stored user array
-    if (picturesplitarray[1] = 'You') { 
-        $scope.kidname = globalService.userarray[4]
-        $scope.uiFlagClientPicture = true;  // show/hide 
+
+    // Check LikeHistory to see if you've Liked this before and if Like button should be shown
+    //---------------
+    var likeHistoryArray = [];
+    if (localStorage.getItem('RYB_likehistoryarray')) { // if exists
+        likeHistoryArray = JSON.parse(localStorage.getItem('RYB_likehistoryarray')); // get array from localstorage key pair and string
+        alert(JSON.stringify(likeHistoryArray));
+        if (likeHistoryArray.indexOf(pictureID) == -1) {
+            $scope.showLikeButton = true;
+        };
     }
-    else {// else used the name passed in
-        $scope.kidname = picturesplitarray[1];
-        $scope.uiFlagFriendPicture = true;
-    }; 
+    else {
+        $scope.showLikeButton = true;
+    };
 
 
-    // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@  WORKING HERE   @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-    //
-    //  Can now use $scope.kidname to know if this your picture or from a Friend
-    //  can change the UI on the picture for "Click to Like" or "here are all of your likes"
-    //
-    // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-
-
-
-
-
-    //// Trying to work on a dynamic Back button  
-    //// Not working.  It might need to reside in App.Run section say StackExchange
-    //// ------------
-    //var previousView
-    //// @@@ rootScope has some special methods to know about the route path before. Remember to add $rootScope to the controller definition
-    //$rootScope.$on('$stateChangeSuccess', function (ev, to, toParams, from, fromParams) {
-    //    //assign the "from" parameter to something
-    //    previousView = from.name;
-    //    alert(from.name);
-    //});
-
-
-    // Delete this picutre and return to Gallery View
-    // ---------------
-    // @@@@@@@@@@@@@@@@@@@  CAN'T DELETE FROM HERE BECAUSE THE POUCHDB ID ISN'T KNOW - WASN'T PULLED FROM POUCHDB AND ID WASN'T IN EVENT LOG DIV ID WHEN CLICKED
-
-
-    // Like 
+    // Like the picture *** Have to track 'Likes' locally so you don't repeated like a picture
     // ---------------
     $scope.likeClick = function () {
-        // -- LIKING RECORD CREATION GOES HERE
+        // Send the Event
+        // ---
+        Azureservice.insert('events', {
+            fromkid_id: clientID,
+            tokid_id: kidID, 
+            fromkid_name: clientname,
+            tokid_name: $scope.kidname,
+            event_type: 'like',
+            picture_url: $scope.pictureurl,
+            fromkid_avatar: clientavatar,
+            tokid_avatar: $scope.kidavatar,
+            datetime: Date.now(),
+            comment_content:'',
+        })
+        .then(function () {
+            console.log('Insert successful');
+        }, function (err) {
+            console.log('Azure Error: ' + err);
+        });
+        // Update the local storage array
+        // ---
+        likeHistoryArray.push(pictureID)
+        localStorage["RYB_likehistoryarray"] = JSON.stringify(likeHistoryArray); //push back to localStorage
+        // Update the UI
+        // ---
+        $scope.showLikeButton = false; // hide the button
+        alert(JSON.stringify(likeHistoryArray));
     };
-
-
-    // Share 
-    // ---------------
-    $scope.shareClick = function () {
-        // -- SHAREING LOOP GOES HERE
-    };
-
 
     // View changer.  Have to use $scope. to make available to the view
     // --------------
