@@ -59,18 +59,6 @@ cordovaNG.controller('gallerypictureController', function ($scope, globalService
 
         globalService.changeView('/gallery');  // Back location using the captured previous view's name
 
-
-        // XXXXX REMOVING POUCHDB
-        //// Delete record/doc from PouchDB database - delete is an update
-        ////----
-        //globalService.drawappDatabase.get($scope.pictureID).then(function (Found_Record) {
-        //    return globalService.drawappDatabase.remove(Found_Record);
-        //}).then(function (result) {
-        //    console.log(result);//alert(JSON.stringify(result));
-        //    $scope.goBack();  //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ Not firing here for some reason
-        //}).catch(function (err) {
-        //    console.log(err);//alert(JSON.stringify(err));
-        //});
     };
 
 
@@ -78,13 +66,15 @@ cordovaNG.controller('gallerypictureController', function ($scope, globalService
     // ---------------
     $scope.shareClick = function () {
         // -- SHAREING LOOP GOES HERE
+        // -- GO HEAD AND UPLOAD TO AZURE AGAIN.  WHAT IS IMAGEID IF NOT PULLED FROM AZURE BLOB STORAGE?
+        // -- DON'T WORRY ABOUT SHARING IMAGE MULTIPLE TIMES (or tracking who you shared with)
     };
 
 
     // View changer.  Have to use $scope. to make available to the view
     // --------------
     $scope.goBack = function () {
-        globalService.changeView('/gallery');  // Back location using the captured previous view's name
+        globalService.changeView(globalService.lastView);  // Back location using the captured previous view's name
     };
 
 }); //controller end

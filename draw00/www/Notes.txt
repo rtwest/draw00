@@ -1,9 +1,9 @@
 W O R K I N G   R I G H T   N O W
 -----------------------------
 
-- need to check the event log for picture view for if the picture is from you or friend.  
-- send to pictureview or gallerypictureview depending.  MISMATCH IN DATA THESE LOOK FOR !!!!!
-- need to prevent from click on image where you sent a LIKE. Don't go to Picture view in this case.
+- redo clientstart event log HTML for new object
+- test new friend events
+
 
 
 

@@ -10,7 +10,6 @@ cordovaNG.controller('galleryController', function ($scope, globalService, Azure
 
 
 
-    // @@@@@@@@@@@@@@@@@@@@@@@@ WORKING HERE @@@@@@@@@@@@@@@@@@@
     // Get local storage for saved images filepath.  @@@@@@@ NEED TO ACCOUNT FOR WHEN AN IMAGE IS REMOVED FROM PHONE GALLERY (TRY/CATCH)
     if (localStorage.getItem('RYB_imagepropertiesarray')) {
         var imagepropertiesarray = JSON.parse(localStorage.getItem('RYB_imagepropertiesarray')); // get array from localstorage key pair and string
