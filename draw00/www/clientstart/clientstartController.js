@@ -16,8 +16,8 @@ cordovaNG.controller('clientstartController', function ($scope, globalService, A
 
     //var kid2_id = globalService.makeUniqueID();
     //var kid3_id = globalService.makeUniqueID();
-    //var kid2_name = "Leo"
-    //var kid3_name = "Piper"
+    //var kid2_name = "HeMan"
+    //var kid3_name = "SheRah"
     //var kid1_id = 'fa530f03-c3dc-4c10-9c0f-ce0ec2a5ff5e';
     //var kid1_name = 'Jason'
 
@@ -27,7 +27,7 @@ cordovaNG.controller('clientstartController', function ($scope, globalService, A
     //    parent_id: 'abe24128-e508-4d04-a450-10f33d5a07a5',
     //    registration_code: 'TEST',
     //    reg_status: "1",
-    //    avatar_id: "1",
+    //    avatar_id: "2",
     //    parent_name: "test",
     //    parent_email: "test",
     //})
@@ -42,7 +42,7 @@ cordovaNG.controller('clientstartController', function ($scope, globalService, A
     //    parent_id: 'abe24128-e508-4d04-a450-10f33d5a07a5',
     //    registration_code: 'TEST',
     //    reg_status: "1",
-    //    avatar_id: "1",
+    //    avatar_id: "3",
     //    parent_name: "test",
     //    parent_email: "test",
     //})
@@ -86,7 +86,7 @@ cordovaNG.controller('clientstartController', function ($scope, globalService, A
     //    fromkid_name: 'Piper',
     //    tokid_name: 'Jason',
     //    event_type: 'like',
-    //    picture_url: 'https://rtwdevstorage.blob.core.windows.net/imagecontainer/aeb62c31-a951-4b04-bfe7-e7d9d939f0f8.png',
+    //    picture_url: 'https://rtwdevstorage.blob.core.windows.net/imagecontainer/763944bd-beca-464b-81b8-d3207801789a.png',
     //    fromkid_avatar: 1,
     //    tokid_avatar: 2,
     //    datetime: Date.now(),
@@ -100,7 +100,7 @@ cordovaNG.controller('clientstartController', function ($scope, globalService, A
 
     //Azureservice.insert('events', {
     //    //id: globalService.makeUniqueID(), // i don't need to track this so let Azure handle it
-    //    picture_url: 'https://rtwdevstorage.blob.core.windows.net/imagecontainer/aeb62c31-a951-4b04-bfe7-e7d9d939f0f8.png',
+    //    picture_url: 'https://rtwdevstorage.blob.core.windows.net/imagecontainer/9239786136196.png',
     //    fromkid_id: '7adfe169-3113-4b51-95ad-6e3c48e0a14e',
     //    fromkid_name: 'Piper',
     //    event_type: "sharepicture", // 
@@ -301,9 +301,11 @@ cordovaNG.controller('clientstartController', function ($scope, globalService, A
 
                       lasteventday = thiseventday; // when i=0, this is useless and skipped over with coniditional below
                       thiseventday = new Date(items[i].datetime); // convert datetime to number
-                      // Get Image ID from Picture URL.  It's the last part.
-                      var imageID = items[i].picture_url.replace('https://rtwdevstorage.blob.core.windows.net/imagecontainer/',''); 
-                      imageID = imageID.replace('.png', ''); // Cut off the .png at the end
+                      
+                      //// Get Image ID from Picture URL.  It's the last part.
+                      //var imageID = items[i].picture_url.replace('https://rtwdevstorage.blob.core.windows.net/imagecontainer/',''); 
+                      //imageID = imageID.replace('.png', ''); // Cut off the .png at the end
+
 
                       // @@@ Get Day - Compare Day and Month
                       // ---------------------
@@ -338,13 +340,13 @@ cordovaNG.controller('clientstartController', function ($scope, globalService, A
                           time = t + ":" + thiseventday.getMinutes() + "am";  // break down the 24h and use Am/pm
                       }
 
-                        // @@@ Small check to personalize the event details if it is YOU
-                        // ------------------
-                        var from_check;
-                        if (items[i].fromkid_id == clientGUID) {
-                            from_check = "You";
-                        }
-                        else { from_check = items[i].fromkid_name };
+                      // @@@ Small check to personalize the event details if it is YOU
+                      // ------------------
+                      var from_check;
+                      if (items[i].fromkid_id == clientGUID) {
+                          from_check = "You";
+                      }
+                      else { from_check = items[i].fromkid_name };
 
 
                       //// @@@ Checking for Image Share to multiple people to collapse as 1 event not several
@@ -405,15 +407,43 @@ cordovaNG.controller('clientstartController', function ($scope, globalService, A
 
 
                       // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-                      // @@@@@@@@@@@   WORKING HERE TO MAKE NEW EVENT LOG OBJBECTS        @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-
 
                       //make a new array based on urls.  url is like object key index.  its all about the Image Url.
                       //then each event adds properties around that url Object
 
-                      // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@2 HAVE TO CHECK THAT THERE IS AN IMAGE URL IN EVENT.  FRIENDS EVENTS DON'T HAVE ONE.
-
                       // Look at Image URL and see if it is in the tempArray.  If not, make new object.  If so, add to Object
+                      var event_type = items[i].event_type;
+
+                      // @@@ If a 'friend' event, it does not have a URL
+                      // ---------------------------------
+                      if (event_type == 'friends') {
+                          var element = {  // @@@ Make a new array object.  If items[i] is NULL, the HTML binding for ng-show will hide the HTML templating
+                              //picture_url: items[i].picture_url,  // not relevant in this case
+                              fromkid: from_check,  // who shared it
+                              fromkidavatar: items[i].fromkid_avatar,
+                              fromkid_id: items[i].fromkid_id,
+                              tokid: [{ // this is a notation for a nested object.  If someone sent to YOU, this has just your name in it
+                                  tokidname: items[i].tokid_name,  // each kids shared with
+                                  tokid_id: items[i].tokid_id,
+                                  tokidavatar: items[i].tokid_avatar,
+                                  tokidreply: '',  // null in this case
+                              }],
+                              event_type: event_type, // 
+                              comment_content: items[i].comment_content,
+                              day: day,
+                              time: time,
+                          };
+                          tempArray.push(element); // add into array for UI & $scope
+                          alert('updated with new imageurl share event - ' + JSON.stringify(tempArray));
+                      }
+
+                      else { // If not a 'friend' event, it should have a URL
+                      // ---------------------------------
+
+                          // Get Image ID from Picture URL.  It's the last part.
+                      var imageID = items[i].picture_url.replace('https://rtwdevstorage.blob.core.windows.net/imagecontainer/',''); 
+                      imageID = imageID.replace('.png', ''); // Cut off the .png at the end
+
                       var imageurlfound = false;
                       var tempArrayLength = tempArray.length;
                       for (x = 0; x < tempArrayLength; x++) { // Loop through to array for ImageID
@@ -426,20 +456,20 @@ cordovaNG.controller('clientstartController', function ($scope, globalService, A
                               // cases: SharePicture - track this url.  Like Picture - append to tracked url.  
                               
                               // url, shared, to any kid
-                              if (items[i].event_type == 'sharepicture') {
+                              if (event_type == 'sharepicture') {
                                   // Update object to add ToKid element
                                   // ------------
                                   var kidobject = {
                                       tokidname: items[i].tokid_name,
                                       tokidavatar: items[i].tokid_avatar,
-                                      tokidreply: items[i].comment_content,
+                                      tokidreply: '', //null in this case
                                   };
                                   tempArray[x].tokid.push(kidobject);
                                   alert('new kid shared with - ' + JSON.stringify(tempArray[x]));
                               }
 
                               // url, liked, from any kid
-                              else if ((items[i].event_type == 'like') && (from_check = 'you')) {
+                              else if ((event_type == 'like') && (from_check = 'you')) {
                                   // Update your reply in the ToKid element
                                   // ------------
                                   //tempArray[x].tokid[items[i].tokid_id == clientGUID].tokidreply = items[i].comment_content
@@ -449,7 +479,7 @@ cordovaNG.controller('clientstartController', function ($scope, globalService, A
                                           tempArray[x].tokid[y].tokidreply = 'likes' //items[i].comment_content
                                           alert('updated kid response - ' + JSON.stringify(tempArray[x]));
 
-                                          // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@2 NEED TO SAVE LIKES INTO LOCAL IMAGEPROPERTIES ARRAY.  USED CODE WAAAY UP
+                                          // @@@@ NEED TO SAVE LIKES INTO LOCAL IMAGEPROPERTIES ARRAY.  USED CODE WAAAY UP
 
                                           // Check to see if this Like (ImageID, UserID) is in the quick check array.  IF NOT, then add to local imagepropertiesarray
                                           // ------------------
@@ -485,9 +515,9 @@ cordovaNG.controller('clientstartController', function ($scope, globalService, A
                               break;
                           } // end if URL found
 
-                  }; //end for
+                      }; //end for
 
-                      if ((imageurlfound == false) && (items[i].event_type == 'sharepicture')) {  // New SharedUrl found 
+                      if ((imageurlfound == false) && (event_type == 'sharepicture')) {  // New SharedUrl found 
 
                           alert('found unknow imageurl and share event')
 
@@ -502,9 +532,9 @@ cordovaNG.controller('clientstartController', function ($scope, globalService, A
                                   tokidname: items[i].tokid_name,  // each kids shared with
                                   tokid_id: items[i].tokid_id,
                                   tokidavatar: items[i].tokid_avatar,
-                                  tokidreply: items[i].comment_content,  // each kids response
+                                  tokidreply: "",  // null right now
                               }],
-                              event_type: items[i].event_type, // 
+                              event_type: event_type, // 
                               comment_content: items[i].comment_content,
                               day: day,
                               time: time,
@@ -513,8 +543,7 @@ cordovaNG.controller('clientstartController', function ($scope, globalService, A
                           alert('updated with new imageurl share event - ' + JSON.stringify(tempArray));
                       };
 
-                      // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-
+                      }; //end if event type
 
                   }; // ------ end for
 
@@ -580,6 +609,7 @@ cordovaNG.controller('clientstartController', function ($scope, globalService, A
             }; //end for
             $scope.idParameters = imageid + ',' + filepath;
             globalService.pictureViewParams = $scope.idParameters;  // this next view requires imageid and filepath
+            alert(globalService.pictureViewParams)
             globalService.changeView('/gallerypicture');
         }
         else {

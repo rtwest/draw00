@@ -109,7 +109,7 @@ cordovaNG.controller('invitationlistController', function ($scope, globalService
         .then(function () { // if success,
             console.log('Accept/Delete successful'); //alert('Accept/Delete successful')
             InsertFriendRecord(kid1id, kid2id, kid1name, kid2name); // @@@ On success, Insert new Friend record in Azure Friend Table
-            InsertEventRecord(kid1id, kid2id, kid1name, kid2name); // @@@ On success, Insert new Event record in Azure Event Table
+            //InsertEventRecord(kid1id, kid2id, kid1avatar, kid2avatar, kid1name, kid2name); // @@@ On success, Insert new Event record in Azure Event Table
 
             $scope.newInvitationArray.splice(foundIndex, 1) // remove from this element at index number from 'sentInvitationArray'
 
@@ -136,6 +136,9 @@ cordovaNG.controller('invitationlistController', function ($scope, globalService
         })
         .then(function () {
             console.log('new friend insert successful');
+            // THIS WASN'T FIRING SO I'M CHAINING THE AZURE INSERTS IN SERIAL IN CASE THEY CAN'T FIRE IN PARRALLEL.  WOULD BE BETTER AS 1 CALL AND DO IT IN NODE.JS
+            InsertEventRecord(kid1id, kid2id, kid1name, kid2name); // @@@ On success, Insert new Event record in Azure Event Table
+
         },
         function (err) {
             console.error('Azure Error: ' + err);
@@ -144,21 +147,54 @@ cordovaNG.controller('invitationlistController', function ($scope, globalService
     };
     // ==========================================
 
+
+
+
+    // ####################################################################### NOT SURE YOU CAN SEQUENCE AZURE CALLS.  i'VE HAD TO CHAIN THEM IN THE PAST
     // Insert new Event record in Azure Event Table
     // ---------------
     function InsertEventRecord(kid1id, kid2id, kid1name, kid2name) {
+
+        // @@@@@@@@@@@@@@ need to get Avatars
+        var kid1avatar
+        var kid2avatar
+
+        //Query Azure
+        // -----------
+        Azureservice.getById('kid', kid1id)
+        .then(function (item) {
+            kid1avatar = item.avatar_id;
+            alert('got kid1 avatar - ' + kid1avatar);
+        }, function (err) {
+            console.error('Azure Error: ' + err);
+        });
+
+        //Query Azure
+        // -----------
+        Azureservice.getById('kid', kid2id)
+        .then(function (item) {
+            kid2avatar = item.avatar_id;
+            alert('got kid2 avatar - ' + kid2avatar);
+        }, function (err) {
+            console.error('Azure Error: ' + err);
+        });
+
+
         // Create on Azure
         // ---------------
         Azureservice.insert('events', {
             //id: guid, // I'll let Azure handle this GUID since I don't need to track it locally        
             fromkid_id: kid1id,
             tokid_id: kid2id,
+            fromkid_avatar: kid1avatar,
+            tokid_avatar: kid2avatar,
             fromkid_name: kid1name,
             tokid_name: kid2name,
             datetime: Date.now(),
             event_type: "friends",
         })
         .then(function () {
+            alert('freind record inserted');
             console.log('new event insert successful');
         },
         function (err) {

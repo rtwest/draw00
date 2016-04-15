@@ -75,7 +75,7 @@ cordovaNG.controller('admindashController', function ($scope, globalService, Azu
     };
     // ==========================================
 
-
+    // This will be a default avatar the kid can change on first logon
     // ==========================================
     $scope.randomAvatarID = function() {
         $scope.avatarID = Math.floor((Math.random() * 10) + 1); // Random number between 1-10
