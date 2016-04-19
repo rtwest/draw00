@@ -136,7 +136,7 @@ cordovaNG.controller('invitationlistController', function ($scope, globalService
         })
         .then(function () {
             console.log('new friend insert successful');
-            // THIS WASN'T FIRING SO I'M CHAINING THE AZURE INSERTS IN SERIAL IN CASE THEY CAN'T FIRE IN PARRALLEL.  WOULD BE BETTER AS 1 CALL AND DO IT IN NODE.JS
+            // --- THIS WASN'T FIRING SO I'M CHAINING THE AZURE INSERTS IN SERIAL IN CASE THEY CAN'T FIRE IN PARRALLEL.  WOULD BE BETTER AS 1 CALL AND DO IT IN NODE.JS
             InsertEventRecord(kid1id, kid2id, kid1name, kid2name); // @@@ On success, Insert new Event record in Azure Event Table
 
         },

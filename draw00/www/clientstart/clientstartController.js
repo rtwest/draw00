@@ -16,7 +16,7 @@ cordovaNG.controller('clientstartController', function ($scope, globalService, A
 
     //var kid2_id = globalService.makeUniqueID();
     //var kid3_id = globalService.makeUniqueID();
-    //var kid2_name = "HeMan"
+    //var kid2_name = "Percy"
     //var kid3_name = "SheRah"
     //var kid1_id = 'fa530f03-c3dc-4c10-9c0f-ce0ec2a5ff5e';
     //var kid1_name = 'Jason'
@@ -65,6 +65,25 @@ cordovaNG.controller('clientstartController', function ($scope, globalService, A
     //    console.log('Insert successful');
     //}, function (err) {
     //    console.log('Azure Error: ' + err);
+    //});
+
+    //Azureservice.insert('events', {
+    //    //id: guid, // I'll let Azure handle this GUID since I don't need to track it locally        
+    //    fromkid_id: "fa530f03-c3dc-4c10-9c0f-ce0ec2a5ff5e",
+    //    tokid_id: "d5a254c8-57cd-4d5a-807c-f4b5f603814d",
+    //    fromkid_avatar: "2",
+    //    tokid_avatar: "2",
+    //    fromkid_name: "Jason",
+    //    tokid_name: "Percy",
+    //    datetime: Date.now(),
+    //    event_type: "friends",
+    //})
+    //.then(function () {
+    //    alert('freind record inserted');
+    //    console.log('new event insert successful');
+    //},
+    //function (err) {
+    //    console.error('Azure Error: ' + err);
     //});
 
     //Azureservice.insert('friends', {
@@ -259,12 +278,13 @@ cordovaNG.controller('clientstartController', function ($scope, globalService, A
 
     function getEventLog() {
 
-        // Before getting the event log from Azure, take Imagepropertiesarray and make a new local array of ['ImageID; UserID',] so its easy to check against
+        // Before getting the event log from Azure, take Imagepropertiesarray and make a new local array of ['ImageIDUserID',] so its easy to check against
         // ---------------
         var likesArrayFlattened = [];
         var imagepropertiesarray = [];
         imagepropertiesarray = JSON.parse(localStorage.getItem('RYB_imagepropertiesarray')); // get array from localstorage key pair and string
-        for (x = 0; x < imagepropertiesarray.length; x++) { // Loop through to array for ImageID
+        var imagepropertiesarraylength = imagepropertiesarray.length
+        for (x = 0; x < imagepropertiesarraylength; x++) { // Loop through to array for ImageID
             for (y = 0; y < imagepropertiesarray[x].commentarray.length; y++) {  // Loop through subarray for comments
                 var el = imagepropertiesarray[x].id + imagepropertiesarray[x].commentarray[y].kid_id;
                 likesArrayFlattened.push(el);
@@ -295,17 +315,10 @@ cordovaNG.controller('clientstartController', function ($scope, globalService, A
                   lasteventday = new Date();
                   montharray = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
-                  //items = items.reverse()  // @@@ This puts them in newest first order. 
-
                   for (i = 0; i < len; i++) {
 
                       lasteventday = thiseventday; // when i=0, this is useless and skipped over with coniditional below
                       thiseventday = new Date(items[i].datetime); // convert datetime to number
-                      
-                      //// Get Image ID from Picture URL.  It's the last part.
-                      //var imageID = items[i].picture_url.replace('https://rtwdevstorage.blob.core.windows.net/imagecontainer/',''); 
-                      //imageID = imageID.replace('.png', ''); // Cut off the .png at the end
-
 
                       // @@@ Get Day - Compare Day and Month
                       // ---------------------
@@ -347,63 +360,6 @@ cordovaNG.controller('clientstartController', function ($scope, globalService, A
                           from_check = "You";
                       }
                       else { from_check = items[i].fromkid_name };
-
-
-                      //// @@@ Checking for Image Share to multiple people to collapse as 1 event not several
-                      //// =========================
-                      //var timetest = lasteventday;
-                      //timetest.setSeconds(timetest.getSeconds() + 10); // last event time + 10 sec
-                      //// IF this imageURL is the same image URL as last one in the array
-                      ////    AND IF this event time is within 10 sec of last one
-                      ////    AND IF from the client
-                      ////    AND IF a ShareEvent
-                      ////    AND IF last event also a ShareEvent
-
-                      //if ((lastimageurl == items[i].picture_url) && (thiseventday < timetest) && (items[i].fromkid_id == clientGUID) && (items[i].event_type == 'sharepicture') && (lasteventtype == 'sharepicture')) {
-                      //    // If this is same share event, modify LAST event arry item, DO NOT insert another
-                      //    // --------------
-                      //    var nameelement = { kidname: items[i].tokid_name };  // for JSON, have to make a new object
-                      //    var avatarelement = { kidavatar: items[i].tokid_avatar };  // for JSON, have to make a new object
-                      //    tempArray[tempArray.length - 1].tokid.push(nameelement); // push the subobject into the right place
-                      //    tempArray[tempArray.length - 1].tokidavatar.push(avatarelement); // push the subobject into the right place
-                      //}
-                      //else { // IF NOT a repeated share item, make a new event item
-
-                      //    // @@@ Small check to personalize the event details if it is YOU
-                      //    // ------------------
-                      //    var from_check;
-                      //    if (items[i].fromkid_id == clientGUID) {
-                      //        from_check = "You";
-                      //    }
-                      //    else { from_check = items[i].fromkid_name };
-
-                      //    // @@@@@ Make array object for UI @@@@@
-                      //    // ==============================
-                      //    var element = {  // make a new array object.  If items[i] is NULL, the HTML binding for ng-show will hide the HTML templating
-                      //        picture_url: items[i].picture_url,
-                      //        fromkid: from_check,
-                      //        fromkidavatar: items[i].fromkid_avatar,
-                      //        fromkid_id: items[i].fromkid_id,
-                      //        tokid: [{ // this is a notation for a nested object.  If someone sent to YOU, this has just your name in it
-                      //            kidname: items[i].tokid_name,
-                      //          }],
-                      //        tokidavatar: [{ // this is a notation for a nested object
-                      //            kidavatar: items[i].tokid_avatar,
-                      //          }],
-                      //        event_type: items[i].event_type,
-                      //        comment_content: items[i].comment_content,
-                      //        day: day,
-                      //        time: time,
-                      //    };
-
-                      //    tempArray.push(element); // add back to array
-    
-                      //}; // end make event array item
-                      //// =========================
-
-                      //lastimageurl = items[i].picture_url;
-                      //lasteventtype = items[i].event_type;
-
 
 
                       // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
@@ -469,7 +425,7 @@ cordovaNG.controller('clientstartController', function ($scope, globalService, A
                               }
 
                               // url, liked, from any kid
-                              else if ((event_type == 'like') && (from_check = 'you')) {
+                              else if (event_type == 'like') {
                                   // Update your reply in the ToKid element
                                   // ------------
                                   //tempArray[x].tokid[items[i].tokid_id == clientGUID].tokidreply = items[i].comment_content
@@ -479,12 +435,11 @@ cordovaNG.controller('clientstartController', function ($scope, globalService, A
                                           tempArray[x].tokid[y].tokidreply = 'likes' //items[i].comment_content
                                           alert('updated kid response - ' + JSON.stringify(tempArray[x]));
 
-                                          // @@@@ NEED TO SAVE LIKES INTO LOCAL IMAGEPROPERTIES ARRAY.  USED CODE WAAAY UP
-
+                                          // @@@@ NEED TO SAVE LIKES INTO LOCAL IMAGEPROPERTIES ARRAY.  
                                           // Check to see if this Like (ImageID, UserID) is in the quick check array.  IF NOT, then add to local imagepropertiesarray
                                           // ------------------
                                           //alert(imageID + items[i].fromkid_id)
-                                          //alert(likesArrayFlattened.indexOf(imageID + items[i].fromkid_id))
+                                          alert(likesArrayFlattened.indexOf(imageID + items[i].fromkid_id))
                                           if (likesArrayFlattened.indexOf(imageID + items[i].fromkid_id) == -1) {  // Not found in array
                                               alert("adding new like");
                                               // Make new JSON element with the Like event details
@@ -529,7 +484,8 @@ cordovaNG.controller('clientstartController', function ($scope, globalService, A
                               fromkidavatar: items[i].fromkid_avatar,
                               fromkid_id: items[i].fromkid_id,
                               tokid: [{ // this is a notation for a nested object.  If someone sent to YOU, this has just your name in it
-                                  tokidname: items[i].tokid_name,  // each kids shared with
+                                  //tokidname: items[i].tokid_name,  // each kids shared with
+                                  tokidname: from_check,  // each kids shared with
                                   tokid_id: items[i].tokid_id,
                                   tokidavatar: items[i].tokid_avatar,
                                   tokidreply: "",  // null right now
@@ -549,6 +505,7 @@ cordovaNG.controller('clientstartController', function ($scope, globalService, A
 
 
                   // @@@ Push the cleaned up array of objects into the $scope
+                  tempArray = tempArray.reverse(); // Reverse order of array so most recent is first
                   globalService.eventArray = tempArray;
                   $scope.eventarray = globalService.eventArray;
                   alert("Event array - "+JSON.stringify($scope.eventarray))
@@ -592,16 +549,18 @@ cordovaNG.controller('clientstartController', function ($scope, globalService, A
         var fromkid_id = picturesplitarray[3];
 
         // Look to see if fromkid is client
+        // -- Switch the Picture View controller click is directed to
         if (fromkid_id == globalService.userarray[0]) { // If it's from client, you have to redo the parameters and send to a different view to pull from local storage with the data there.
             // clean up image id out of url
-            var imageid = picturesplitarray[3];
+            var imageid = picturesplitarray[0];
             var filepath;
             imageid = imageid.replace('https://rtwdevstorage.blob.core.windows.net/imagecontainer/', '')
             imageid = imageid.replace('.png', '')
             // look up file path in local storage imagepropertiesarray
             var imagepropertiesarray = [];
             imagepropertiesarray = JSON.parse(localStorage.getItem('RYB_imagepropertiesarray')); // get array from localstorage key pair and string
-            for (x = 0; x < imagepropertiesarray.length; x++) { // Loop through to array for ImageID
+            var imagepropertiesarraylength = imagepropertiesarray.length;
+            for (x = 0; x < imagepropertiesarraylength; x++) { // Loop through to array for ImageID
                 if (imagepropertiesarray[x].id == imageid) {
                     filepath = imagepropertiesarray[x].filepath;
                     break;

@@ -5,7 +5,6 @@ W O R K I N G   R I G H T   N O W
 -- XXX On Client image, Piper like is added multiple times to same Image == keeps being inserted into localstorage 
 
 
-- redo clientstart event log HTML for new object
 - XX NEED TO TEST - new friend events didn't show up on HTML log.  It wasn't in Event Log but should be.  Tried chaining insert on success.  need to get KidAvatars into event log on Admin side InvitationlistController accept invitation
 - XX NEED TO TEST - didn't get a new picture share alert.  I think that was because of making serial calls where it should have been chained - so i'm trying that now.
 
