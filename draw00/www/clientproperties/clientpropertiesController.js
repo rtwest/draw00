@@ -28,6 +28,7 @@ cordovaNG.controller('clientpropertiesController', function ($scope, globalServi
     };
     $scope.clientName = client[1];
     $scope.avatarID = client[2];
+    $scope.registrationCode = client[3];
     // =======================================================
 
 

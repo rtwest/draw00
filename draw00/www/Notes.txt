@@ -1,11 +1,15 @@
 W O R K I N G   R I G H T   N O W
 -----------------------------
 
+-- Log in on Admin side 
+		- took long time after facebook log in :  need spinner
+		- XXX logging in on a new device w/Facebook - got a new GUID for parent user in Azure // Azure not updated though (failed).  So device and Azure have different GUIDs for admin user
+		- XXX have to go back and Redo ClientPropertyController Event Log based on ClientStartController update
 -- XXX Check that when Piper shared Image and Client liked it back, Client was put in there 2 times (name, avatar).  Is problem in HTML or JS Obj?
 -- XXX On Client image, Piper like is added multiple times to same Image == keeps being inserted into localstorage 
 
 
-- XX NEED TO TEST - new friend events didn't show up on HTML log.  It wasn't in Event Log but should be.  Tried chaining insert on success.  need to get KidAvatars into event log on Admin side InvitationlistController accept invitation
+- XX NEED TO TEST -  need to get KidAvatars into event log on Admin side InvitationlistController accept invitation
 - XX NEED TO TEST - didn't get a new picture share alert.  I think that was because of making serial calls where it should have been chained - so i'm trying that now.
 
 
@@ -17,7 +21,7 @@ W O R K I N G   R I G H T   N O W
 	- @@@ IF saved after a Share, the put the Share URL into PouchDB with the Image ID.
 	- Now you know if the Image has a URL for Sharing or if you have to Upload it - then update the PouchDB record/doc
 
-// ** Parents show up in Kids friends list ?? And can Draw and share with them.
+// ** Parents show up in Kids friends list ?? And can Draw and share with them.  Make siblings friends?
 // ** Clients create Avatar
 
 - Collapsing repeat share event events, when looking at a client sharing to several people at once	- /// @@@@@@  HAVE TO BE SIGNED IN AS ADMIN TO TEST THIS OUT.
@@ -84,7 +88,7 @@ Other local client side needs
 	- 'RYB_imagepropertiesarray' - replacement of PouchDB, this is a list of images (id, filepath, datetime,commentarray)  // This is an array of objects - [{...,...}{...,...}{...,...}]
 							 - { id: UniquePictureID, filepath: filepath, datetime: Date.now(), commentarray: [] };
 							 - comment_element = { event_type: event, name: name, avatar: avatar, kid_id: kid_id }
-- In ADMIN mode, list of clients (kid_id, name, avatar_id,)   // This is an array of arrays - [[...,...][...,...][...,...]]
+- In ADMIN mode, list of clients (kid_id, name, avatar_id, registrationcode)   // This is an array of arrays - [[...,...][...,...][...,...]]
 	- 'RYB_clientarray'
 
 =======================================================================================

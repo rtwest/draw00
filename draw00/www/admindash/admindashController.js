@@ -104,6 +104,7 @@ cordovaNG.controller('admindashController', function ($scope, globalService, Azu
     function addKid(name) {
 
         var guid = globalService.makeUniqueID();
+        var registrationCode = makeRegistrationCode();
 
         // Store new Client info in localStorage
         // ---------------
@@ -111,6 +112,7 @@ cordovaNG.controller('admindashController', function ($scope, globalService, Azu
         clientitemarray[0] = guid;
         clientitemarray[1] = name;
         clientitemarray[2] = $scope.avatarID;
+        clientitemarray[3] = registrationCode
         if ($scope.clientarray.length > 0) { // if it exists already (not the first one)
             var arraylength = $scope.clientarray.length; // 'length' is actually array+1 because of zero index
             $scope.clientarray[arraylength] = clientitemarray; //add new item to client array
@@ -133,7 +135,7 @@ cordovaNG.controller('admindashController', function ($scope, globalService, Azu
             id: guid, // made GUID for Azure table        
             name: name,
             parent_id: globalService.userarray[0],
-            registration_code: makeRegistrationCode(),
+            registration_code: registrationCode,
             reg_status: '0',
             avatar_id: $scope.avatarID,
             parent_name:globalService.userarray[4],
