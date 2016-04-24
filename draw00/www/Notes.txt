@@ -2,8 +2,10 @@ W O R K I N G   R I G H T   N O W
 -----------------------------
 
 -- Log in on Admin side 
-		- took long time after facebook log in :  need spinner
-		- XXX logging in on a new device w/Facebook - got a new GUID for parent user in Azure // Azure not updated though (failed).  So device and Azure have different GUIDs for admin user
+		- !! Have to solve for when sending a New Invitation, which kid it is FROM.  For testing, I hardcoded a kid and ID.
+		- !! Make parents and siblings friends by default
+				- XXX - somehow parent shows up in Client_Array
+		- took long time after facebook log in :  need spinner.  This is because of long Azure checking?
 		- XXX have to go back and Redo ClientPropertyController Event Log based on ClientStartController update
 -- XXX Check that when Piper shared Image and Client liked it back, Client was put in there 2 times (name, avatar).  Is problem in HTML or JS Obj?
 -- XXX On Client image, Piper like is added multiple times to same Image == keeps being inserted into localstorage 
@@ -80,9 +82,9 @@ Other local client side needs
 - Flag for first time launch: Look for "localStorage.getItem('RYB_oobeflag')"
 - FaceBook Access Token: Calling the NbFB module automatically stores the user's FaceBook token:  Look for "localStorage.getItem('fbAccessToken')"
 - What user mode is this in? Look for "localStorage.getItem('RYB_userarray')"
-	- 'RYB_userarray' (id, usertype, name, email, first name, ..other_as_needed..)
-	- admin details (name, parent_id, reqs FB registration?)
-	- client details (name, kid_id, avatar_id) - if not, show client code input
+	- 'RYB_userarray' (id, usertype, name, email, first name, avatar ..other_as_needed..)
+		- admin details (id, usertype, name, email, first name, avatar)
+		- client details (id, usertype, '', avatar, first name) - if not, show client code input
 - In CLIENT mode
 	- FRIENDS ARRAY - list of friends (name, kid_id, avatar_id,) 
 	- 'RYB_imagepropertiesarray' - replacement of PouchDB, this is a list of images (id, filepath, datetime,commentarray)  // This is an array of objects - [{...,...}{...,...}{...,...}]

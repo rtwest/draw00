@@ -47,6 +47,7 @@ cordovaNG.controller('signinController', function ($scope, globalService, ngFB, 
     //};
 
     var guid = globalService.makeUniqueID(); // made GUID for Azure table
+    var admin_avatar = Math.floor((Math.random() * 10) + 1); // Random number between 1-10; // make random avatar
 
     $scope.adminLogin = function () {
         ngFB.login({ scope: 'email' }).then( // request other Facebook permissions in with scope with ", 'publish_action' "
@@ -68,9 +69,10 @@ cordovaNG.controller('signinController', function ($scope, globalService, ngFB, 
                     globalService.userarray[2] = result.name;
                     globalService.userarray[3] = result.email;
                     globalService.userarray[4] = result.first_name;
+                    globalService.userarray[5] = admin_avatar;
                     localStorage["RYB_userarray"] = JSON.stringify(globalService.userarray); //push back to localStorage
 
-                    azureCheckUserandInsert(result.email, result.name); //@@@ Function to query azure 'parent' table to look for email and insert record
+                    azureCheckUserandInsert(result.email, result.name, admin_avatar); //@@@ Function to query azure 'parent' table to look for email and insert record
 
                     //globalService.changeView('admindash'); // @@@ this was moved to the end of azureCheckandInsert to ensure a serial order of successful tasks
                 },
@@ -150,16 +152,16 @@ cordovaNG.controller('signinController', function ($scope, globalService, ngFB, 
     // ==========================================
     //  Store new Admin user on Azure
     // ==========================================
-    function azureCheckUserandInsert(email, name) {
+    function azureCheckUserandInsert(email, name, avatar) {
         var query = "$filter=email eq '" + email + "'";
         Azureservice.read('parents', query).then(function (items) {  // query to see if 'email' exists
             if (items.length == 0) { // if not found, then insert it
                 //console.log('email not found')
-
                 Azureservice.insert('parents', {
                     id: guid,
                     name: name,
-                    email: email
+                    email: email,
+                    avatar:avatar
                 })
                 .then(function () {
                     //console.log('Insert successful');
@@ -171,7 +173,11 @@ cordovaNG.controller('signinController', function ($scope, globalService, ngFB, 
             }
             else {
                 //alert('email exists already'),
-                //console.log('email exists already')
+                console.log('email exists already');
+                // use the found user's GUID and store locally in user properties array
+                globalService.userarray[0] = items[0].id;
+                localStorage["RYB_userarray"] = JSON.stringify(globalService.userarray); //push back to localStorage
+                alert(JSON.stringify(globalService.userarray));
                 globalService.changeView('admindash'); // @@@ if user already exists, just go to admin dash
             };
 

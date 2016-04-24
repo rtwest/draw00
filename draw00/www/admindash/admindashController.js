@@ -143,12 +143,110 @@ cordovaNG.controller('admindashController', function ($scope, globalService, Azu
         })
         .then(function () {
             console.log('new client insert successful');
+
+            // Make array of parent and friends to iterate through recursively to add as friends
+            var kid_array = [guid, name, $scope.avatarID];// new kid
+            var client_item_array = [];
+            client_item_array = $scope.clientarray; // add all the clients
+            var admin_array = [globalService.userarray[0], globalService.userarray[4], globalService.userarray[5]];  // id, firstname, avatar
+            client_item_array.push(admin_array); // push the admin/parent in there
+
+            // Call function with this array, start index, end index
+            CheckAndInsertFriendRecord(kid_array,client_item_array, 0, client_item_array.length);
+
         },
         function (err) {
             console.error('Azure Error: ' + err);
         });
     };
     // ==========================================
+
+    // ==========================================
+    // Insert family friend record in Azure Friend Table
+    // ==========================================
+    function CheckAndInsertFriendRecord(kid_array,client_item_array, startindex, endindex) {
+
+        if (startindex < endindex) {
+
+            var friend_array = client_item_array[startindex];
+            var kid2id = friend_array[0];
+            var kid2name = friend_array[1];
+            var kid2avatar = friend_array[2];
+
+            var kid1id = kid_array[0];
+            var kid1name = kid_array[1];
+            var kid1avatar = kid_array[2];
+
+            if (kid2id != kid1id) { // check IDs so you don't add kid as friend to themself
+                Azureservice.insert('friends', {
+                    //id: guid, // I'll let Azure handle this GUID since I don't need to track it locally        
+                    kid1_id: kid1id,
+                    kid2_id: kid2id,
+                    kid1_name: kid1name,
+                    kid2_name: kid2name
+                })
+                .then(function () {
+                    console.log('new friend insert successful');
+                    //InsertEventRecord(kid1id, kid2id, kid1name, kid2name, kid1avatar,kid2avatar); // @@@ On success, Insert new Event record in Azure Event Table
+                },
+                function (err) {
+                    console.error('Azure Error: ' + err);
+                });
+
+                Azureservice.insert('events', {
+                    //id: guid, // I'll let Azure handle this GUID since I don't need to track it locally        
+                    fromkid_id: kid1id,
+                    tokid_id: kid2id,
+                    fromkid_avatar: kid1avatar,
+                    tokid_avatar: kid2avatar,
+                    fromkid_name: kid1name,
+                    tokid_name: kid2name,
+                    datetime: Date.now(),
+                    event_type: "friends",
+                })
+                .then(function () {
+                    alert('freind record inserted');
+                    console.log('new event insert successful');
+                },
+                function (err) {
+                    console.error('Azure Error: ' + err);
+                });
+
+            }; // end if
+
+            // @@@ Recursive part
+            CheckAndInsertFriendRecord(kid_array, client_item_array, startindex + 1, endindex)
+
+        }; // end if
+    };
+
+    // ==========================================
+    //function InsertEventRecord(kid1id, kid2id, kid1name, kid2name, kid1avatar, kid2avatar) {
+    //    // Create on Azure
+    //    // ---------------
+    //    Azureservice.insert('events', {
+    //        //id: guid, // I'll let Azure handle this GUID since I don't need to track it locally        
+    //        fromkid_id: kid1id,
+    //        tokid_id: kid2id,
+    //        fromkid_avatar: kid1avatar,
+    //        tokid_avatar: kid2avatar,
+    //        fromkid_name: kid1name,
+    //        tokid_name: kid2name,
+    //        datetime: Date.now(),
+    //        event_type: "friends",
+    //    })
+    //    .then(function () {
+    //        alert('freind record inserted');
+    //        console.log('new event insert successful');
+    //    },
+    //    function (err) {
+    //        console.error('Azure Error: ' + err);
+    //    });
+    //};
+    // ==========================================
+
+
+
 
 
     // ==========================================
