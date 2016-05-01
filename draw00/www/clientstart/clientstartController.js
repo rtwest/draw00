@@ -505,8 +505,8 @@ cordovaNG.controller('clientstartController', function ($scope, globalService, A
 
 
                   // @@@ Push the cleaned up array of objects into the $scope
-                  tempArray = tempArray.reverse(); // Reverse order of array so most recent is first
-                  globalService.eventArray = tempArray;
+                  //tempArray = tempArray.reverse(); // Reverse order of array so most recent is first
+                  globalService.eventArray = tempArray.reverse();// Reverse order of array so most recent is first
                   $scope.eventarray = globalService.eventArray;
                   alert("Event array - "+JSON.stringify($scope.eventarray))
 

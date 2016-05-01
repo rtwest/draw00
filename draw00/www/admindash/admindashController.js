@@ -113,15 +113,18 @@ cordovaNG.controller('admindashController', function ($scope, globalService, Azu
         clientitemarray[1] = name;
         clientitemarray[2] = $scope.avatarID;
         clientitemarray[3] = registrationCode
-        if ($scope.clientarray.length > 0) { // if it exists already (not the first one)
-            var arraylength = $scope.clientarray.length; // 'length' is actually array+1 because of zero index
-            $scope.clientarray[arraylength] = clientitemarray; //add new item to client array
-            localStorage["RYB_clientarray"] = JSON.stringify($scope.clientarray); //push back to localStorage
-        }
-        else{ // it doesn't already exist and this is the first one
-            $scope.clientarray[0] = clientitemarray; //add first item to localstorage arraystring
-            localStorage["RYB_clientarray"] = JSON.stringify($scope.clientarray); //push back to localStorage
-        };
+
+        $scope.clientarray.push(clientitemarray); //add first item to localstorage arraystring
+        localStorage["RYB_clientarray"] = JSON.stringify($scope.clientarray); //push back to localStorage
+        //if ($scope.clientarray.length > 0) { // if it exists already (not the first one)
+        //    var arraylength = $scope.clientarray.length; // 'length' is actually array+1 because of zero index
+        //    $scope.clientarray[arraylength] = clientitemarray; //add new item to client array
+        //    localStorage["RYB_clientarray"] = JSON.stringify($scope.clientarray); //push back to localStorage
+        //}
+        //else{ // it doesn't already exist and this is the first one
+        //    $scope.clientarray[0] = clientitemarray; //add first item to localstorage arraystring
+        //    localStorage["RYB_clientarray"] = JSON.stringify($scope.clientarray); //push back to localStorage
+        //};
         $scope.clientarray = JSON.parse(localStorage.getItem('RYB_clientarray')); // get updated array from localstorage key pair and string
         //alert("array length = "+ $scope.clientarray.length + " - " + $scope.clientarray)
 
@@ -147,7 +150,7 @@ cordovaNG.controller('admindashController', function ($scope, globalService, Azu
             // Make array of parent and friends to iterate through recursively to add as friends
             var kid_array = [guid, name, $scope.avatarID];// new kid
             var client_item_array = [];
-            client_item_array = $scope.clientarray; // add all the clients
+            client_item_array = $scope.clientarray.slice(0); // add all the clients.  ".slice(0)" make sure you copy the array, not link to it.
             var admin_array = [globalService.userarray[0], globalService.userarray[4], globalService.userarray[5]];  // id, firstname, avatar
             client_item_array.push(admin_array); // push the admin/parent in there
 
@@ -178,6 +181,7 @@ cordovaNG.controller('admindashController', function ($scope, globalService, Azu
             var kid1avatar = kid_array[2];
 
             if (kid2id != kid1id) { // check IDs so you don't add kid as friend to themself
+
                 Azureservice.insert('friends', {
                     //id: guid, // I'll let Azure handle this GUID since I don't need to track it locally        
                     kid1_id: kid1id,
@@ -205,7 +209,7 @@ cordovaNG.controller('admindashController', function ($scope, globalService, Azu
                     event_type: "friends",
                 })
                 .then(function () {
-                    alert('freind record inserted');
+                    //alert('freind record inserted');
                     console.log('new event insert successful');
                 },
                 function (err) {
@@ -219,34 +223,6 @@ cordovaNG.controller('admindashController', function ($scope, globalService, Azu
 
         }; // end if
     };
-
-    // ==========================================
-    //function InsertEventRecord(kid1id, kid2id, kid1name, kid2name, kid1avatar, kid2avatar) {
-    //    // Create on Azure
-    //    // ---------------
-    //    Azureservice.insert('events', {
-    //        //id: guid, // I'll let Azure handle this GUID since I don't need to track it locally        
-    //        fromkid_id: kid1id,
-    //        tokid_id: kid2id,
-    //        fromkid_avatar: kid1avatar,
-    //        tokid_avatar: kid2avatar,
-    //        fromkid_name: kid1name,
-    //        tokid_name: kid2name,
-    //        datetime: Date.now(),
-    //        event_type: "friends",
-    //    })
-    //    .then(function () {
-    //        alert('freind record inserted');
-    //        console.log('new event insert successful');
-    //    },
-    //    function (err) {
-    //        console.error('Azure Error: ' + err);
-    //    });
-    //};
-    // ==========================================
-
-
-
 
 
     // ==========================================
@@ -392,8 +368,10 @@ cordovaNG.controller('admindashController', function ($scope, globalService, Azu
     //4. create new invitation record with the 4 corresponding IDs
     // INVITATION RECORD: fromparent_id, toparent_id, fromkid, tokid, datetime
 
+
+    // #########################################################################################################################################################
     var ToParentID, ToParentName, ToKidName, FromKidName, FromKidID, ToKidID;
-    var clientarray = [];
+    var clientarray2 = [];
 
 
 
@@ -442,7 +420,7 @@ cordovaNG.controller('admindashController', function ($scope, globalService, Azu
                 console.log('admin guid  not found')
             }
             else { // if admin guid found, get the client list (JSON) and put in array
-                clientarray = items;  //alert(clientarray[0].name);
+                clientarray2 = items;  //alert(clientarray2[0].name);
             };
         }).catch(function (error) {
             console.log(error);
@@ -459,11 +437,11 @@ cordovaNG.controller('admindashController', function ($scope, globalService, Azu
     };
     function lookUpClientinArray(name) {
         var found = false;
-        for (i = 0, len = clientarray.length; i < len; i++) {
-            //alert(clientarray[i].name);
-            if (clientarray[i].name == name) {
+        for (i = 0, len = clientarray2.length; i < len; i++) {
+            //alert(clientarray2[i].name);
+            if (clientarray2[i].name == name) {
                 found = true;
-                ToKidID = clientarray[i].id; // Get the GUID for this client
+                ToKidID = clientarray2[i].id; // Get the GUID for this client
                 break;
             };
         };

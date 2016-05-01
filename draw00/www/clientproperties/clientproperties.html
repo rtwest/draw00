@@ -30,22 +30,26 @@
             <!--{{row.datetime | date:"EEEE, MMM d"}}-->
             {{row.time}}
         </div>
-        <div>{{row.fromkid}}</div><div>{{row.fromkidavatar}}</div>
+        <div>{{row.fromkid}}</div>
+        <div>{{row.fromkidavatar}}</div>
         <div>{{row.event_type}}</div>
-        
+
         <!--Nested repeater within the first JSON array-->
-        <div ng-repeat="subarrayitem in row.tokid"><div style="color:red">{{subarrayitem.kidname}}</div></div>
-        <div ng-repeat="subarrayitem in row.tokidavatar"><div>{{subarrayitem.kidavatar}}</div></div>
+        <div ng-repeat="subarrayitem in row.tokid">
+            <div style="color:red">{{subarrayitem.tokidname}}</div>
+            <div>{{subarrayitem.tokidavatar}}</div>
+            <div>{{subarrayitem.tokidreply}}</div>
+        </div>
 
         <div ng-show="row.picture_url">
-            <img id="{{row.picture_url}},{{row.fromkid}},{{row.fromkidavatar}}" class="smallimage" src="{{row.picture_url}}" alt="Shared drawing" ng-click="gotoPictureView($event)" />
+            <img id="{{row.picture_url}},{{row.fromkid}},{{row.fromkidavatar}},{{row.fromkid_id}}" class="smallimage" src="{{row.picture_url}}" alt="Shared drawing" ng-click="gotoPictureView($event)" />
         </div>
-        <div ng-show="row.comment_content">Comment: {{row.comment_content}}</div>
+
     </div>
 </script>
 
-
-
+<p></p>
+<p></p>
 
 
 <div>TAB FOR Friend record</div>
@@ -85,10 +89,6 @@
         <div>
             parent email
             {{row.friend_parentemail}}
-        </div>
-        <div>
-            record id
-            {{row.record_id}}
         </div>
         <!--NEED TO GET THE FRIEND RECORD ID-->
         <div id="{{row.record_id}}" ng-click="deleteFriendClick($event)">Delete</div>

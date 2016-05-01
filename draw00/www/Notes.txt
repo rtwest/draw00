@@ -3,10 +3,10 @@ W O R K I N G   R I G H T   N O W
 
 -- Log in on Admin side 
 		- !! Have to solve for when sending a New Invitation, which kid it is FROM.  For testing, I hardcoded a kid and ID.
-		- !! Make parents and siblings friends by default
-				- XXX - somehow parent shows up in Client_Array
 		- took long time after facebook log in :  need spinner.  This is because of long Azure checking?
-		- XXX have to go back and Redo ClientPropertyController Event Log based on ClientStartController update
+		- XXX ALL EVENTS ARE PULLED DOWN FOR A SELECTEDCLIENT
+		- XXX GETKIDDETAILS ISN'T GOING THROUGH LOOPING FOR ALL KIDS
+
 -- XXX Check that when Piper shared Image and Client liked it back, Client was put in there 2 times (name, avatar).  Is problem in HTML or JS Obj?
 -- XXX On Client image, Piper like is added multiple times to same Image == keeps being inserted into localstorage 
 
@@ -83,6 +83,7 @@ Other local client side needs
 - FaceBook Access Token: Calling the NbFB module automatically stores the user's FaceBook token:  Look for "localStorage.getItem('fbAccessToken')"
 - What user mode is this in? Look for "localStorage.getItem('RYB_userarray')"
 	- 'RYB_userarray' (id, usertype, name, email, first name, avatar ..other_as_needed..)
+		- globalService.userarray[]
 		- admin details (id, usertype, name, email, first name, avatar)
 		- client details (id, usertype, '', avatar, first name) - if not, show client code input
 - In CLIENT mode

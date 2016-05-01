@@ -12,15 +12,16 @@ cordovaNG.controller('clientpropertiesController', function ($scope, globalServi
     // =======================================================
     // From the Client GUID, get the rest of Client Properties
     // =======================================================
+    var selectedclientguid = globalService.selectedClient;
     var client = [];
     var clientarray = [];
     clientarray = JSON.parse(localStorage.getItem('RYB_clientarray')); // get array from localstorage key pair and string
     // Search through array of arrays
     // ----
     var foundIndex = '';
-    var len = clientarray.length;
-    for (i = 0; i < len; i++) {
-        if (clientarray[i].indexOf(globalService.selectedClient) > -1) { // If GUID found in this subarray 
+    var clientarraylength = clientarray.length;
+    for (i = 0; i < clientarraylength; i++) {
+        if (clientarray[i].indexOf(selectedclientguid) > -1) { // If GUID found in this subarray 
             foundIndex = i;
             client = clientarray[i];
             break;
@@ -65,11 +66,12 @@ cordovaNG.controller('clientpropertiesController', function ($scope, globalServi
     //  Get the Event log based on Client GUID.   THIS CODE USED ON CLIENTPROPERTIESCONTROLLER.JS and CLIENTSTARTCONTROLLER.JS
     // ==========================================
 
-    //function getEventLog() {
+    function getEventLog() {
 
-        var tempArray = []; // This resets the local array (which $scope is set to later)
+        //alert(selectedclientguid)
+        //alert('admin id is ' + globalService.userarray[0])
 
-        Azureservice.read('events', "filter=from_kid_id eq '" + globalService.selectedClient + "' or to_kid_id eq '" + globalService.selectedClient + "'")
+    Azureservice.read('events', "filter=from_kid_id eq '" + selectedclientguid + "' or to_kid_id eq '" + selectedclientguid + "'")
           .then(function (items) {
 
               if (items.length == 0) { // if no Event record found, then
@@ -81,20 +83,22 @@ cordovaNG.controller('clientpropertiesController', function ($scope, globalServi
                   // --------------------------------------
                   var tempArray = [];
                   var len = items.length;
+                  alert(len)
                   var today = new Date(); // today for comparison
                   var day, time, fromkid, tokid, lastimageurl;
                   thiseventday = new Date();
                   lasteventday = new Date();
                   montharray = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
-                  items = items.reverse()  // @@@ This puts them in newwest first order.  
+                  //items = items.reverse()  // @@@ This puts them in newwest first order.  
+                  alert(JSON.stringify(items))
 
                   for (i = 0; i < len; i++) {
 
                       lasteventday = thiseventday; // when i=0, this is useless and skipped over with coniditional below
                       thiseventday = new Date(items[i].datetime); // convert datetime to number
 
-                      // Get Day - Compare Day and Month
+                      // @@@ Get Day - Compare Day and Month
                       // ---------------------
                       if (i > 0) { // If this is NOT first in array, check if you need to show it.
                           if ((thiseventday.getDate() == lasteventday.getDate()) && (thiseventday.getMonth() == lasteventday.getMonth())) {
@@ -110,7 +114,7 @@ cordovaNG.controller('clientpropertiesController', function ($scope, globalServi
                           }
                           else { day = montharray[thiseventday.getMonth()] + " " + thiseventday.getDate(); }
                       }
-                      else { // If this IS first in array, they it has to have the date header
+                      else { // If this IS first in array, then it has to have the date header
                           if ((thiseventday.getDate() == today.getDate()) && (thiseventday.getMonth() == today.getMonth())) {
                               day = 'Today';
                           }
@@ -121,7 +125,7 @@ cordovaNG.controller('clientpropertiesController', function ($scope, globalServi
                           else { day = montharray[thiseventday.getMonth()] + " " + thiseventday.getDate(); }
                       }
 
-                      // Get time  // @@@@@ DEAL WITH TIME ZONES??
+                      // @@@ Get time 
                       // --------
                       var t = thiseventday.getHours();  //+1 to make up for 0 base
                       if (t > 12) {
@@ -131,72 +135,132 @@ cordovaNG.controller('clientpropertiesController', function ($scope, globalServi
                           time = t + ":" + thiseventday.getMinutes() + "am";  // break down the 24h and use Am/pm
                       }
 
-
-
-                      // Checking for Image Share to multiple people to collapse as 1 event not several
-                      // =========================
-                      var timetest = lasteventday;
-                      timetest.setSeconds(timetest.getSeconds() + 10); // last event time + 10 sec
-                      // IF this imageURL is the same image URL as last one in the array
-                      //    AND IF this has same name as Client
-                      //    AND IF this event time is within 10 sec of last one
-                      if ((lastimageurl == items[i].picture_url) && (items[i].fromkid_name == $scope.clientName) && (thiseventday < timetest)) {
-                          // If this is same share event, modify LAST event arry item, DO NOT insert another
-                          // --------------
-                          var nameelement = { kidname: items[i].tokid_name };  // for JSON, have to make a new object
-                          var avatarelement = { kidname: items[i].tokid_name };  // for JSON, have to make a new object
-                          tempArray[tempArray.length - 1].tokid.push(nameelement); // push the subobject into the right place
-                          tempArray[tempArray.length - 1].tokidavatar.push(avatarelement); // push the subobject into the right place
+                      // @@@ Small check to personalize the event details if it is YOU
+                      // ------------------
+                      var from_check;
+                      if (items[i].fromkid_id == globalService.userarray[0]) {
+                          from_check = "You";
                       }
-                      else { // IF NOT a repeated share item, make a new event item
+                      else { from_check = items[i].fromkid_name };
 
-                          // Make array object
-                          // ------------------
-                          var element = {  // make a new array object.  If items[i] is NULL, the HTML binding for ng-show will hide the HTML templating
-                              picture_url: items[i].picture_url,
-                              fromkid: items[i].fromkid_name,
+                      //make a new array based on urls.  url is like object key index.  its all about the Image Url.
+                      //then each event adds properties around that url Object
+
+                      // Look at Image URL and see if it is in the tempArray.  If not, make new object.  If so, add to Object
+                      var event_type = items[i].event_type;
+
+                      // @@@ If a 'friend' event, it does not have a URL
+                      // ---------------------------------
+                      if (event_type == 'friends') {
+                          //alert('found freind event')
+                          var element = {  // @@@ Make a new array object.  If items[i] is NULL, the HTML binding for ng-show will hide the HTML templating
+                              //picture_url: items[i].picture_url,  // not relevant in this case
+                              fromkid: from_check,  // who shared it
                               fromkidavatar: items[i].fromkid_avatar,
-                              //fromkidID: items[i].fromkid_id,  // Not needed in the Admin view?
-                              tokid: [{ // this is a notation for a nested object
-                                  kidname: items[i].tokid_name,
+                              fromkid_id: items[i].fromkid_id,
+                              tokid: [{ // this is a notation for a nested object.  If someone sent to YOU, this has just your name in it
+                                  tokidname: items[i].tokid_name,  // each kids shared with
+                                  tokid_id: items[i].tokid_id,
+                                  tokidavatar: items[i].tokid_avatar,
+                                  tokidreply: '',  // null in this case
                               }],
-                              tokidavatar: [{ // this is a notation for a nested object
-                                  kidavatar: items[i].tokid_avatar,
-                              }],
-                              event_type: items[i].event_type,
+                              event_type: event_type, // 
                               comment_content: items[i].comment_content,
                               day: day,
                               time: time,
                           };
+                          tempArray.push(element); // add into array for UI & $scope
+                      }
 
-                          tempArray.push(element); // add back to array
-    
-                      }; // end make event array item
-                      // =========================
+                      else { // If not a 'friend' event, it should have a URL
+                          // ---------------------------------
 
-                      lastimageurl = items[i].picture_url;
+                          // Get Image ID from Picture URL.  It's the last part.
+                          var imageID = items[i].picture_url.replace('https://rtwdevstorage.blob.core.windows.net/imagecontainer/', '');
+                          imageID = imageID.replace('.png', ''); // Cut off the .png at the end
 
-                      //// Make array object
-                      //// ------------------
-                      //var element = {  // make a new array element.  If items[i] is NULL, the HTML binding for ng-show will hide the HTML templating
-                      //    picture_url: items[i].picture_url,
-                      //    fromkid: items[i].fromkid_name,
-                      //    fromkidavatar: items[i].fromkid_avatar,
-                      //    tokid: items[i].tokid_name,
-                      //    tokidavatar: items[i].tokid_avatar,
-                      //    event_type: items[i].event_type,
-                      //    comment_content: items[i].comment_content,
-                      //    day: day,
-                      //    time: time,
-                      //    //datetime: items[i].datetime,
-                      //};
-                      //tempArray.push(element); // add back to array
+                          var imageurlfound = false;
+                          var tempArrayLength = tempArray.length;
+                          for (x = 0; x < tempArrayLength; x++) { // Loop through to array for ImageID
+
+                              if (tempArray[x].picture_url == items[i].picture_url) {
+
+                                  alert('found imageurl')
+                                  // Inspect to know how to add to Object
+                                  // ------------
+                                  // cases: SharePicture - track this url.  Like Picture - append to tracked url.  
+
+                                  // url, shared, to any kid
+                                  if (event_type == 'sharepicture') {
+                                      // Update object to add ToKid element
+                                      // ------------
+                                      var kidobject = {
+                                          tokidname: items[i].tokid_name,
+                                          tokidavatar: items[i].tokid_avatar,
+                                          tokidreply: '', //null in this case
+                                      };
+                                      tempArray[x].tokid.push(kidobject);
+                                      alert('new kid shared with - ' + JSON.stringify(tempArray[x]));
+                                  }
+
+                                      // url, liked, from any kid
+                                  else if (event_type == 'like') {
+                                      // Update your reply in the ToKid element
+                                      // ------------
+                                      //tempArray[x].tokid[items[i].tokid_id == clientGUID].tokidreply = items[i].comment_content
+                                      var kidArrayLength = tempArray[x].tokid.length; // 'tokid' is a subarray
+                                      for (y = 0; y < kidArrayLength; y++) { // Loop through to subarray for tokid_id
+                                          if (tempArray[x].tokid[y].tokid_id == items[i].fromkid_id) {
+                                              tempArray[x].tokid[y].tokidreply = 'likes' //items[i].comment_content
+                                              alert('updated kid response - ' + JSON.stringify(tempArray[x]));
+                                              break;
+                                          };
+                                      }; // end for
+                                  }
+                                  else { alert('unknown case') };
+
+                                  imageurlfound = true;
+                                  break;
+                              } // end if URL found
+
+                          }; //end for
+
+                          if ((imageurlfound == false) && (event_type == 'sharepicture')) {  // New SharedUrl found 
+
+                              alert('found unknow imageurl and share event')
+
+                              // @@@@ Make new array object for UI 
+                              // ==============================
+                              var element = {  // @@@ Make a new array object.  If items[i] is NULL, the HTML binding for ng-show will hide the HTML templating
+                                  picture_url: items[i].picture_url, // this object is all about what happens around this image url
+                                  fromkid: from_check,  // who shared it
+                                  fromkidavatar: items[i].fromkid_avatar,
+                                  fromkid_id: items[i].fromkid_id,
+                                  tokid: [{ // this is a notation for a nested object.  If someone sent to YOU, this has just your name in it
+                                      //tokidname: items[i].tokid_name,  // each kids shared with
+                                      tokidname: from_check,  // each kids shared with
+                                      tokid_id: items[i].tokid_id,
+                                      tokidavatar: items[i].tokid_avatar,
+                                      tokidreply: "",  // null right now
+                                  }],
+                                  event_type: event_type, // 
+                                  comment_content: items[i].comment_content,
+                                  day: day,
+                                  time: time,
+                              };
+                              tempArray.push(element); // add into array for UI & $scope
+                              alert('updated with new imageurl share event - ' + JSON.stringify(tempArray));
+                          };
+
+                      }; //end if event type
+
+
+
 
                   }; //end for
 
-
-                  $scope.eventarray = tempArray;
-                  // alert(JSON.stringify($scope.eventarray))
+                  $scope.eventarray = tempArray.reverse();
+                  alert(JSON.stringify($scope.eventarray))
 
               }; // end if
 
@@ -205,7 +269,7 @@ cordovaNG.controller('clientpropertiesController', function ($scope, globalServi
               console.log(error)
           });
 
-    //}; // end func
+    }; // end func
 
 
     // ==========================================
@@ -221,8 +285,11 @@ cordovaNG.controller('clientpropertiesController', function ($scope, globalServi
     // ==========================================
     //  Get friends from Azure based on Client GUID.  THIS CODE USED ON CLIENTPROPERTIESCONTROLLER.JS and CLIENTSTARTCONTROLLER.JS
     // ==========================================
-    var len, j;
-    Azureservice.read('friends', "filter=kid1_id eq '" + globalService.selectedClient + "' or kid2_id eq '" + globalService.selectedClient + "'")
+    var friendsarraylen, j;
+    var quickfriendarray = []; //this is for quickly looking up redundancies in friends list
+    var tempArray = []; // This resets the local array (which $scope is set to later)       
+
+    Azureservice.read('friends', "filter=kid1_id eq '" + selectedclientguid + "' or kid2_id eq '" + selectedclientguid + "'")
         .then(function (items) {
             if (items.length == 0) { // if no Friend record found, then
                 // 'noFriendsFlag' is a flag the UI uses to check for 'show/hide' msg div
@@ -239,35 +306,43 @@ cordovaNG.controller('clientpropertiesController', function ($scope, globalServi
                 // --------------------------------------
                 var len = items.length;
                 for (i = 0; i < len; i++) {
-                    if (items[i].kid1_id == globalService.selectedClient) {  // If the first kid is this client, using the 2nd
-                        var element = {  // make a new array element
-                            client_id: globalService.selectedClient,
-                            record_id:items[i].id,
-                            friend_id: items[i].kid2_id,
-                            friend_name: items[i].kid2_name,
-                            friend_avatar: ' ', //empty placeholder
-                            friend_parentname: ' ',
-                            friend_parentemail:' ',
+                    if (items[i].kid1_id == selectedclientguid) {  // If the first kid is this client, using the 2nd
+                        // check to make sure this friend isn't alredy in the tempArray by checking the quickfriendarray
+                        if (quickfriendarray.indexOf(items[i].kid2_id) == -1) {
+                            var element = {  // make a new array element
+                                client_id: selectedclientguid,
+                                record_id:items[i].id,
+                                friend_id: items[i].kid2_id,
+                                friend_name: items[i].kid2_name,
+                                friend_avatar: ' ', //empty placeholder
+                                friend_parentname: ' ',
+                                friend_parentemail:' ',
+                            };
+                            tempArray.push(element); // add back to array
+                            quickfriendarray.push(items[i].kid2_id)//add to quickfriendarray
                         };
-                        tempArray.push(element); // add back to array
                     }
                     else { // else use the first kid
-                        var element = {  // make a new array element
-                            client_id: globalService.selectedClient,
-                            record_id: items[i].id,
-                            friend_id: items[i].kid1_id,
-                            friend_name: items[i].kid1_name,
-                            friend_avatar: ' ', //empty placeholder
-                            friend_parentname: ' ',
-                            friend_parentemail: ' ',
+                        // check to make sure this friend isn't alredy in the tempArray by checking the quickfriendarray
+                        if (quickfriendarray.indexOf(items[i].kid1_id) == -1) {
+                            var element = {  // make a new array element
+                                client_id: selectedclientguid,
+                                record_id: items[i].id,
+                                friend_id: items[i].kid1_id,
+                                friend_name: items[i].kid1_name,
+                                friend_avatar: ' ', //empty placeholder
+                                friend_parentname: ' ',
+                                friend_parentemail: ' ',
+                            };
+                            tempArray.push(element); // add back to array
+                            quickfriendarray.push(items[i].kid1_id)//add to quickfriendarray
                         };
-                        tempArray.push(element); // add back to array
                     };
                 };//end for
 
-                // Different way of setting up the loop 
+                // Different way of setting up the loop to get kid details
                 j = 0;
-                len = tempArray.length;
+                friendsarraylen = tempArray.length;
                 getkiddetails(); // @@@ Call recursive Azure call
 
             };
@@ -278,31 +353,37 @@ cordovaNG.controller('clientpropertiesController', function ($scope, globalServi
     // !!!!! LOTS OF CALL TO AZURE NOW  // !!!!! BETTER TO HAVE A CUSTOM API IN NODE TO DO THIS JOINING
     // --------------------------------------
     function getkiddetails() {
-        //alert(j);
 
-        if (j < tempArray.length) { // Don't know why this is going over the array size but this is a hack to fix
+        if (j < friendsarraylen) { // Don't know why this is going over the array size but this is a hack to fix
+            if (tempArray[j].friend_id != globalService.userarray[0]) { //if not the Admin/parent GUID
 
-            Azureservice.getById('kid', tempArray[j].friend_id)
-            .then(function (item) {
-
-                // TRYING TO TAKE IT OUT OF THE OTHER AZURE CALL
-                // -----
-                tempArray[j].friend_avatar = item.avatar_id;
-                tempArray[j].friend_parentname = item.parent_name;
-                tempArray[j].friend_parentemail = item.parent_email;
-
-                $scope.friendArray = tempArray; // @@@ Set to $scope array
-
+                Azureservice.getById('kid', tempArray[j].friend_id)
+                .then(function (item) {
+                    // TRYING TO TAKE IT OUT OF THE OTHER AZURE CALL
+                    // -----
+                    tempArray[j].friend_avatar = item.avatar_id;
+                    tempArray[j].friend_parentname = item.parent_name;
+                    tempArray[j].friend_parentemail = item.parent_email;
+                    $scope.friendArray = tempArray; // @@@ Set to $scope array;
+                    // RECUSIVE PART.  Regular FOR loop didn't work.
+                    j++;
+                    if (j < friendsarraylen) {
+                        getkiddetails();
+                    };
+                }, function (err) {
+                    console.error('Azure Error: ' + err);
+                });
+            }
+            else { //else if it is the parent ID, just recurse 
+                tempArray[j].friend_name = "You";
+                tempArray[j].friend_avatar = globalService.userarray[5];
+                $scope.friendArray = tempArray; // @@@ Set to $scope array;
                 // RECUSIVE PART.  Regular FOR loop didn't work.
-                // ------
                 j++;
-                if (j < len) {
+                if (j < friendsarraylen) {
                     getkiddetails();
                 };
-
-            }, function (err) {
-                console.error('Azure Error: ' + err);
-            });
+            };
         };
     };
 
