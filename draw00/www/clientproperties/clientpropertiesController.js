@@ -66,182 +66,111 @@ cordovaNG.controller('clientpropertiesController', function ($scope, globalServi
     //  Get the Event log based on Client GUID.   THIS CODE USED ON CLIENTPROPERTIESCONTROLLER.JS and CLIENTSTARTCONTROLLER.JS
     // ==========================================
 
-    function getEventLog() {
+    //function getEventLog() {
 
-        //alert(selectedclientguid)
+        alert(selectedclientguid)
         //alert('admin id is ' + globalService.userarray[0])
 
-    Azureservice.read('events', "filter=from_kid_id eq '" + selectedclientguid + "' or to_kid_id eq '" + selectedclientguid + "'")
-          .then(function (items) {
+    //Azureservice.read('events', "$filter=from_kid_id eq '03537ad8-b55c-41c7-b122-8997ac7cdca4'")
+    //Azureservice.query('events', {
+    //    criteria: {
+    //        from_kid_id: 'c9b8cb86-130c-4274-adf8-1931a9de18de',
+    //    }
+    //})
+        Azureservice.read('events', "$filter=fromkid_id eq '" + selectedclientguid + "' or tokid_id eq '" + selectedclientguid + "'")
+              .then(function (items) {
 
-              if (items.length == 0) { // if no Event record found, then
-                  $scope.noEventsFlag = true;   // '...Flag' is a flag the UI uses to check for 'show/hide' msg div
-                  console.log('no events in last 2 weeks')
-              }
-              else {
-                  // Go through Friend items and reorder it 
-                  // --------------------------------------
-                  var tempArray = [];
-                  var len = items.length;
-                  alert(len)
-                  var today = new Date(); // today for comparison
-                  var day, time, fromkid, tokid, lastimageurl;
-                  thiseventday = new Date();
-                  lasteventday = new Date();
-                  montharray = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+                  alert(JSON.stringify(items));
 
-                  //items = items.reverse()  // @@@ This puts them in newwest first order.  
-                  alert(JSON.stringify(items))
+                  if (items.length == 0) { // if no Event record found, then
+                      $scope.noEventsFlag = true;   // '...Flag' is a flag the UI uses to check for 'show/hide' msg div
+                      console.log('no events in last 2 weeks')
+                  }
+                  else {
+                      // Go through Friend items and reorder it 
+                      // --------------------------------------
+                      var tempArray = [];
+                      var len = items.length;
+                      alert(len)
+                      var today = new Date(); // today for comparison
+                      var day, time, fromkid, tokid, lastimageurl;
+                      thiseventday = new Date();
+                      lasteventday = new Date();
+                      montharray = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
-                  for (i = 0; i < len; i++) {
+                      //items = items.reverse()  // @@@ This puts them in newwest first order.  
+                      alert(JSON.stringify(items))
 
-                      lasteventday = thiseventday; // when i=0, this is useless and skipped over with coniditional below
-                      thiseventday = new Date(items[i].datetime); // convert datetime to number
+                      for (i = 0; i < len; i++) {
 
-                      // @@@ Get Day - Compare Day and Month
-                      // ---------------------
-                      if (i > 0) { // If this is NOT first in array, check if you need to show it.
-                          if ((thiseventday.getDate() == lasteventday.getDate()) && (thiseventday.getMonth() == lasteventday.getMonth())) {
-                              day = null; // then it's the same as the last one and don't need to repeat the date
+                          lasteventday = thiseventday; // when i=0, this is useless and skipped over with coniditional below
+                          thiseventday = new Date(items[i].datetime); // convert datetime to number
+
+                          // @@@ Get Day - Compare Day and Month
+                          // ---------------------
+                          if (i > 0) { // If this is NOT first in array, check if you need to show it.
+                              if ((thiseventday.getDate() == lasteventday.getDate()) && (thiseventday.getMonth() == lasteventday.getMonth())) {
+                                  day = null; // then it's the same as the last one and don't need to repeat the date
+                              }
+                                  // may never have this case?
+                              else if ((thiseventday.getDate() == today.getDate()) && (thiseventday.getMonth() == today.getMonth())) {
+                                  day = 'Today';
+                              }
+                                  // If Day is Today-1, Then its Yesterday
+                              else if ((thiseventday.getDate() == (today.getDate() - 1)) && (thiseventday.getMonth() == today.getMonth())) {
+                                  day = 'Yesterday';
+                              }
+                              else { day = montharray[thiseventday.getMonth()] + " " + thiseventday.getDate(); }
                           }
-                              // may never have this case?
-                          else if ((thiseventday.getDate() == today.getDate()) && (thiseventday.getMonth() == today.getMonth())) {
-                              day = 'Today';
+                          else { // If this IS first in array, then it has to have the date header
+                              if ((thiseventday.getDate() == today.getDate()) && (thiseventday.getMonth() == today.getMonth())) {
+                                  day = 'Today';
+                              }
+                                  // If Day is Today-1, Then its Yesterday
+                              else if ((thiseventday.getDate() == (today.getDate() - 1)) && (thiseventday.getMonth() == today.getMonth())) {
+                                  day = 'Yesterday';
+                              }
+                              else { day = montharray[thiseventday.getMonth()] + " " + thiseventday.getDate(); }
                           }
-                              // If Day is Today-1, Then its Yesterday
-                          else if ((thiseventday.getDate() == (today.getDate() - 1)) && (thiseventday.getMonth() == today.getMonth())) {
-                              day = 'Yesterday';
+
+                          // @@@ Get time 
+                          // --------
+                          var t = thiseventday.getHours();  //+1 to make up for 0 base
+                          if (t > 12) {
+                              time = Math.abs(12 - t) + ":" + thiseventday.getMinutes() + "pm";  // break down the 24h and use Am/pm
                           }
-                          else { day = montharray[thiseventday.getMonth()] + " " + thiseventday.getDate(); }
-                      }
-                      else { // If this IS first in array, then it has to have the date header
-                          if ((thiseventday.getDate() == today.getDate()) && (thiseventday.getMonth() == today.getMonth())) {
-                              day = 'Today';
+                          else {
+                              time = t + ":" + thiseventday.getMinutes() + "am";  // break down the 24h and use Am/pm
                           }
-                              // If Day is Today-1, Then its Yesterday
-                          else if ((thiseventday.getDate() == (today.getDate() - 1)) && (thiseventday.getMonth() == today.getMonth())) {
-                              day = 'Yesterday';
+
+                          // @@@ Small check to personalize the event details if it is YOU
+                          // ------------------
+                          var from_check;
+                          if (items[i].fromkid_id == globalService.userarray[0]) {
+                              from_check = "You";
                           }
-                          else { day = montharray[thiseventday.getMonth()] + " " + thiseventday.getDate(); }
-                      }
+                          else { from_check = items[i].fromkid_name };
 
-                      // @@@ Get time 
-                      // --------
-                      var t = thiseventday.getHours();  //+1 to make up for 0 base
-                      if (t > 12) {
-                          time = Math.abs(12 - t) + ":" + thiseventday.getMinutes() + "pm";  // break down the 24h and use Am/pm
-                      }
-                      else {
-                          time = t + ":" + thiseventday.getMinutes() + "am";  // break down the 24h and use Am/pm
-                      }
+                          //make a new array based on urls.  url is like object key index.  its all about the Image Url.
+                          //then each event adds properties around that url Object
 
-                      // @@@ Small check to personalize the event details if it is YOU
-                      // ------------------
-                      var from_check;
-                      if (items[i].fromkid_id == globalService.userarray[0]) {
-                          from_check = "You";
-                      }
-                      else { from_check = items[i].fromkid_name };
+                          // Look at Image URL and see if it is in the tempArray.  If not, make new object.  If so, add to Object
+                          var event_type = items[i].event_type;
 
-                      //make a new array based on urls.  url is like object key index.  its all about the Image Url.
-                      //then each event adds properties around that url Object
-
-                      // Look at Image URL and see if it is in the tempArray.  If not, make new object.  If so, add to Object
-                      var event_type = items[i].event_type;
-
-                      // @@@ If a 'friend' event, it does not have a URL
-                      // ---------------------------------
-                      if (event_type == 'friends') {
-                          //alert('found freind event')
-                          var element = {  // @@@ Make a new array object.  If items[i] is NULL, the HTML binding for ng-show will hide the HTML templating
-                              //picture_url: items[i].picture_url,  // not relevant in this case
-                              fromkid: from_check,  // who shared it
-                              fromkidavatar: items[i].fromkid_avatar,
-                              fromkid_id: items[i].fromkid_id,
-                              tokid: [{ // this is a notation for a nested object.  If someone sent to YOU, this has just your name in it
-                                  tokidname: items[i].tokid_name,  // each kids shared with
-                                  tokid_id: items[i].tokid_id,
-                                  tokidavatar: items[i].tokid_avatar,
-                                  tokidreply: '',  // null in this case
-                              }],
-                              event_type: event_type, // 
-                              comment_content: items[i].comment_content,
-                              day: day,
-                              time: time,
-                          };
-                          tempArray.push(element); // add into array for UI & $scope
-                      }
-
-                      else { // If not a 'friend' event, it should have a URL
+                          // @@@ If a 'friend' event, it does not have a URL
                           // ---------------------------------
-
-                          // Get Image ID from Picture URL.  It's the last part.
-                          var imageID = items[i].picture_url.replace('https://rtwdevstorage.blob.core.windows.net/imagecontainer/', '');
-                          imageID = imageID.replace('.png', ''); // Cut off the .png at the end
-
-                          var imageurlfound = false;
-                          var tempArrayLength = tempArray.length;
-                          for (x = 0; x < tempArrayLength; x++) { // Loop through to array for ImageID
-
-                              if (tempArray[x].picture_url == items[i].picture_url) {
-
-                                  alert('found imageurl')
-                                  // Inspect to know how to add to Object
-                                  // ------------
-                                  // cases: SharePicture - track this url.  Like Picture - append to tracked url.  
-
-                                  // url, shared, to any kid
-                                  if (event_type == 'sharepicture') {
-                                      // Update object to add ToKid element
-                                      // ------------
-                                      var kidobject = {
-                                          tokidname: items[i].tokid_name,
-                                          tokidavatar: items[i].tokid_avatar,
-                                          tokidreply: '', //null in this case
-                                      };
-                                      tempArray[x].tokid.push(kidobject);
-                                      alert('new kid shared with - ' + JSON.stringify(tempArray[x]));
-                                  }
-
-                                      // url, liked, from any kid
-                                  else if (event_type == 'like') {
-                                      // Update your reply in the ToKid element
-                                      // ------------
-                                      //tempArray[x].tokid[items[i].tokid_id == clientGUID].tokidreply = items[i].comment_content
-                                      var kidArrayLength = tempArray[x].tokid.length; // 'tokid' is a subarray
-                                      for (y = 0; y < kidArrayLength; y++) { // Loop through to subarray for tokid_id
-                                          if (tempArray[x].tokid[y].tokid_id == items[i].fromkid_id) {
-                                              tempArray[x].tokid[y].tokidreply = 'likes' //items[i].comment_content
-                                              alert('updated kid response - ' + JSON.stringify(tempArray[x]));
-                                              break;
-                                          };
-                                      }; // end for
-                                  }
-                                  else { alert('unknown case') };
-
-                                  imageurlfound = true;
-                                  break;
-                              } // end if URL found
-
-                          }; //end for
-
-                          if ((imageurlfound == false) && (event_type == 'sharepicture')) {  // New SharedUrl found 
-
-                              alert('found unknow imageurl and share event')
-
-                              // @@@@ Make new array object for UI 
-                              // ==============================
+                          if (event_type == 'friends') {
+                              //alert('found freind event')
                               var element = {  // @@@ Make a new array object.  If items[i] is NULL, the HTML binding for ng-show will hide the HTML templating
-                                  picture_url: items[i].picture_url, // this object is all about what happens around this image url
+                                  //picture_url: items[i].picture_url,  // not relevant in this case
                                   fromkid: from_check,  // who shared it
                                   fromkidavatar: items[i].fromkid_avatar,
                                   fromkid_id: items[i].fromkid_id,
                                   tokid: [{ // this is a notation for a nested object.  If someone sent to YOU, this has just your name in it
-                                      //tokidname: items[i].tokid_name,  // each kids shared with
-                                      tokidname: from_check,  // each kids shared with
+                                      tokidname: items[i].tokid_name,  // each kids shared with
                                       tokid_id: items[i].tokid_id,
                                       tokidavatar: items[i].tokid_avatar,
-                                      tokidreply: "",  // null right now
+                                      tokidreply: '',  // null in this case
                                   }],
                                   event_type: event_type, // 
                                   comment_content: items[i].comment_content,
@@ -249,27 +178,106 @@ cordovaNG.controller('clientpropertiesController', function ($scope, globalServi
                                   time: time,
                               };
                               tempArray.push(element); // add into array for UI & $scope
-                              alert('updated with new imageurl share event - ' + JSON.stringify(tempArray));
-                          };
+                          }
 
-                      }; //end if event type
+                          else { // If not a 'friend' event, it should have a URL
+                              // ---------------------------------
+
+                              // Get Image ID from Picture URL.  It's the last part.
+                              var imageID = items[i].picture_url.replace('https://rtwdevstorage.blob.core.windows.net/imagecontainer/', '');
+                              imageID = imageID.replace('.png', ''); // Cut off the .png at the end
+
+                              var imageurlfound = false;
+                              var tempArrayLength = tempArray.length;
+                              for (x = 0; x < tempArrayLength; x++) { // Loop through to array for ImageID
+
+                                  if (tempArray[x].picture_url == items[i].picture_url) {
+
+                                      alert('found imageurl')
+                                      // Inspect to know how to add to Object
+                                      // ------------
+                                      // cases: SharePicture - track this url.  Like Picture - append to tracked url.  
+
+                                      // url, shared, to any kid
+                                      if (event_type == 'sharepicture') {
+                                          // Update object to add ToKid element
+                                          // ------------
+                                          var kidobject = {
+                                              tokidname: items[i].tokid_name,
+                                              tokidavatar: items[i].tokid_avatar,
+                                              tokidreply: '', //null in this case
+                                          };
+                                          tempArray[x].tokid.push(kidobject);
+                                          alert('new kid shared with - ' + JSON.stringify(tempArray[x]));
+                                      }
+
+                                          // url, liked, from any kid
+                                      else if (event_type == 'like') {
+                                          // Update your reply in the ToKid element
+                                          // ------------
+                                          //tempArray[x].tokid[items[i].tokid_id == clientGUID].tokidreply = items[i].comment_content
+                                          var kidArrayLength = tempArray[x].tokid.length; // 'tokid' is a subarray
+                                          for (y = 0; y < kidArrayLength; y++) { // Loop through to subarray for tokid_id
+                                              if (tempArray[x].tokid[y].tokid_id == items[i].fromkid_id) {
+                                                  tempArray[x].tokid[y].tokidreply = 'likes' //items[i].comment_content
+                                                  alert('updated kid response - ' + JSON.stringify(tempArray[x]));
+                                                  break;
+                                              };
+                                          }; // end for
+                                      }
+                                      else { alert('unknown case') };
+
+                                      imageurlfound = true;
+                                      break;
+                                  } // end if URL found
+
+                              }; //end for
+
+                              if ((imageurlfound == false) && (event_type == 'sharepicture')) {  // New SharedUrl found 
+
+                                  alert('found unknow imageurl and share event')
+
+                                  // @@@@ Make new array object for UI 
+                                  // ==============================
+                                  var element = {  // @@@ Make a new array object.  If items[i] is NULL, the HTML binding for ng-show will hide the HTML templating
+                                      picture_url: items[i].picture_url, // this object is all about what happens around this image url
+                                      fromkid: from_check,  // who shared it
+                                      fromkidavatar: items[i].fromkid_avatar,
+                                      fromkid_id: items[i].fromkid_id,
+                                      tokid: [{ // this is a notation for a nested object.  If someone sent to YOU, this has just your name in it
+                                          //tokidname: items[i].tokid_name,  // each kids shared with
+                                          tokidname: from_check,  // each kids shared with
+                                          tokid_id: items[i].tokid_id,
+                                          tokidavatar: items[i].tokid_avatar,
+                                          tokidreply: "",  // null right now
+                                      }],
+                                      event_type: event_type, // 
+                                      comment_content: items[i].comment_content,
+                                      day: day,
+                                      time: time,
+                                  };
+                                  tempArray.push(element); // add into array for UI & $scope
+                                  alert('updated with new imageurl share event - ' + JSON.stringify(tempArray));
+                              };
+
+                          }; //end if event type
 
 
 
 
-                  }; //end for
+                      }; //end for
 
-                  $scope.eventarray = tempArray.reverse();
-                  alert(JSON.stringify($scope.eventarray))
+                      $scope.eventarray = tempArray.reverse();
+                      alert(JSON.stringify($scope.eventarray))
 
-              }; // end if
+                  }; // end if
 
 
-          }).catch(function (error) {
-              console.log(error)
-          });
+              }).catch(function (error) {
+                  console.log(error)
+              });
 
-    }; // end func
+    //}; // end func
 
 
     // ==========================================
@@ -285,6 +293,8 @@ cordovaNG.controller('clientpropertiesController', function ($scope, globalServi
     // ==========================================
     //  Get friends from Azure based on Client GUID.  THIS CODE USED ON CLIENTPROPERTIESCONTROLLER.JS and CLIENTSTARTCONTROLLER.JS
     // ==========================================
+    function getfriends() {
+
     var friendsarraylen, j;
     var quickfriendarray = []; //this is for quickly looking up redundancies in friends list
     var tempArray = []; // This resets the local array (which $scope is set to later)       
@@ -387,6 +397,7 @@ cordovaNG.controller('clientpropertiesController', function ($scope, globalServi
         };
     };
 
+    }; // end getFriends
     // ==========================================
 
 

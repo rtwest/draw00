@@ -4,8 +4,8 @@ W O R K I N G   R I G H T   N O W
 -- Log in on Admin side 
 		- !! Have to solve for when sending a New Invitation, which kid it is FROM.  For testing, I hardcoded a kid and ID.
 		- took long time after facebook log in :  need spinner.  This is because of long Azure checking?
-		- XXX ALL EVENTS ARE PULLED DOWN FOR A SELECTEDCLIENT
-		- XXX GETKIDDETAILS ISN'T GOING THROUGH LOOPING FOR ALL KIDS
+		- XXX ALL EVENTS ARE PULLED DOWN FOR A SELECTEDCLIENT when "filter" but nothing with "$filter", which is correct
+		- XXX DELETE KID - DELETED ALL FRIEND RECORDs
 
 -- XXX Check that when Piper shared Image and Client liked it back, Client was put in there 2 times (name, avatar).  Is problem in HTML or JS Obj?
 -- XXX On Client image, Piper like is added multiple times to same Image == keeps being inserted into localstorage 
