@@ -159,5 +159,11 @@ body{
     padding-left:0;
 }*/
 
+/*========================================*/
+.selecteddiv {
+    background-color: #00bfff;
+    color: #fff;
+}
+
 
 

@@ -68,15 +68,9 @@ cordovaNG.controller('clientpropertiesController', function ($scope, globalServi
 
     //function getEventLog() {
 
-        alert(selectedclientguid)
+        //alert(selectedclientguid)
         //alert('admin id is ' + globalService.userarray[0])
 
-    //Azureservice.read('events', "$filter=from_kid_id eq '03537ad8-b55c-41c7-b122-8997ac7cdca4'")
-    //Azureservice.query('events', {
-    //    criteria: {
-    //        from_kid_id: 'c9b8cb86-130c-4274-adf8-1931a9de18de',
-    //    }
-    //})
         Azureservice.read('events', "$filter=fromkid_id eq '" + selectedclientguid + "' or tokid_id eq '" + selectedclientguid + "'")
               .then(function (items) {
 
@@ -293,7 +287,7 @@ cordovaNG.controller('clientpropertiesController', function ($scope, globalServi
     // ==========================================
     //  Get friends from Azure based on Client GUID.  THIS CODE USED ON CLIENTPROPERTIESCONTROLLER.JS and CLIENTSTARTCONTROLLER.JS
     // ==========================================
-    function getfriends() {
+    //function getfriends() {
 
     var friendsarraylen, j;
     var quickfriendarray = []; //this is for quickly looking up redundancies in friends list
@@ -397,7 +391,7 @@ cordovaNG.controller('clientpropertiesController', function ($scope, globalServi
         };
     };
 
-    }; // end getFriends
+    //}; // end getFriends
     // ==========================================
 
 
@@ -447,6 +441,140 @@ cordovaNG.controller('clientpropertiesController', function ($scope, globalServi
             console.error('Azure Error: ' + err);  //alert('Azure Error: ' + err);
         });
     }
+
+    // ==========================================
+
+
+
+
+
+    // ==========================================
+    //  Create New Friend request record on Azure.  Store locally and create on Azure
+    // ==========================================
+    //1. enter parent email and lookup to verify, and get clients for this admin
+    //2. enter the kids display name and lookup in client array verify
+    //3. default to the display of the kid whose context you're creating the invitation in
+    //4. create new invitation record with the 4 corresponding IDs
+    // INVITATION RECORD: fromparent_id, toparent_id, fromkid, tokid, datetime
+
+
+    // #########################################################################################################################################################
+    var ToParentID, ToParentName, ToKidName2, FromKidName, FromKidID, ToKidID;
+    var clientarray2 = [];
+
+
+    // Choose Client (if needed)
+    // ------------
+    FromKidID = selectedclientguid;
+    FromKidName = $scope.clientName;
+    // ------------
+
+
+    // Verify Parent
+    // ------------
+    $scope.verifyParent = function (email) {
+        azureQueryParent(email)
+        $scope.verifyParentError = false;
+    };
+    function azureQueryParent(email) {
+        var query = "$filter=email eq '" + email + "'";
+        Azureservice.read('parents', query).then(function (items) {  // query to see if this 'reg_code' exists
+            if (items.length == 0) { // if email not found, then
+                // 'verifyParentError' is a flag the UI uses to check for 'show/hide' error div
+                $scope.verifyParentError = true;
+                $scope.verifyParentErrorMessage = '"' + email + '" is not a valid email.  Please check and try again.'
+                console.log('email not found')
+            }
+            else { // if email found, show verify success and kid verification UI
+                $scope.verifyParentSuccess = true;
+                ToParentID = items[0].id; // Get the GUID for the parent
+                ToParentName = items[0].name; // Get the GUID for the parent
+                azureQueryClientList(ToParentID)
+            };
+        }).catch(function (error) {
+            console.log(error)
+            alert(error);
+        })
+    };
+
+    // Get Clients for Admin ID
+    // ------------
+    function azureQueryClientList(adminGUID) {
+        var query = "$filter=parent_id eq '" + adminGUID + "'";
+        Azureservice.read('kid', query).then(function (items) {  // query to see if this 'name' exists
+            if (items.length == 0) { // if admin guid not found, then
+                console.log('admin guid  not found')
+            }
+            else { // if admin guid found, get the client list (JSON) and put in array
+                clientarray2 = items;  //alert(clientarray2[0].name);
+            };
+        }).catch(function (error) {
+            console.log(error);
+            alert(error);
+        })
+    };
+
+
+    // Verify Kid by looking up in Client Array
+    // ------------
+    $scope.verifyKid = function (name) {
+        $scope.verifyKidError = false;
+        lookUpClientinArray(name)
+    };
+    function lookUpClientinArray(name) {
+        var found = false;
+        for (i = 0, len = clientarray2.length; i < len; i++) {
+            //alert(clientarray2[i].name);
+            if (clientarray2[i].name == name) {
+                found = true;
+                ToKidID = clientarray2[i].id; // Get the GUID for this client
+                break;
+            };
+        };
+        if (found == true) { // name is in the Client array (-1 means not found), then show verify success and addNewInvitation button
+            $scope.verifyKidSuccess = true;
+            ToKidName2 = name; // use the name for the kid
+        }
+        else { // if kid name not found, 
+            // 'verifyKidError' is a flag the UI uses to check for 'show/hide' error div
+            $scope.verifyKidError = true;
+            $scope.verifyKidErrorMessage = '"' + name + '" is not a valid user.  Please check and try again.'
+            console.log('kid name not found')
+        };
+    };
+
+
+    // Create invitation record
+    // ------------
+    $scope.addNewInvitation = function () {
+        $scope.verifyKidSuccess = false; //toggle to turn off the UI modal (could be in html also)
+
+        // Create on Azure
+        // ---------------
+        // @@@ Push Notification sent by Node after Insert to ToParent for invitation 
+        Azureservice.insert('invitations', {
+            id: globalService.makeUniqueID(), // made GUID for Azure table        
+            fromparent_id: globalService.userarray[0],
+            fromparent_name: globalService.userarray[4], //first name.  full name is [2]
+            toparent_id: ToParentID,
+            toparent_name: ToParentName,
+            fromkid: FromKidName,
+            tokid: ToKidName2,
+            fromkid_id: FromKidID,
+            tokid_id: ToKidID,
+            status: '0', // unaccepted
+        })
+        .then(function () {
+            console.log('new invitation insert successful');
+            $scope.invitationSuccess = true; // UI flag that invitation was sent
+            $scope.showInvitationForm = false;
+        },
+        function (err) {
+            console.error('Azure Error: ' + err);
+            $scope.invitationError = true;
+            $scope.invitationErrorMessage = err; // UI flag that invitation was sent
+        });
+    };
 
     // ==========================================
 

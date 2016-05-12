@@ -280,7 +280,7 @@ cordovaNG.controller('admindashController', function ($scope, globalService, Azu
 
     function GetFriendRecordsAndDelete(id) {
 
-    Azureservice.read('friends', "kid1_id=email eq '" + id + "' or kid2_id eq '" + id + "'")
+     Azureservice.read('friends', "$filter=kid1_id eq '" + id + "' or kid2_id eq '" + id + "'")
         .then(function (items) {
             if (items.length == 0) { // if no Friend record found, then
                 console.log('no connections yet')
@@ -304,7 +304,7 @@ cordovaNG.controller('admindashController', function ($scope, globalService, Azu
     // !!!!! LOTS OF CALL TO AZURE NOW  // !!!!! BETTER TO HAVE A CUSTOM API IN NODE TO DO THIS JOINING
     // --------------------------------------
     function DeleteFriendRecords(items) {
-        //alert(j);
+        alert(j);
         // Delete on Azure
         // ---------------
         Azureservice.del('friends', {
@@ -368,12 +368,9 @@ cordovaNG.controller('admindashController', function ($scope, globalService, Azu
     //4. create new invitation record with the 4 corresponding IDs
     // INVITATION RECORD: fromparent_id, toparent_id, fromkid, tokid, datetime
 
-
     // #########################################################################################################################################################
     var ToParentID, ToParentName, ToKidName, FromKidName, FromKidID, ToKidID;
     var clientarray2 = [];
-
-
 
     // Choose Client (if needed)
     // ------------
@@ -428,7 +425,6 @@ cordovaNG.controller('admindashController', function ($scope, globalService, Azu
         })
     };
 
-
     // Verify Kid by looking up in Client Array
     // ------------
     $scope.verifyKid = function (name) {
@@ -456,7 +452,6 @@ cordovaNG.controller('admindashController', function ($scope, globalService, Azu
             console.log('kid name not found')
         };
     };
-
 
     // Create invitation record
     // ------------

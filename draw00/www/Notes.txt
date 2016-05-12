@@ -2,16 +2,13 @@ W O R K I N G   R I G H T   N O W
 -----------------------------
 
 -- Log in on Admin side 
-		- !! Have to solve for when sending a New Invitation, which kid it is FROM.  For testing, I hardcoded a kid and ID.
 		- took long time after facebook log in :  need spinner.  This is because of long Azure checking?
-		- XXX ALL EVENTS ARE PULLED DOWN FOR A SELECTEDCLIENT when "filter" but nothing with "$filter", which is correct
-		- XXX DELETE KID - DELETED ALL FRIEND RECORDs
 
 -- XXX Check that when Piper shared Image and Client liked it back, Client was put in there 2 times (name, avatar).  Is problem in HTML or JS Obj?
 -- XXX On Client image, Piper like is added multiple times to same Image == keeps being inserted into localstorage 
 
 
-- XX NEED TO TEST -  need to get KidAvatars into event log on Admin side InvitationlistController accept invitation
+- XXXXXXXXXXXXXXXXXXXXX NEED TO TEST -  need to get KidAvatars into event log on Admin side InvitationlistController accept invitation
 - XX NEED TO TEST - didn't get a new picture share alert.  I think that was because of making serial calls where it should have been chained - so i'm trying that now.
 
 
@@ -23,7 +20,7 @@ W O R K I N G   R I G H T   N O W
 	- @@@ IF saved after a Share, the put the Share URL into PouchDB with the Image ID.
 	- Now you know if the Image has a URL for Sharing or if you have to Upload it - then update the PouchDB record/doc
 
-// ** Parents show up in Kids friends list ?? And can Draw and share with them.  Make siblings friends?
+// ** Parents can Draw and share with Kids 
 // ** Clients create Avatar
 
 - Collapsing repeat share event events, when looking at a client sharing to several people at once	- /// @@@@@@  HAVE TO BE SIGNED IN AS ADMIN TO TEST THIS OUT.
@@ -197,7 +194,7 @@ Azure Wrapper Examples
 - https://github.com/TerryMooreII/angular-azure-mobile-service
 // Query example where col = val
 ------------------------------
-Azureservice.read('parents', "filter=email eq 'bogus@test.com' or name eq 'FirstName'")
+Azureservice.read('parents', "$filter=email eq 'bogus@test.com' or name eq 'FirstName'")
   .then(function (items) {
       console.log(items)
       console.log(items.length)

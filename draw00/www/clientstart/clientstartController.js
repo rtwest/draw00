@@ -297,7 +297,7 @@ cordovaNG.controller('clientstartController', function ($scope, globalService, A
         var tempArray = []; // This resets the local array (which $scope is set to later)
         // Read Event Log from Azure
         // ------------------------
-        Azureservice.read('events', "filter=from_kid_id eq '" + clientGUID + "' or to_kid_id eq '" + clientGUID + "'")
+        Azureservice.read('events', "$filter=fromkid_id eq '" + clientGUID + "' or tokid_id eq '" + clientGUID + "'")
           .then(function (items) {
 
               if (items.length == 0) { // if no Event record found, then
