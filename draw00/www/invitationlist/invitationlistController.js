@@ -16,7 +16,11 @@ cordovaNG.controller('invitationlistController', function ($scope, globalService
 
     if (localStorage.getItem('RYB_clientarray')) {
         $scope.clientarray = JSON.parse(localStorage.getItem('RYB_clientarray')); // get array from localstorage key pair and string
-        alert("array length: " + $scope.clientarray.length + " - " + $scope.clientarray)
+        //alert("array length: " + $scope.clientarray.length + " - " + $scope.clientarray)
+        // default select the first kid
+        $scope.selectedclientguid = $scope.clientarray[0][0]; 
+        $scope.selectedclientname = $scope.clientarray[0][1];
+        alert($scope.selectedclientguid + " - " + $scope.selectedclientname);
     }
     else { // if no clients, show special message for this case 
         alert('no clients found')
@@ -35,7 +39,6 @@ cordovaNG.controller('invitationlistController', function ($scope, globalService
     // INVITATION RECORD: fromparent_id, toparent_id, fromkid, tokid, datetime
 
 
-    // #########################################################################################################################################################
     var ToParentID, ToParentName, ToKidName2, FromKidName, FromKidID, ToKidID;
     var clientarray2 = [];
 
@@ -52,7 +55,7 @@ cordovaNG.controller('invitationlistController', function ($scope, globalService
         $scope.selectedclientguid = selectedclientsplitarray[0];
         $scope.selectedclientname = selectedclientsplitarray[1];
         $scope.selectedclientindex = listindex;
-        alert($scope.selectedclientguid);
+        alert(selectedclient + " ; " + $scope.selectedclientguid + " - " + selectedclientsplitarray[1]);
     };
 
     // Verify Parent
@@ -153,6 +156,14 @@ cordovaNG.controller('invitationlistController', function ($scope, globalService
             console.log('new invitation insert successful');
             $scope.invitationSuccess = true; // UI flag that invitation was sent
             $scope.showInvitationForm = false;
+            // add to the local $scope array
+            var element = {
+                fromkid: $scope.selectedclientname,
+                tokid: ToKidName2,
+                toparent_name: ToParentName,
+            };
+            $scope.sentInvitationArray.push(element);
+            $scope.noSentInvitationsMessage = false;
         },
         function (err) {
             console.error('Azure Error: ' + err);

@@ -2,8 +2,7 @@
 
 <p>Invitation list</p>
 <button type="button" class="btn btn-primary" style="box-shadow:none;" ng-click="gotoAdminView()">Back</button>
-<button type="button" class="btn btn-primary" style="box-shadow:none;" ng-click="gotoView()">Button</button>
-<button type="button" class="btn btn-primary" style="box-shadow:none;" ng-click="showInvitationForm=true;invitationSuccess=false">New invitation</button>
+<button type="button" class="btn btn-primary" style="box-shadow:none;" ng-init="selectedclientindex=0" ng-click="showInvitationForm=true;invitationSuccess=false">New invitation</button>
 
 
 
@@ -77,13 +76,13 @@
     </div>
     <script type="text/ng-template" id="repeaterTemplateClients.html">
         <div id="{{row[0]}},{{row[1]}}" ng-click="selectedClient($event,$index);" ng-class="{'selecteddiv' : selectedclientindex == $index}">
-            <div id="{{row[0]}}">
+            <div id="{{row[0]}},{{row[1]}}">
                 {{row[1]}}
             </div>
-            <div id="{{row[0]}}">
+            <div id="{{row[0]}},{{row[1]}}">
                 {{row[2]}}
             </div>
-            <div id="{{row[0]}}">
+            <div id="{{row[0]}},{{row[1]}}">
                 {{row[3]}}
             </div>
         </div>
