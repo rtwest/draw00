@@ -23,10 +23,10 @@
 <script type="text/ng-template" id="repeaterTemplate.html">
     <div>
         <div>To 
-            {{row.tokid}}
+            {{row.tokid}}{{row.tokid_avatar}}
         </div>
         <div>From
-            {{row.fromkid}}
+            {{row.fromkid}}{{row.fromkid_avatar}}
         </div>
         <div>
             Parent
@@ -47,10 +47,10 @@
 </div>
 <script type="text/ng-template" id="repeaterTemplate2.html">
     <div>From
-        {{row.fromkid}}
+        {{row.fromkid}}{{row.fromkid_avatar}}
     </div>
     <div>To 
-        {{row.tokid}}
+        {{row.tokid}}{{row.tokid_avatar}}
     </div>
     <div>Parent
         {{row.toparent_name}}
@@ -75,14 +75,14 @@
         <div ng-show="noClientFlag">No clients</div>
     </div>
     <script type="text/ng-template" id="repeaterTemplateClients.html">
-        <div id="{{row[0]}},{{row[1]}}" ng-click="selectedClient($event,$index);" ng-class="{'selecteddiv' : selectedclientindex == $index}">
+        <div id="{{row[0]}},{{row[1]}},{{row[2]}}" ng-click="selectedClient($event,$index);" ng-class="{'selecteddiv' : selectedclientindex == $index}">
             <div id="{{row[0]}},{{row[1]}}">
                 {{row[1]}}
             </div>
-            <div id="{{row[0]}},{{row[1]}}">
+            <div id="{{row[0]}},{{row[1]}},{{row[2]}}">
                 {{row[2]}}
             </div>
-            <div id="{{row[0]}},{{row[1]}}">
+            <div id="{{row[0]}},{{row[1]}},{{row[2]}}">
                 {{row[3]}}
             </div>
         </div>

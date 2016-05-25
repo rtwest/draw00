@@ -1,8 +1,7 @@
 W O R K I N G   R I G H T   N O W
 -----------------------------
-
--- Log in on Admin side 
-		- took long time after facebook log in :  need spinner.  This is because of long Azure checking?
+- ClientPropertiesController - has backwards event log (( when 2 event made at exact same time?? ))
+- taking our GetKidDetails to just get the Avatar ID and putting that into the Invitiations (( TEST ON ADMIN SIDE ))
 
 -- XXX Check that when Piper shared Image and Client liked it back, Client was put in there 2 times (name, avatar).  Is problem in HTML or JS Obj?
 -- XXX On Client image, Piper like is added multiple times to same Image == keeps being inserted into localstorage 
@@ -45,6 +44,7 @@ P R O B L E M S
 -----------------------------
 - ***REGISTERING FOR PUSH SOMETIMES FAILS AND TAKE A WHILE TO - IT BLOCKS OTHER AZURE CALLS UNTIL IT FAILS
      - IIS error says it dones have permission for NTFS web.config file
+-- Log in on Admin side - took long time after facebook log in :  need spinner.  This is because of long Azure checking?
 - Had a problem in creating Azure push notifications.  I think I solved it by remove the Azure mobile web services JS file - which was redundant to the Azure cordova plugin.  I thought I needed the JS file for the NG Azure JS wrapper but all the Azure table CRUD ops work fine without it.
 - Insert JS on NODE for FRIEND INSERT.  Need registered clients to test if Push Notification works.
 - !!! Registering for Push Notification seems to block other Azure calls when waiting for response.  

@@ -202,7 +202,7 @@ cordovaNG.controller('clientstartController', function ($scope, globalService, A
                                 record_id: items[i].id,
                                 friend_id: items[i].kid2_id,
                                 friend_name: items[i].kid2_name,
-                                friend_avatar: ' ', //empty placeholder
+                                friend_avatar: items[i].kid2_avatar,  
                                 //friend_parentname: ' ',
                                 //friend_parentemail: ' ',
                             };
@@ -214,7 +214,7 @@ cordovaNG.controller('clientstartController', function ($scope, globalService, A
                                 record_id: items[i].id,
                                 friend_id: items[i].kid1_id,
                                 friend_name: items[i].kid1_name,
-                                friend_avatar: ' ', //empty placeholder
+                                friend_avatar: items[i].kid1_avatar,
                                 //friend_parentname: ' ',
                                 //friend_parentemail: ' ',
                             };
@@ -222,11 +222,11 @@ cordovaNG.controller('clientstartController', function ($scope, globalService, A
                         };
                     };//end for
 
-                    // Different way of setting up the loop 
-                    j = 0;
-                    len = tempArray.length;
-                    //alert(len);
-                    getkiddetails(); // @@@ Call recursive Azure call
+                    //// Different way of setting up the loop 
+                    //j = 0;
+                    //len = tempArray.length;
+                    ////alert(len);
+                    //getkiddetails(); // @@@ Call recursive Azure call
 
                 };
             }).catch(function (error) {
@@ -238,6 +238,7 @@ cordovaNG.controller('clientstartController', function ($scope, globalService, A
     // RECURSIVELY Go through Friend array and get addtional info Kid table in Azure 
     // !!!!! LOTS OF CALL TO AZURE NOW  // !!!!! BETTER TO HAVE A CUSTOM API IN NODE TO DO THIS JOINING
     // --------------------------------------
+    // @@@@@@@@@@@@@@ NOT USED
     function getkiddetails() {
         //alert(j); alert(len);
 
@@ -282,14 +283,16 @@ cordovaNG.controller('clientstartController', function ($scope, globalService, A
         // ---------------
         var likesArrayFlattened = [];
         var imagepropertiesarray = [];
-        imagepropertiesarray = JSON.parse(localStorage.getItem('RYB_imagepropertiesarray')); // get array from localstorage key pair and string
-        var imagepropertiesarraylength = imagepropertiesarray.length
-        for (x = 0; x < imagepropertiesarraylength; x++) { // Loop through to array for ImageID
-            for (y = 0; y < imagepropertiesarray[x].commentarray.length; y++) {  // Loop through subarray for comments
-                var el = imagepropertiesarray[x].id + imagepropertiesarray[x].commentarray[y].kid_id;
-                likesArrayFlattened.push(el);
-            };
-        }; //end for
+        if(localStorage.getItem('RYB_imagepropertiesarray')){
+            imagepropertiesarray = JSON.parse(localStorage.getItem('RYB_imagepropertiesarray')); // get array from localstorage key pair and string
+            var imagepropertiesarraylength = imagepropertiesarray.length
+            for (x = 0; x < imagepropertiesarraylength; x++) { // Loop through to array for ImageID
+                for (y = 0; y < imagepropertiesarray[x].commentarray.length; y++) {  // Loop through subarray for comments
+                    var el = imagepropertiesarray[x].id + imagepropertiesarray[x].commentarray[y].kid_id;
+                    likesArrayFlattened.push(el);
+                };
+            }; //end for
+        };
         //alert("likes array is = " + likesArrayFlattened);
 
 
@@ -346,11 +349,15 @@ cordovaNG.controller('clientstartController', function ($scope, globalService, A
                       // @@@ Get time 
                       // --------
                       var t = thiseventday.getHours();  //+1 to make up for 0 base
+                      var minutes = thiseventday.getMinutes();
+                      if (minutes < 10) {
+                          minutes = "0" + minutes;
+                      };
                       if (t > 12) {
-                          time = Math.abs(12 - t) + ":" + thiseventday.getMinutes() + "pm";  // break down the 24h and use Am/pm
+                          time = Math.abs(12 - t) + ":" + minutes + "pm";  // break down the 24h and use Am/pm
                       }
                       else {
-                          time = t + ":" + thiseventday.getMinutes() + "am";  // break down the 24h and use Am/pm
+                          time = t + ":" + minutes + "am";  // break down the 24h and use Am/pm
                       }
 
                       // @@@ Small check to personalize the event details if it is YOU

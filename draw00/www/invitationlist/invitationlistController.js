@@ -7,7 +7,7 @@ cordovaNG.controller('invitationlistController', function ($scope, globalService
 
     $scope.noNewInvitationsMessage = false; // boolean for ng-show for 'no invitations' message
     $scope.noSentInvitationsMessage = false; // boolean for ng-show for 'no invitations' message
-    $scope.selectedclientguid, $scope.selectedclientname, $scope.selectedclientindex;
+    $scope.selectedclientguid, $scope.selectedclientname, $scope.selectedclientavatar, $scope.selectedclientindex;
 
     // ==========================================
     //  Get local client array.   
@@ -20,7 +20,8 @@ cordovaNG.controller('invitationlistController', function ($scope, globalService
         // default select the first kid
         $scope.selectedclientguid = $scope.clientarray[0][0]; 
         $scope.selectedclientname = $scope.clientarray[0][1];
-        alert($scope.selectedclientguid + " - " + $scope.selectedclientname);
+        $scope.selectedclientavatar = $scope.clientarray[0][2];
+        alert($scope.selectedclientguid + " - " + $scope.selectedclientname + " - " + $scope.selectedclientavatar);
     }
     else { // if no clients, show special message for this case 
         alert('no clients found')
@@ -39,7 +40,7 @@ cordovaNG.controller('invitationlistController', function ($scope, globalService
     // INVITATION RECORD: fromparent_id, toparent_id, fromkid, tokid, datetime
 
 
-    var ToParentID, ToParentName, ToKidName2, FromKidName, FromKidID, ToKidID;
+    var ToParentID, ToParentName, ToKidName2, FromKidName, FromKidID, ToKidID, ToKidAvatar;
     var clientarray2 = [];
 
 
@@ -54,6 +55,7 @@ cordovaNG.controller('invitationlistController', function ($scope, globalService
         var selectedclientsplitarray = selectedclient.split(","); // Split the string into an array by ","
         $scope.selectedclientguid = selectedclientsplitarray[0];
         $scope.selectedclientname = selectedclientsplitarray[1];
+        $scope.selectedclientavatar = selectedclientsplitarray[2];   
         $scope.selectedclientindex = listindex;
         alert(selectedclient + " ; " + $scope.selectedclientguid + " - " + selectedclientsplitarray[1]);
     };
@@ -116,6 +118,7 @@ cordovaNG.controller('invitationlistController', function ($scope, globalService
             if (clientarray2[i].name == name) {
                 found = true;
                 ToKidID = clientarray2[i].id; // Get the GUID for this client
+                ToKidAvatar = clientarray2[i].avatar_id;
                 break;
             };
         };
@@ -150,6 +153,8 @@ cordovaNG.controller('invitationlistController', function ($scope, globalService
             tokid: ToKidName2,
             fromkid_id: $scope.selectedclientguid, //FromKidID,
             tokid_id: ToKidID,
+            tokid_avatar: ToKidAvatar,
+            fromkid_avatar: $scope.selectedclientavatar,
             status: '0', // unaccepted
         })
         .then(function () {
@@ -261,6 +266,8 @@ cordovaNG.controller('invitationlistController', function ($scope, globalService
                 kid2id = $scope.newInvitationArray[i].tokid_id;
                 kid1name = $scope.newInvitationArray[i].fromkid;
                 kid2name = $scope.newInvitationArray[i].tokid;
+                kid1avatar = $scope.newInvitationArray[i].fromkid_avatar;
+                kid2avatar = $scope.newInvitationArray[i].tokid_avatar;
                 break;
             };
         };
@@ -274,7 +281,7 @@ cordovaNG.controller('invitationlistController', function ($scope, globalService
         })
         .then(function () { // if success,
             console.log('Accept/Delete successful'); //alert('Accept/Delete successful')
-            InsertFriendRecord(kid1id, kid2id, kid1name, kid2name); // @@@ On success, Insert new Friend record in Azure Friend Table
+            InsertFriendRecord(kid1id, kid2id, kid1name, kid2name,kid1avatar,kid2avatar); // @@@ On success, Insert new Friend record in Azure Friend Table
             //InsertEventRecord(kid1id, kid2id, kid1avatar, kid2avatar, kid1name, kid2name); // @@@ On success, Insert new Event record in Azure Event Table
 
             $scope.newInvitationArray.splice(foundIndex, 1) // remove from this element at index number from 'sentInvitationArray'
@@ -288,7 +295,7 @@ cordovaNG.controller('invitationlistController', function ($scope, globalService
 
     // Insert new Friend record in Azure Friend Table
     // ---------------
-    function InsertFriendRecord(kid1id, kid2id, kid1name, kid2name) {
+    function InsertFriendRecord(kid1id, kid2id, kid1name, kid2name,kid1avatar,kid2avatar) {
         // Create on Azure
         // ---------------
         // @@@ Push Notification is sent from Node on Insert to let both Kids know Friend connection made
@@ -298,13 +305,14 @@ cordovaNG.controller('invitationlistController', function ($scope, globalService
             kid1_id: kid1id,
             kid2_id: kid2id,
             kid1_name:kid1name,
-            kid2_name: kid2name
+            kid2_name: kid2name,
+            kid1_avatar:kid1avatar,
+            kid2_avatar: kid2avatar
         })
         .then(function () {
             console.log('new friend insert successful');
             // --- THIS WASN'T FIRING SO I'M CHAINING THE AZURE INSERTS IN SERIAL IN CASE THEY CAN'T FIRE IN PARRALLEL.  WOULD BE BETTER AS 1 CALL AND DO IT IN NODE.JS
-            PrepForInsertEventRecord(kid1id, kid2id, kid1name, kid2name); // @@@ On success, Insert new Event record in Azure Event Table
-
+            InsertEventRecord(kid1id, kid2id, kid1name, kid2name,kid1avatar, kid2avatar); // @@@ On success, Insert new Event record in Azure Event Table
         },
         function (err) {
             console.error('Azure Error: ' + err);
@@ -313,35 +321,6 @@ cordovaNG.controller('invitationlistController', function ($scope, globalService
     };
     // ==========================================
 
-    // Prepare by getting Avatars to Insert new Event record in Azure Event Table
-    // ==========================================
-    function PrepForInsertEventRecord(kid1id, kid2id, kid1name, kid2name) {
-        var kid1avatar
-        var kid2avatar
-
-        //Query Azure
-        // -----------
-        Azureservice.getById('kid', kid1id)
-        .then(function (item) {
-            kid1avatar = item.avatar_id;
-            alert('got kid1 avatar - ' + kid1avatar);
-            //Query Azure // Chained in serial order
-            // -----------
-            Azureservice.getById('kid', kid2id)
-            .then(function (item) {
-                kid2avatar = item.avatar_id;
-                alert('got kid2 avatar - ' + kid2avatar);
-                //Insert Function Azure // Chained in serial order
-                // -----------
-                InsertEventRecord(kid1id, kid2id, kid1name, kid2name, kid1avatar, kid2avatar)
-            }, function (err) {
-                console.error('Azure Error: ' + err);
-            });
-        }, function (err) {
-            console.error('Azure Error: ' + err);
-        });
-    };
-    // ==========================================
 
     // Insert new Event record in Azure Event Table
     // ==========================================

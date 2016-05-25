@@ -74,7 +74,7 @@ cordovaNG.controller('clientpropertiesController', function ($scope, globalServi
         Azureservice.read('events', "$filter=fromkid_id eq '" + selectedclientguid + "' or tokid_id eq '" + selectedclientguid + "'")
               .then(function (items) {
 
-                  alert(JSON.stringify(items));
+                  //alert(JSON.stringify(items));
 
                   if (items.length == 0) { // if no Event record found, then
                       $scope.noEventsFlag = true;   // '...Flag' is a flag the UI uses to check for 'show/hide' msg div
@@ -130,11 +130,15 @@ cordovaNG.controller('clientpropertiesController', function ($scope, globalServi
                           // @@@ Get time 
                           // --------
                           var t = thiseventday.getHours();  //+1 to make up for 0 base
+                          var minutes = thiseventday.getMinutes();
+                          if (minutes < 10) {
+                            minutes = "0" + minutes;
+                          };
                           if (t > 12) {
-                              time = Math.abs(12 - t) + ":" + thiseventday.getMinutes() + "pm";  // break down the 24h and use Am/pm
+                              time = Math.abs(12 - t) + ":" + minutes + "pm";  // break down the 24h and use Am/pm
                           }
                           else {
-                              time = t + ":" + thiseventday.getMinutes() + "am";  // break down the 24h and use Am/pm
+                              time = t + ":" + minutes + "am";  // break down the 24h and use Am/pm
                           }
 
                           // @@@ Small check to personalize the event details if it is YOU
@@ -261,7 +265,9 @@ cordovaNG.controller('clientpropertiesController', function ($scope, globalServi
 
                       }; //end for
 
-                      $scope.eventarray = tempArray.reverse();
+                      //@@@@@@@@@@@@@@@@@@@@@@@
+                      $scope.eventarray = tempArray.reverse(); // For some reason, this was reversing the order of the list chronologically
+                      //$scope.eventarray = tempArray;
                       alert(JSON.stringify($scope.eventarray))
 
                   }; // end if
@@ -459,7 +465,7 @@ cordovaNG.controller('clientpropertiesController', function ($scope, globalServi
 
 
     // #########################################################################################################################################################
-    var ToParentID, ToParentName, ToKidName2, FromKidName, FromKidID, ToKidID;
+    var ToParentID, ToParentName, ToKidName2, FromKidName, FromKidID, ToKidID,ToKidAvatar,FromKidAvatar;
     var clientarray2 = [];
 
 
@@ -467,6 +473,7 @@ cordovaNG.controller('clientpropertiesController', function ($scope, globalServi
     // ------------
     FromKidID = selectedclientguid;
     FromKidName = $scope.clientName;
+    FromKidAvatar=$scope.avatarID;
     // ------------
 
 
@@ -528,6 +535,7 @@ cordovaNG.controller('clientpropertiesController', function ($scope, globalServi
             if (clientarray2[i].name == name) {
                 found = true;
                 ToKidID = clientarray2[i].id; // Get the GUID for this client
+                ToKidAvatar = clientarray2[i].avatar_id;
                 break;
             };
         };
@@ -562,6 +570,8 @@ cordovaNG.controller('clientpropertiesController', function ($scope, globalServi
             tokid: ToKidName2,
             fromkid_id: FromKidID,
             tokid_id: ToKidID,
+            tokid_avatar: ToKidAvatar,
+            fromkid_avatar: FromKidAvatar,
             status: '0', // unaccepted
         })
         .then(function () {
