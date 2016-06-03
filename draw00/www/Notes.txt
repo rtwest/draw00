@@ -1,7 +1,5 @@
 W O R K I N G   R I G H T   N O W
 -----------------------------
-- ClientPropertiesController - has backwards event log (( when 2 event made at exact same time?? ))
-- taking our GetKidDetails to just get the Avatar ID and putting that into the Invitiations (( TEST ON ADMIN SIDE ))
 
 -- XXX Check that when Piper shared Image and Client liked it back, Client was put in there 2 times (name, avatar).  Is problem in HTML or JS Obj?
 -- XXX On Client image, Piper like is added multiple times to same Image == keeps being inserted into localstorage 
@@ -23,6 +21,7 @@ W O R K I N G   R I G H T   N O W
 - On Invitation Accept, Insert into Event Record  /// @@@@@@  HAVE TO BE SIGNED IN AS ADMIN TO TEST THIS OUT.  Alternatively, do this from Admin side after invitation accept
 - RESEARCH - ALSO NEED TO CLEAN BLOB STORAGE WEEKLY.  Maybe have to convert mobile services to app services.  Get scheduler.  Web Pages.  New Pricing?? 
 
+- ClientPropertiesController on Admin site - has backwards event log when you reverse it at the end.  Is fine when reversed at starts looking at friend events.
 
 
 

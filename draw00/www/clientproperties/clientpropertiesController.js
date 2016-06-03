@@ -92,8 +92,8 @@ cordovaNG.controller('clientpropertiesController', function ($scope, globalServi
                       lasteventday = new Date();
                       montharray = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
-                      //items = items.reverse()  // @@@ This puts them in newwest first order.  
-                      alert(JSON.stringify(items))
+                      // @@@ ON THE ADMIN SIDE, DO YOU REVERSE ITEMS BEFORE BUILDING THEM?
+                      items = items.reverse()  // @@@ This puts them in newwest first order.  
 
                       for (i = 0; i < len; i++) {
 
@@ -266,8 +266,8 @@ cordovaNG.controller('clientpropertiesController', function ($scope, globalServi
                       }; //end for
 
                       //@@@@@@@@@@@@@@@@@@@@@@@
-                      $scope.eventarray = tempArray.reverse(); // For some reason, this was reversing the order of the list chronologically
-                      //$scope.eventarray = tempArray;
+                      //$scope.eventarray = tempArray.reverse(); // For some reason, this was reversing the order of the list chronologically
+                      $scope.eventarray = tempArray;
                       alert(JSON.stringify($scope.eventarray))
 
                   }; // end if

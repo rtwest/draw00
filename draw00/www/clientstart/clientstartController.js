@@ -222,6 +222,10 @@ cordovaNG.controller('clientstartController', function ($scope, globalService, A
                         };
                     };//end for
 
+                    globalService.friendArray = tempArray;
+                    $scope.friendArray = globalService.friendArray; // @@@ Set to $scope array
+
+                    // XXXX REMOVED
                     //// Different way of setting up the loop 
                     //j = 0;
                     //len = tempArray.length;
@@ -317,6 +321,9 @@ cordovaNG.controller('clientstartController', function ($scope, globalService, A
                   thiseventday = new Date();
                   lasteventday = new Date();
                   montharray = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+                  // @@@ ON THE ADMIN SIDE, DO YOU REVERSE ITEMS BEFORE BUILDING THEM?
+                  items = items.reverse()  // @@@ This puts them in newwest first order.
 
                   for (i = 0; i < len; i++) {
 
@@ -512,8 +519,8 @@ cordovaNG.controller('clientstartController', function ($scope, globalService, A
 
 
                   // @@@ Push the cleaned up array of objects into the $scope
-                  //tempArray = tempArray.reverse(); // Reverse order of array so most recent is first
-                  globalService.eventArray = tempArray.reverse();// Reverse order of array so most recent is first
+                  //globalService.eventArray = tempArray.reverse();// Reverse order of array so most recent is first
+                  globalService.eventArray = tempArray;
                   $scope.eventarray = globalService.eventArray;
                   alert("Event array - "+JSON.stringify($scope.eventarray))
 
