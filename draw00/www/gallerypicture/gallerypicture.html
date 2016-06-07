@@ -7,7 +7,7 @@
 <div>{{clientname}}</div>
 <div>{{clientavatar}}</div>
 
-<img src="{{pictureFilePath}}" alt="Shared drawing" />
+<img id="galleryDrawing" src="{{pictureFilePath}}" alt="Shared drawing" />
 
 <p>Good Job!</p>
 <p>These friends like your picture!</p>
@@ -22,16 +22,34 @@
 
 <div ng-click="showDeleteOverlay=true">Delete</div>
 
-<div ng-click="showShareOverlay=true">Share</div>
+<div ng-click="shareActionSheet=true">Share</div>
 
 
 <!--Overlay dialogs-->
-
-<div ng-show="showShareOverlay">
-    <div></div>
-</div>
 
 <div ng-show="showDeleteOverlay">
     <div ng-click="deleteClick();showDeleteOverlay=false">Delete</div>
     <div ng-click="showDeleteOverlay=false">Cancel</div>
 </div>
+
+<!--Friend List Repeater-->
+<div ng-show="shareActionSheet" style="position:absolute; top:60px;z-index:1000">
+    <div ng-click="shareActionSheet=false;shareSelectionArray=[];toggleSelectArray=[]">Close</div>
+    <!--'For Each' loop using object 'clientlist' known to the $scope when defined in the controller -->
+    <!--'row' is a new local var created here then used in controllerJS-->
+    <!-- Can use 'arr.[x]' for array and 'ParamName/Colname' if JSON -->
+    <div ng-repeat="row in friendArray track by $index" ng-include="'repeaterTemplate.html'"></div>
+    <div ng-show="noFriendsFlag">No Friends added yet</div>
+    <div ng-click="Share();shareActionSheet=false;">Share</div>
+</div>
+<!-- This is one way to specify the repeater item template used above
+    Could also be in separate HTML file loaded with ng-include="'folder/repeaterTemplate.html'"
+    Have to have the element ID on everything because the obj id is passed where ever you click-->
+<script type="text/ng-template" id="repeaterTemplate.html">
+    <div>
+        <div id="{{row.friend_id}},{{row.friend_name}},{{row.friend_avatar}}" ng-class="{'selectedShareClass':toggleSelectArray.indexOf($index) != -1}" ng-click="toggleSelect($event,$index)">{{row.friend_id}}</div>
+        <!--use the class selectedShareClass IF this item's $index is in this array toggleSelectArray-->
+        <div id="{{row.friend_id}},{{row.friend_name}},{{row.friend_avatar}}" ng-class="{'selectedShareClass':toggleSelectArray.indexOf($index) != -1}" ng-click="toggleSelect($event,$index)">{{row.friend_avatar}}</div>
+        <div id="{{row.friend_id}},{{row.friend_name}},{{row.friend_avatar}}" ng-class="{'selectedShareClass':toggleSelectArray.indexOf($index) != -1}" ng-click="toggleSelect($event,$index)">{{row.friend_name}}</div>
+    </div>
+</script>

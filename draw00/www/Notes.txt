@@ -6,13 +6,9 @@ W O R K I N G   R I G H T   N O W
 - XX NEED TO TEST - didn't get a new picture share alert.  I think that was because of making serial calls where it should have been chained - so i'm trying that now.
 
 
+// FAIL ON IOS
+- Sql Lib error on iOS.  Maybe left over from PouchDB and IndexDB?  Look for SqlLite and remove JS Lib.
 
-
-// SHARING FROM GALLERY
-- Gallery View / Picture details view - Likes / Actions - sharing 
-	- sharing from gallery is tricky because you might or might not have this stored on Azure already to share a link with.
-	- @@@ IF saved after a Share, the put the Share URL into PouchDB with the Image ID.
-	- Now you know if the Image has a URL for Sharing or if you have to Upload it - then update the PouchDB record/doc
 
 // ** Parents can Draw and share with Kids 
 // ** Clients create Avatar

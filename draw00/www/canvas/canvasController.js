@@ -401,28 +401,6 @@ cordovaNG.controller('canvasController', function ($scope, $http, globalService,
                 // --------
                 //var uid = new Date().toJSON(); // make the ID a timestamp because PouchDB returns ordered ID (so now by datetime)
 
-
-                // XXXXXXXXXXXXX REMOVED POUCHDB 
-                // --------
-                //var record = { _id: UniquePictureID, filepath: filepath, datetime: Date.now(), commentarray: []}; //JSON for unique id for picture, filepath to retrieve it, datetime in milliseconds, array of comments
-                //// Use .put for update or add new.  Use .post for just add new
-                //globalService.drawappDatabase.put(record, function (error, response) { //record, onDBsuccess, onDBerror
-                //    if (error) {
-                //        console.log(error);
-                //        return;
-                //    } else if (response && response.ok) {
-                //        // On successful filepath save to PouchDB
-                //        // -----
-                //        // NEED BETTER SAVED INDICATOR
-                //        alert("Saved")
-                //        console.log(response)
-                //    }
-                //});
-                //globalService.drawappDatabase.get(uid).then(function (doc) {
-                //    alert(JSON.stringify(doc.filepath))
-                //});
-                // --------
-
                 // @@@ Put the image properties into localstorage
                 var record = { id: UniquePictureID, filepath: filepath, datetime: Date.now(), commentarray: [] }; //JSON for unique id for picture, filepath to retrieve it, datetime in milliseconds, array of comments
                 var imagepropertiesarray = [];
