@@ -1,30 +1,33 @@
 W O R K I N G   R I G H T   N O W
 -----------------------------
 
--- XXX Check that when Piper shared Image and Client liked it back, Client was put in there 2 times (name, avatar).  Is problem in HTML or JS Obj?
--- XXX On Client image, Piper like is added multiple times to same Image == keeps being inserted into localstorage 
-- XX NEED TO TEST - didn't get a new picture share alert.  I think that was because of making serial calls where it should have been chained - so i'm trying that now.
 
 
 // FAIL ON IOS
 - Sql Lib error on iOS.  Maybe left over from PouchDB and IndexDB?  Look for SqlLite and remove JS Lib.
+	- remove plugin for Web SQL Lite.  io.littlehelpers....
+	- remoed PouchDB from loading on Index.html
 
 
-// ** Parents can Draw and share with Kids 
-// ** Clients create Avatar
+- ** Need to return to your Image in Draw view and not alway make a new Canvas. 
+- ** Need to have seed picture templates to trace - simple characters - kitten, lion cub, pony, 
+- ** Parents can Draw and share with Kids 
+
 
 - Collapsing repeat share event events, when looking at a client sharing to several people at once	- /// @@@@@@  HAVE TO BE SIGNED IN AS ADMIN TO TEST THIS OUT.
 - On Invitation Accept, Insert into Event Record  /// @@@@@@  HAVE TO BE SIGNED IN AS ADMIN TO TEST THIS OUT.  Alternatively, do this from Admin side after invitation accept
-- RESEARCH - ALSO NEED TO CLEAN BLOB STORAGE WEEKLY.  Maybe have to convert mobile services to app services.  Get scheduler.  Web Pages.  New Pricing?? 
-
 - ClientPropertiesController on Admin site - has backwards event log when you reverse it at the end.  Is fine when reversed at starts looking at friend events.
+-- XXX Check that when Piper shared Image and Client liked it back, Client was put in there 2 times (name, avatar).  Is problem in HTML or JS Obj?
+-- XXX On Client image, Piper like is added multiple times to same Image == keeps being inserted into localstorage 
+- XX NEED TO TEST - didn't get a new picture share alert.  I think that was because of making serial calls where it should have been chained - so i'm trying that now.
 
 
 
 
  TO DO
 -----------------------------
-- ** Need to have seed picture templates to trace - simple characters - kitten, lion cub, pony, 
+- XX - RESEARCH - WHY THE FAIL ON CONNECTING TO AZURE SOMETIMES?
+- RESEARCH - ALSO NEED TO CLEAN BLOB STORAGE WEEKLY.  Maybe have to convert mobile services to app services.  Get scheduler.  Web Pages.  New Pricing?? 
 - * Loaders and Progress indicators when awaiting on Azure response
 - * Need better Picture Save Indicator.  Need better Picuture Shared indicator
 - Need to check for web connection on load and alert
@@ -32,7 +35,8 @@ W O R K I N G   R I G H T   N O W
 - Pull new friends from client to update client
 - ??? Need to restrict permissions on azure tables to authenticate users for admin and client(probably) 
 - ** Kid Design Like Nintendo 3DS - Class DoJo - sticker like white borders and box shadows
-- Need to return to your Image in Draw view and not alway make a new Canvas.  
+- Clients create Avatar - Random Avatar like HopScotch
+ 
 
 
 P R O B L E M S

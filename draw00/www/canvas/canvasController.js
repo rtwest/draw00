@@ -376,7 +376,10 @@ cordovaNG.controller('canvasController', function ($scope, $http, globalService,
     // ==================================================================================================================================
     // ==================================================================================================================================
 
-
+    // Function to save the Canvas contents to an image in LocalStore - Not permanently in the file system - so you don't lose image when navigating around
+    // ------------------------------------------------------------------
+    $scope.saveTempImage = function () {
+    };
 
     // Function to save the Canvas contents to an image on the file system
     // ------------------------------------------------------------------
